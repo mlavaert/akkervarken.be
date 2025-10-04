@@ -1,0 +1,9 @@
+name = "minimal"
+description = "Absolute minimal Hugo theme that just displays HTML"
+homepage = ""
+tags = ["minimal", "simple"]
+features = ["html"]
+min_version = "0.41.0"
+
+[author]
+  name = "Mathias Lavaert"

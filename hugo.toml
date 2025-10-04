@@ -1,0 +1,4 @@
+baseURL = 'https://akkervarken.be/'
+languageCode = 'nl-be'
+title = 'Akkervarken.be'
+theme = 'minimal'
