@@ -3,7 +3,7 @@ title: "Webshop"
 layout: "webshop"
 ---
 
-# Vlees van de Boerderij
+# Vlees van onze akkervarkens
 
 Bestel hier vers vlees rechtstreeks van onze boerderij. Alle vlees is van eigen dieren en wordt vers geslacht.
 

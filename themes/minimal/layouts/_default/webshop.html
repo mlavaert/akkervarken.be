@@ -1,60 +1,90 @@
 {{ define "main" }}
-<div class="webshop">
-    {{ .Content }}
-    
-    <div class="batches">
-        {{ range .Site.Data.batches.batches }}
-        <div class="batch">
-            <h3>{{ .name }}</h3>
-            <div class="batch-info">
-                <p><strong>Slachtdatum:</strong> {{ .slaughterDate }}</p>
-                <p><strong>Bestellen tot:</strong> {{ .orderDeadline }}</p>
-                <p><strong>Ophalen op:</strong> {{ .pickupDate }}</p>
-                <p><strong>Ophaallocatie:</strong> {{ .pickupLocation }}</p>
+{{ .Content }}
+
+<div class="batches">
+        {{ range $index, $batch := .Site.Data.batches.batches }}
+        <div class="batch {{ if eq $index 0 }}open{{ else }}closed{{ end }}">
+            <div class="batch-header" onclick="toggleBatch(this)">
+                <h3>{{ .name }}</h3>
+                <span class="toggle-icon">{{ if eq $index 0 }}−{{ else }}+{{ end }}</span>
             </div>
-            
-            <div class="products">
-                {{ range .availableProducts }}
-                {{ $productId := .productId }}
-                {{ $stock := .stock }}
-                {{ $batchId := .id }}
-                {{ range $.Site.Data.product_types.products }}
-                {{ if eq .id $productId }}
-                <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup="{{ .pickupDate }}" data-batch="{{ .name }}">
-                    <h4>{{ .name }}</h4>
-                    <p class="description">{{ .description }}</p>
-                    <div class="product-details">
-                        <span class="price">{{ .price }}</span>
-                        <span class="weight">{{ .weight }}</span>
-                    </div>
-                    <div class="stock">
-                        <small>Nog {{ $stock }} beschikbaar</small>
-                    </div>
-                    <div class="quantity-controls">
-                        <button type="button" onclick="decreaseQuantity('{{ $batchId }}-{{ .id }}')">-</button>
-                        <input type="number" id="qty-{{ $batchId }}-{{ .id }}" value="0" min="0" max="{{ $stock }}" onchange="updateQuantity('{{ $batchId }}-{{ .id }}', this.value)">
-                        <button type="button" onclick="increaseQuantity('{{ $batchId }}-{{ .id }}')">+</button>
-                    </div>
+            <div class="batch-content">
+                <div class="batch-info">
+                    <p><strong>Slachtdatum:</strong> {{ .slaughterDate }}</p>
+                    <p><strong>Bestellen tot:</strong> {{ .orderDeadline }}</p>
+                    <p><strong>Ophalen op:</strong> {{ .pickupDate }}</p>
+                    <p><strong>Ophaallocatie:</strong> {{ .pickupLocation }}</p>
                 </div>
-                {{ end }}
-                {{ end }}
-                {{ end }}
+                
+                <div class="products">
+                    {{ range .availableProducts }}
+                    {{ $productId := .productId }}
+                    {{ $stock := .stock }}
+                    {{ $batchId := $batch.id }}
+                    {{ range $.Site.Data.products.products }}
+                    {{ if eq .id $productId }}
+                    <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup="{{ $batch.pickupDate }}" data-batch="{{ $batch.name }}">
+                        <h4>{{ .name }}</h4>
+                        <p class="description">{{ .description }}</p>
+                        <div class="product-details">
+                            <span class="price">{{ .price }}</span>
+                            <span class="weight">{{ .weight }}</span>
+                        </div>
+                        <div class="stock">
+                            <small>Nog {{ $stock }} beschikbaar</small>
+                        </div>
+                        <div class="quantity-controls">
+                            <button type="button" onclick="decreaseQuantity('{{ $batchId }}-{{ .id }}')">-</button>
+                            <input type="number" id="qty-{{ $batchId }}-{{ .id }}" value="0" min="0" max="{{ $stock }}" onchange="updateQuantity('{{ $batchId }}-{{ .id }}', this.value)">
+                            <button type="button" onclick="increaseQuantity('{{ $batchId }}-{{ .id }}')">+</button>
+                        </div>
+                    </div>
+                    {{ end }}
+                    {{ end }}
+                    {{ end }}
+                </div>
             </div>
         </div>
         {{ end }}
     </div>
     
-    <div class="order-summary">
+    <section class="order-summary">
         <h3>Bestelling</h3>
         <div id="order-items"></div>
         <div id="order-total"></div>
         <button id="send-order" onclick="sendOrder()" style="display: none;">Bestelling versturen via e-mail</button>
-    </div>
-</div>
+    </section>
 
 <script>
 let cart = {};
 let currentBatch = null; // Track which batch is currently selected
+
+function toggleBatch(header) {
+    const batch = header.parentElement;
+    const content = batch.querySelector('.batch-content');
+    const icon = header.querySelector('.toggle-icon');
+    const allBatches = document.querySelectorAll('.batch');
+    
+    // If this batch is already open, don't close it (keep at least one open)
+    if (batch.classList.contains('open')) {
+        return;
+    }
+    
+    // Close all other batches
+    allBatches.forEach(otherBatch => {
+        if (otherBatch !== batch) {
+            otherBatch.classList.remove('open');
+            otherBatch.classList.add('closed');
+            const otherIcon = otherBatch.querySelector('.toggle-icon');
+            otherIcon.textContent = '+';
+        }
+    });
+    
+    // Open this batch
+    batch.classList.remove('closed');
+    batch.classList.add('open');
+    icon.textContent = '−';
+}
 
 function updateQuantity(productId, quantity) {
     quantity = parseInt(quantity) || 0;
