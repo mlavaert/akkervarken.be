@@ -1,4 +1,4 @@
-baseURL = 'https://akkervarken.be/'
+baseURL = ''
 languageCode = 'nl-be'
 title = 'Akkervarken.be'
 theme = 'minimal'
