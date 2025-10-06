@@ -1,3 +1,66 @@
 {{ define "main" }}
+<div class="slideshow-banner">
+    <div class="slideshow-container">
+        <div class="slide active">
+            <img src="{{ "img/slide1.jpg" | relURL }}" alt="Farm scene 1" >
+        </div>
+        <div class="slide">
+            <img src="{{ "img/slide2.jpg" | relURL }}" alt="Farm scene 2" >
+        </div>
+        <div class="slide">
+            <img src="{{ "img/slide3.jpg" | relURL }}" alt="Farm scene 3" >
+        </div>
+        <div class="slide">
+            <img src="{{ "img/slide4.jpg" | relURL }}" alt="Farm scene 4" >
+        </div>
+        
+        <!-- Dawn-style overlay -->
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1>Welkom bij Akkervarken</h1>
+                <p>...</p>
+                <a href="/webshop/" class="hero-button">Vlees bestellen</a>
+            </div>
+        </div>
+        
+        <!-- Simple dots navigation -->
+        <div class="dots-nav">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+            <span class="dot" onclick="currentSlide(4)"></span>
+        </div>
+    </div>
+</div>
+
+<script>
+let slideIndex = 1;
+
+function currentSlide(n) {
+    showSlide(slideIndex = n);
+}
+
+function showSlide(n) {
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    
+    if (n > slides.length) { slideIndex = 1; }
+    if (n < 1) { slideIndex = slides.length; }
+    
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    slides[slideIndex - 1].classList.add('active');
+    dots[slideIndex - 1].classList.add('active');
+}
+
+// Auto-advance slides every 6 seconds
+setInterval(() => {
+    slideIndex++;
+    if (slideIndex > 4) slideIndex = 1;
+    showSlide(slideIndex);
+}, 6000);
+</script>
+
 {{ .Content }}
 {{ end }}

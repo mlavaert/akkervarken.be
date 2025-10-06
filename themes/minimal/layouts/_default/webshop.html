@@ -10,20 +10,25 @@
             </div>
             <div class="batch-content">
                 <div class="batch-info">
-                    <p><strong>Slachtdatum:</strong> {{ .slaughterDate }}</p>
-                    <p><strong>Bestellen tot:</strong> {{ .orderDeadline }}</p>
-                    <p><strong>Ophalen op:</strong> {{ .pickupDate }}</p>
-                    <p><strong>Ophaallocatie:</strong> {{ .pickupLocation }}</p>
+                    <p><strong>Slachtdatum:</strong> {{ index . "slaughter-date" }}</p>
+                    <p><strong>Bestellen tot:</strong> {{ index . "order-deadline" }}</p>
+                    <p><strong>Ophalen tussen:</strong> {{ index . "pickup-date-start" }} en {{ index . "pickup-date-end" }}</p>
+                    <p><strong>Ophaallocatie:</strong> {{ index . "pickup-location" }}</p>
                 </div>
                 
                 <div class="products">
-                    {{ range .availableProducts }}
-                    {{ $productId := .productId }}
+                    {{ range index . "available-products" }}
+                    {{ $productId := index . "product-id" }}
                     {{ $stock := .stock }}
                     {{ $batchId := $batch.id }}
                     {{ range $.Site.Data.products.products }}
                     {{ if eq .id $productId }}
-                    <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup="{{ $batch.pickupDate }}" data-batch="{{ $batch.name }}">
+                    <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup-start="{{ index $batch "pickup-date-start" }}" data-pickup-end="{{ index $batch "pickup-date-end" }}" data-batch="{{ $batch.name }}">
+                        {{ if .image }}
+                        <div class="product-image">
+                            <img src="{{ .image | relURL }}" alt="{{ .name }}" loading="lazy">
+                        </div>
+                        {{ end }}
                         <h4>{{ .name }}</h4>
                         <p class="description">{{ .description }}</p>
                         <div class="product-details">
@@ -118,7 +123,8 @@ function updateQuantity(productId, quantity) {
             name: product.dataset.name,
             price: product.dataset.price,
             weight: product.dataset.weight,
-            pickup: product.dataset.pickup,
+            pickupStart: product.dataset.pickupStart,
+            pickupEnd: product.dataset.pickupEnd,
             batch: product.dataset.batch,
             quantity: quantity
         };
@@ -198,7 +204,7 @@ function updateOrderSummary() {
     let totalItems = 0;
     
     for (const [productId, item] of Object.entries(cart)) {
-        html += `<li>${item.quantity}x ${item.name} (${item.weight} per stuk) - Ophalen: ${item.pickup}</li>`;
+        html += `<li>${item.quantity}x ${item.name} (${item.weight} per stuk) - Ophalen: ${item.pickupStart} tot ${item.pickupEnd}</li>`;
         totalItems += item.quantity;
     }
     html += '</ul></div>';
@@ -220,13 +226,14 @@ function sendOrder() {
     let totalItems = 0;
     let pickupDate = '';
     
-    // Get batch name and pickup date from first item
+    // Get batch name and pickup dates from first item
     const firstItem = Object.values(cart)[0];
     const batchName = firstItem.batch;
-    pickupDate = firstItem.pickup;
+    const pickupStart = firstItem.pickupStart;
+    const pickupEnd = firstItem.pickupEnd;
     
     emailBody += `Batch: ${batchName}%0D%0A`;
-    emailBody += `Ophaaldag: ${pickupDate}%0D%0A%0D%0A`;
+    emailBody += `Ophalen tussen: ${pickupStart} en ${pickupEnd}%0D%0A%0D%0A`;
     emailBody += 'Producten:%0D%0A';
     
     for (const [productId, item] of Object.entries(cart)) {
