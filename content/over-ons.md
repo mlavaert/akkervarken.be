@@ -3,6 +3,8 @@ title: "Over ons"
 ---
 ## Over ons
 
+![img/me.jpg](/img/me.jpg)
+
 Wij zijn **Mathias en Jolien**, twee enthousiaste boeren met een
 hart voor dieren en de natuur. Al jarenlang houden we
 **Mergellandschapen**, een robuust en zeldzaam schapenras dat

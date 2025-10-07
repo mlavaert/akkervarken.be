@@ -88,6 +88,10 @@ main {
     line-height: 1.7;
 }
 
+img {
+     width: 70%;
+}
+
 /* Slideshow Banner - Full Width */
 .slideshow-banner {
     position: relative;
@@ -542,3 +546,4 @@ main > a:hover, #send-order:hover {
     margin: 6px 0;
     color: #4a5c4a;
 }
+
