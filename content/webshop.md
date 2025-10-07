@@ -19,4 +19,3 @@ Op frequente basis slachten we onze akkervarkens en verkopen we het vlees via de
 - Alle vlees moet afgehaald worden op de aangegeven ophaaldata
 - **Je kunt alleen producten uit één batch per bestelling selecteren**
 - Wil je vlees uit meerdere batches? Plaats dan afzonderlijke bestellingen
-

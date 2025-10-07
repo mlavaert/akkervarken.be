@@ -9,8 +9,8 @@ title: "Contact"
 
 ### Bereikbaarheid
 - **E-mail:** info@akkervarken.be
-- **Telefoon:** [Telefoonnummer]
-- **Adres:** [Adres van de boerderij]
+- **Telefoon:** +32494185076
+- **Adres:** Wolfstede 7, 1745 Opwijk
 
 ### Openingstijden
 - **Ophalen vlees:** Alleen op afspraak
@@ -21,3 +21,4 @@ Alle bestellingen worden geplaatst via onze [webshop](/webshop/) en bevestigd pe
 
 ### Over ons
 Wij zijn een familieboerderij die met passie en zorg voor kwaliteitsvlees zorgt. Al onze dieren groeien op in een natuurlijke omgeving met veel aandacht voor dierenwelzijn.
+
