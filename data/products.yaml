@@ -1,13 +1,15 @@
 products:
   - id: "pakket-klein"
-    name: "Varkensvlees Pakket Klein"
-    description: "Klein varkensvlees pakket met diverse stukken vlees"
+    name: "Varkensvlees Pakket (+- 5kg)"
+    description: >
+      Gemengd pakket met verschillende stukken van het varken:
+        - Filetkotelet
+        - Spieringkotelet
+        - Worst
+        - Hamburger
+        - Vers spek
+        - Varkenslapje
+        - Gehakt
     price: "€85"
     weight: "5kg"
     image: "products/varkensvlees-klein.jpg"
-  - id: "pakket-groot"
-    name: "Varkensvlees Pakket Groot"
-    description: "Groot varkensvlees pakket met diverse stukken vlees"
-    price: "€160"
-    weight: "10kg"
-    image: "products/varkensvlees-groot.jpg"

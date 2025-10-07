@@ -30,7 +30,7 @@
                         </div>
                         {{ end }}
                         <h4>{{ .name }}</h4>
-                        <p class="description">{{ .description }}</p>
+                        <p class="description">{{ .description | markdownify }}</p>
                         <div class="product-details">
                             <span class="price">{{ .price }}</span>
                             <span class="weight">{{ .weight }}</span>
@@ -253,4 +253,3 @@ function sendOrder() {
 }
 </script>
 {{ end }}
-
