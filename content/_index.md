@@ -1,4 +1,4 @@
----
+look---
 title: "Home"
 description: "Vers varkensvlees rechtstreeks van onze boerderij in Opwijk. Varkens die buiten leven met veel ruimte en lokaal, duurzaam voeder. Bestel online uw vleespakketten."
 keywords: ["varkensvlees", "boerderij Opwijk", "lokaal vlees", "duurzaam vlees", "akkervarkens", "scharrelvarken", "biologisch vlees Vlaanderen"]
@@ -24,7 +24,7 @@ Door regelmatig te roteren tussen percelen blijven zowel de dieren als de bodem 
 
 We voeren onze varkens met **lokale gewassen**: veldbonen, erwten, tarwe en gerst. Aangevuld met groenten en fruit uit reststromen. Geen geïmporteerde soja of maïs, maar voeding van dichtbij.
 
-Waarom? Omdat het beter is voor de dieren, voor de bodem, en voor jou. En omdat het kan.
+Waarom? Omdat het beter is voor de dieren, voor de bodem, en voor jou. 
 
 ### Kleinschalig en persoonlijk
 
