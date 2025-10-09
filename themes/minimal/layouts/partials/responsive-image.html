@@ -1,0 +1,23 @@
+{{- $src := .src -}}
+{{- $alt := .alt -}}
+{{- $class := .class | default "" -}}
+{{- $loading := .loading | default "lazy" -}}
+
+{{- $image := resources.Get $src -}}
+{{- if $image -}}
+  {{- $webp := $image.Resize "1600x webp q75" -}}
+  {{- $medium := $image.Resize "800x q75" -}}
+  {{- $small := $image.Resize "400x q75" -}}
+
+  <picture>
+    <source srcset="{{ $small.RelPermalink }} 400w, {{ $medium.RelPermalink }} 800w, {{ $webp.RelPermalink }} 1600w" type="image/webp">
+    <img src="{{ $medium.RelPermalink }}"
+         srcset="{{ $small.RelPermalink }} 400w, {{ $medium.RelPermalink }} 800w, {{ $image.RelPermalink }} 1600w"
+         alt="{{ $alt }}"
+         {{- with $class }} class="{{ . }}"{{ end }}
+         loading="{{ $loading }}"
+         sizes="(max-width: 400px) 400px, (max-width: 800px) 800px, 1600px">
+  </picture>
+{{- else -}}
+  <img src="{{ $src }}" alt="{{ $alt }}" {{- with $class }} class="{{ . }}"{{ end }} loading="{{ $loading }}">
+{{- end -}}
