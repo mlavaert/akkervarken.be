@@ -3,13 +3,13 @@
 #   - id: unique product identifier (required)
 #   - name: product display name (required)
 #   - description: product description, supports markdown (required)
-#   - price: product price with currency symbol (required)
+#   - price: product price as numeric value in euros (required, e.g., 87.50)
 #   - weight: product weight/size (required)
 #   - image: path to product image (optional - can be omitted or left empty)
 
 products:
   - id: "pakket-klein"
-    name: "Varkensvlees Pakket (+- 5kg)"
+    name: "Varkensvlees Pakket"
     description: >
       Gemengd pakket met verschillende stukken van het varken:
         - Filetkotelet
@@ -19,5 +19,11 @@ products:
         - Vers spek
         - Varkenslapje
         - Gehakt
-    price: "€87,5"
-    weight: "5kg"
+
+      _Let op: de samenstelling en het gewicht kan altijd wat verschillen.
+        Niet elk varken is hetzelfde dus er kan wat variatie op zitten,
+        echter streven we om zo dicht mogelijk bij deze beschrijving aan te
+        sluiten_
+
+    price: 87.50
+    weight: "+- 5kg"

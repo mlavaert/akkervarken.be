@@ -310,6 +310,12 @@ main > a:hover, #send-order:hover {
 /* Webshop Styles */
 .batches {
     margin: 30px 0;
+    padding-bottom: 0;
+    transition: padding-bottom 0.3s ease;
+}
+
+.batches.has-order {
+    padding-bottom: 400px;
 }
 
 .batch {
@@ -385,17 +391,52 @@ main > a:hover, #send-order:hover {
 }
 
 .batch-info {
-    background: linear-gradient(135deg, rgba(106, 142, 106, 0.08) 0%, rgba(106, 142, 106, 0.05) 100%);
+    background: white;
     padding: 20px;
     border-radius: 16px;
     margin-bottom: 24px;
-    border: 1px solid rgba(106, 142, 106, 0.1);
+    border: 2px solid rgba(106, 142, 106, 0.15);
+    box-shadow: 0 2px 8px rgba(106, 142, 106, 0.08);
 }
 
-.batch-info p {
-    margin: 8px 0;
+.batch-info-primary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label {
+    font-size: 0.9em;
+    color: #6a8e6a;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-value {
+    font-size: 1.05em;
     color: #4a5c4a;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.batch-info-secondary {
+    padding-top: 12px;
+    border-top: 1px solid rgba(106, 142, 106, 0.1);
+    text-align: center;
+}
+
+.batch-info-secondary small {
+    color: #6b7c6b;
+    font-size: 0.9em;
+    font-style: italic;
 }
 
 .products {
@@ -470,81 +511,135 @@ main > a:hover, #send-order:hover {
 .quantity-controls {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 16px;
     margin-top: 20px;
 }
 
-.quantity-controls button, .quantity-controls input {
-    width: 36px;
-    height: 36px;
+.qty-btn {
+    width: 50px;
+    height: 50px;
     border: 2px solid rgba(106, 142, 106, 0.3);
     background: white;
-    border-radius: 18px;
+    border-radius: 50%;
     color: #6a8e6a;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.quantity-controls button {
+    font-weight: 700;
+    font-size: 1.5em;
     cursor: pointer;
-    font-size: 1.1em;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
 }
 
-.quantity-controls button:hover {
+.qty-btn:hover:not(:disabled) {
     background: rgba(106, 142, 106, 0.1);
     border-color: #6a8e6a;
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
-.quantity-controls input {
-    width: 70px;
+.qty-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.qty-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.qty-display {
+    min-width: 80px;
     text-align: center;
-    font-size: 1em;
 }
 
-.quantity-controls input:focus {
-    outline: none;
-    border-color: #6a8e6a;
-    box-shadow: 0 0 0 3px rgba(106, 142, 106, 0.1);
+.qty-number {
+    font-size: 2em;
+    font-weight: 700;
+    color: #6a8e6a;
 }
 
 .order-summary {
+    display: none;
     border: 2px solid rgba(106, 142, 106, 0.2);
-    border-radius: 20px;
-    padding: 28px;
-    margin-top: 40px;
-    background: linear-gradient(135deg, rgba(106, 142, 106, 0.05) 0%, rgba(106, 142, 106, 0.02) 100%);
-    box-shadow: 0 6px 25px rgba(106, 142, 106, 0.1);
+    border-radius: 20px 20px 0 0;
+    padding: 20px 28px 28px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -6px 25px rgba(106, 142, 106, 0.15);
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.order-summary.has-items {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
 }
 
 .order-summary h3 {
-    margin: 0 0 20px 0;
+    margin: 0 0 16px 0;
     color: #6a8e6a;
     text-align: left;
-    font-size: 1.5em;
+    font-size: 1.4em;
     font-weight: 600;
 }
 
 .order-batch {
-    margin: 20px 0;
+    margin: 12px 0;
 }
 
 .order-batch strong {
     color: #6a8e6a;
     display: block;
     margin-bottom: 8px;
-    font-size: 1.1em;
+    font-size: 1.05em;
 }
 
 .order-batch ul {
     margin: 8px 0 0 0;
     padding-left: 24px;
-    line-height: 1.6;
+    line-height: 1.8;
 }
 
 .order-batch li {
-    margin: 6px 0;
+    margin: 8px 0;
     color: #4a5c4a;
+}
+
+.order-batch li small {
+    color: #6b7c6b;
+    font-size: 0.9em;
+}
+
+.total-summary {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid rgba(106, 142, 106, 0.2);
+    text-align: right;
+}
+
+.total-price {
+    font-size: 1.5em;
+    color: #6a8e6a;
+    font-weight: 700;
+}
+
+.total-summary small {
+    color: #6b7c6b;
 }
 
 /* Mobile Responsive Styles */
@@ -663,8 +758,21 @@ main > a:hover, #send-order:hover {
         margin-bottom: 18px;
     }
 
-    .batch-info p {
-        font-size: 0.95em;
+    .batch-info-primary {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .info-label {
+        font-size: 0.85em;
+    }
+
+    .info-value {
+        font-size: 1em;
+    }
+
+    .batch-info-secondary small {
+        font-size: 0.85em;
     }
 
     /* Products */
@@ -692,22 +800,47 @@ main > a:hover, #send-order:hover {
     }
 
     .quantity-controls {
-        width: 100%;
-        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .qty-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3em;
+    }
+
+    .qty-display {
+        min-width: 60px;
+    }
+
+    .qty-number {
+        font-size: 1.8em;
     }
 
     /* Order summary */
     .order-summary {
-        padding: 20px;
-        margin-top: 30px;
+        padding: 16px 20px 20px;
+        max-height: 50vh;
     }
 
     .order-summary h3 {
-        font-size: 1.3em;
+        font-size: 1.2em;
     }
 
     .order-batch strong {
         font-size: 1em;
+    }
+
+    .order-batch li {
+        font-size: 0.95em;
+    }
+
+    .total-price {
+        font-size: 1.3em;
+    }
+
+    .batches.has-order {
+        padding-bottom: 350px;
     }
 
     img {
@@ -753,6 +886,10 @@ main > a:hover, #send-order:hover {
 
     .product-image img {
         height: 150px;
+    }
+
+    .batches.has-order {
+        padding-bottom: 300px;
     }
 }
 

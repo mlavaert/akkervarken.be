@@ -1,6 +1,11 @@
 let cart = {};
 let currentBatch = null; // Track which batch is currently selected
 
+// Helper function to format price in euros
+function formatPrice(price) {
+    return '€' + parseFloat(price).toFixed(2).replace('.', ',');
+}
+
 function toggleBatch(header) {
     const batch = header.parentElement;
     const content = batch.querySelector('.batch-content');
@@ -31,6 +36,17 @@ function toggleBatch(header) {
 function updateQuantity(productId, quantity) {
     quantity = parseInt(quantity) || 0;
 
+    // Update the visual display
+    const display = document.getElementById(`qty-display-${productId}`);
+    const input = document.getElementById(`qty-${productId}`);
+
+    if (display) {
+        display.textContent = quantity;
+    }
+    if (input) {
+        input.value = quantity;
+    }
+
     if (quantity <= 0) {
         delete cart[productId];
         // If cart is empty, reset current batch
@@ -45,8 +61,8 @@ function updateQuantity(productId, quantity) {
         // Check if this is from a different batch
         if (currentBatch && currentBatch !== productBatch) {
             alert(`Je kunt alleen producten uit één batch bestellen.\n\nJe hebt al producten uit "${currentBatch}" geselecteerd.\n\nWil je vlees uit meerdere batches? Plaats dan afzonderlijke bestellingen.`);
-            // Reset the input to 0
-            document.getElementById(`qty-${productId}`).value = 0;
+            // Reset the quantity to 0
+            updateQuantity(productId, 0);
             return;
         }
 
@@ -58,7 +74,7 @@ function updateQuantity(productId, quantity) {
 
         cart[productId] = {
             name: product.dataset.name,
-            price: product.dataset.price,
+            price: parseFloat(product.dataset.price),
             weight: product.dataset.weight,
             pickupStart: product.dataset.pickupStart,
             pickupEnd: product.dataset.pickupEnd,
@@ -128,26 +144,41 @@ function updateOrderSummary() {
     const orderItems = document.getElementById('order-items');
     const orderTotal = document.getElementById('order-total');
     const sendButton = document.getElementById('send-order');
+    const orderSummary = document.querySelector('.order-summary');
+    const batches = document.querySelector('.batches');
 
     if (Object.keys(cart).length === 0) {
         orderItems.innerHTML = '<p>Geen items geselecteerd</p>';
         orderTotal.innerHTML = '';
         sendButton.style.display = 'none';
+        orderSummary.classList.remove('has-items');
+        if (batches) {
+            batches.classList.remove('has-order');
+        }
         return;
+    }
+
+    // Add class to show order summary is active
+    orderSummary.classList.add('has-items');
+    if (batches) {
+        batches.classList.add('has-order');
     }
 
     // Since we only allow one batch, this is simplified
     let html = `<div class="order-batch"><strong>${currentBatch}</strong><ul>`;
     let totalItems = 0;
+    let totalPrice = 0;
 
     for (const [productId, item] of Object.entries(cart)) {
-        html += `<li>${item.quantity}x ${item.name} (${item.weight} per stuk) - Ophalen: ${item.pickupStart} tot ${item.pickupEnd}</li>`;
+        const itemTotal = item.price * item.quantity;
+        totalPrice += itemTotal;
         totalItems += item.quantity;
+        html += `<li>${item.quantity}x ${item.name} (${item.weight}) - ${formatPrice(itemTotal)}<br><small>Ophalen: ${item.pickupStart} tot ${item.pickupEnd}</small></li>`;
     }
     html += '</ul></div>';
 
     orderItems.innerHTML = html;
-    orderTotal.innerHTML = `<strong>Totaal: ${totalItems} pakket(ten)</strong>`;
+    orderTotal.innerHTML = `<div class="total-summary"><strong>Totaal:</strong> <span class="total-price">${formatPrice(totalPrice)}</span><br><small>${totalItems} pakket(ten)</small></div>`;
     sendButton.style.display = 'block';
 }
 
@@ -161,7 +192,7 @@ function sendOrder() {
     emailBody += 'Hierbij mijn bestelling:%0D%0A%0D%0A';
 
     let totalItems = 0;
-    let pickupDate = '';
+    let totalPrice = 0;
 
     // Get batch name and pickup dates from first item
     const firstItem = Object.values(cart)[0];
@@ -174,11 +205,14 @@ function sendOrder() {
     emailBody += 'Producten:%0D%0A';
 
     for (const [productId, item] of Object.entries(cart)) {
-        emailBody += `- ${item.quantity}x ${item.name} (${item.weight} per stuk)%0D%0A`;
+        const itemTotal = item.price * item.quantity;
+        totalPrice += itemTotal;
         totalItems += item.quantity;
+        emailBody += `- ${item.quantity}x ${item.name} (${item.weight}) - ${formatPrice(itemTotal)}%0D%0A`;
     }
 
-    emailBody += `%0D%0ATotaal: ${totalItems} pakket(ten)%0D%0A%0D%0A`;
+    emailBody += `%0D%0ATotaal: ${formatPrice(totalPrice)} (${totalItems} pakket(ten))%0D%0A%0D%0A`;
+    emailBody += 'Betaling bij afhaling.%0D%0A%0D%0A';
     emailBody += 'Graag bevestiging van deze bestelling.%0D%0A%0D%0A';
     emailBody += 'Met vriendelijke groeten,%0D%0A';
     emailBody += '[Vul hier je naam in]';

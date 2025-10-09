@@ -18,5 +18,4 @@ batches:
     pickup-location: "Wolfstede 7, 1745 Opwijk"
     available-products:
       - product-id: "pakket-klein"
-        stock: 14
-
+        stock: 32

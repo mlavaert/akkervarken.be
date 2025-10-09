@@ -10,10 +10,19 @@
             </div>
             <div class="batch-content">
                 <div class="batch-info">
-                    <p><strong>Slachtdatum:</strong> {{ index . "slaughter-date" }}</p>
-                    <p><strong>Bestellen tot:</strong> {{ index . "order-deadline" }}</p>
-                    <p><strong>Ophalen tussen:</strong> {{ index . "pickup-date-start" }} en {{ index . "pickup-date-end" }}</p>
-                    <p><strong>Ophaallocatie:</strong> {{ index . "pickup-location" }}</p>
+                    <div class="batch-info-primary">
+                        <div class="info-item">
+                            <span class="info-label">📦 Ophalen</span>
+                            <span class="info-value">{{ index . "pickup-date-start" }} - {{ index . "pickup-date-end" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📍 Locatie</span>
+                            <span class="info-value">{{ index . "pickup-location" }}</span>
+                        </div>
+                    </div>
+                    <div class="batch-info-secondary">
+                        <small>Bestellen tot {{ index . "order-deadline" }}</small>
+                    </div>
                 </div>
 
                 <div class="products">
@@ -34,16 +43,19 @@
                         <h4>{{ .name }}</h4>
                         <p class="description">{{ .description | markdownify }}</p>
                         <div class="product-details">
-                            <span class="price">{{ .price }}</span>
+                            <span class="price">€{{ printf "%.2f" .price | replaceRE "\\." "," }}</span>
                             <span class="weight">{{ .weight }}</span>
                         </div>
                         <div class="stock">
                             <small>Nog {{ $stock }} beschikbaar</small>
                         </div>
                         <div class="quantity-controls">
-                            <button type="button" onclick="decreaseQuantity('{{ $batchId }}-{{ .id }}')">-</button>
-                            <input type="number" id="qty-{{ $batchId }}-{{ .id }}" value="0" min="0" max="{{ $stock }}" onchange="updateQuantity('{{ $batchId }}-{{ .id }}', this.value)">
-                            <button type="button" onclick="increaseQuantity('{{ $batchId }}-{{ .id }}')">+</button>
+                            <button type="button" class="qty-btn qty-decrease" onclick="decreaseQuantity('{{ $batchId }}-{{ .id }}')">−</button>
+                            <div class="qty-display">
+                                <span id="qty-display-{{ $batchId }}-{{ .id }}" class="qty-number">0</span>
+                                <input type="hidden" id="qty-{{ $batchId }}-{{ .id }}" value="0" min="0" max="{{ $stock }}">
+                            </div>
+                            <button type="button" class="qty-btn qty-increase" onclick="increaseQuantity('{{ $batchId }}-{{ .id }}')">+</button>
                         </div>
                     </div>
                     {{ end }}
