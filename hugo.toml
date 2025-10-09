@@ -1,7 +1,32 @@
-baseURL = ''
+baseURL = 'https://akkervarken.be'
 languageCode = 'nl-be'
-title = 'Akkervarken.be'
+title = 'Akkervarken.be - Vers varkensvlees van eigen boerderij'
 theme = 'minimal'
+copyright = '© 2025 Akkervarken.be - Mathias en Jolien'
+enableRobotsTXT = true
+
+[params]
+  description = 'Vers varkensvlees rechtstreeks van onze boerderij in Opwijk. Varkens die buiten leven met veel ruimte en lokaal, duurzaam voeder. Bestel online uw vleespakketten.'
+  author = 'Mathias en Jolien'
+  keywords = ['varkensvlees', 'boerderij', 'lokaal vlees', 'duurzaam vlees', 'Opwijk', 'akkervarkens', 'biologisch vlees', 'scharrelvlees', 'Vlaanderen']
+  images = ['/img/slide1.jpg']
+
+[params.social]
+  email = 'info@akkervarken.be'
+  phone = '+32494185076'
+
+[params.location]
+  name = 'Akkervarken.be'
+  address = 'Wolfstede 7'
+  city = 'Opwijk'
+  postalCode = '1745'
+  country = 'België'
+  latitude = '50.9666'
+  longitude = '4.1833'
+
+[taxonomies]
+  tag = 'tags'
+  category = 'categories'
 
 [imaging]
   quality = 75

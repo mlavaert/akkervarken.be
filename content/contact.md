@@ -1,5 +1,8 @@
 ---
 title: "Contact"
+description: "Neem contact op met Akkervarken.be voor vragen over ons vlees, bestellingen of om een afspraak te maken. We helpen u graag verder."
+keywords: ["contact Akkervarken", "boerderij Opwijk contact", "vlees bestellen contact", "Wolfstede Opwijk"]
+image: "/img/slide3.jpg"
 ---
 
 # Contact

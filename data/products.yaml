@@ -1,3 +1,12 @@
+# Product catalog
+# Fields:
+#   - id: unique product identifier (required)
+#   - name: product display name (required)
+#   - description: product description, supports markdown (required)
+#   - price: product price with currency symbol (required)
+#   - weight: product weight/size (required)
+#   - image: path to product image (optional - can be omitted or left empty)
+
 products:
   - id: "pakket-klein"
     name: "Varkensvlees Pakket (+- 5kg)"
@@ -12,4 +21,3 @@ products:
         - Gehakt
     price: "€87,5"
     weight: "5kg"
-    image: "products/varkensvlees-klein.jpg"

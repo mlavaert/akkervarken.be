@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: {{ .Site.BaseURL }}/sitemap.xml
+
+# Crawl-delay (be respectful to server)
+Crawl-delay: 10

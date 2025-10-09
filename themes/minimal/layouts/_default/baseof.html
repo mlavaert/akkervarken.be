@@ -1,9 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl-BE">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ .Title }}</title>
+
+    {{- /* Dynamic Title Tag */ -}}
+    {{- if .IsHome -}}
+    <title>{{ .Site.Title }}</title>
+    {{- else -}}
+    <title>{{ .Title }} | {{ .Site.Title }}</title>
+    {{- end -}}
+
+    {{- /* SEO Meta Tags */ -}}
+    {{- partial "seo.html" . -}}
+
+    {{- /* Structured Data */ -}}
+    {{- partial "structured-data.html" . -}}
 
     {{- /* Resource hints for external resources */ -}}
     <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com">

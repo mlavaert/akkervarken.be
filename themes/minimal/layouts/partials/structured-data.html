@@ -1,0 +1,152 @@
+{{- /* Structured Data (JSON-LD) */ -}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "{{ .Site.BaseURL }}#organization",
+      "name": "{{ .Site.Params.location.name }}",
+      "url": "{{ .Site.BaseURL }}",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ "img/logo.svg" | absURL }}"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "{{ .Site.Params.social.phone }}",
+        "contactType": "customer service",
+        "email": "{{ .Site.Params.social.email }}",
+        "availableLanguage": ["Dutch"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ .Site.Params.location.address }}",
+        "addressLocality": "{{ .Site.Params.location.city }}",
+        "postalCode": "{{ .Site.Params.location.postalCode }}",
+        "addressCountry": "BE"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "{{ .Site.Params.location.latitude }}",
+        "longitude": "{{ .Site.Params.location.longitude }}"
+      },
+      "sameAs": []
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ .Site.BaseURL }}#website",
+      "url": "{{ .Site.BaseURL }}",
+      "name": "{{ .Site.Title }}",
+      "description": "{{ .Site.Params.description }}",
+      "publisher": {
+        "@id": "{{ .Site.BaseURL }}#organization"
+      },
+      "inLanguage": "nl-BE"
+    }
+    {{- if .IsHome -}}
+    ,{
+      "@type": "LocalBusiness",
+      "@id": "{{ .Site.BaseURL }}#localbusiness",
+      "name": "{{ .Site.Params.location.name }}",
+      "image": "{{ "img/slide1.jpg" | absURL }}",
+      "description": "{{ .Site.Params.description }}",
+      "url": "{{ .Site.BaseURL }}",
+      "telephone": "{{ .Site.Params.social.phone }}",
+      "email": "{{ .Site.Params.social.email }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ .Site.Params.location.address }}",
+        "addressLocality": "{{ .Site.Params.location.city }}",
+        "postalCode": "{{ .Site.Params.location.postalCode }}",
+        "addressCountry": "BE"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "{{ .Site.Params.location.latitude }}",
+        "longitude": "{{ .Site.Params.location.longitude }}"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "00:00",
+        "closes": "23:59",
+        "description": "Ophalen op afspraak"
+      },
+      "priceRange": "€€",
+      "servesCuisine": "Belgian",
+      "paymentAccepted": "Cash",
+      "currenciesAccepted": "EUR"
+    }
+    {{- end -}}
+    {{- if eq .Section "webshop" -}}
+    ,{
+      "@type": "Store",
+      "@id": "{{ .Permalink }}#store",
+      "name": "{{ .Site.Params.location.name }} - Webshop",
+      "description": "Online bestellen van vers varkensvlees van eigen boerderij",
+      "url": "{{ .Permalink }}",
+      "image": "{{ "img/slide1.jpg" | absURL }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ .Site.Params.location.address }}",
+        "addressLocality": "{{ .Site.Params.location.city }}",
+        "postalCode": "{{ .Site.Params.location.postalCode }}",
+        "addressCountry": "BE"
+      },
+      "priceRange": "€€",
+      "paymentAccepted": "Cash",
+      "currenciesAccepted": "EUR"
+    }
+    {{- end -}}
+    {{- if not .IsHome -}}
+    ,{
+      "@type": "WebPage",
+      "@id": "{{ .Permalink }}#webpage",
+      "url": "{{ .Permalink }}",
+      "name": "{{ .Title }}",
+      "description": "{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}",
+      "isPartOf": {
+        "@id": "{{ .Site.BaseURL }}#website"
+      },
+      "inLanguage": "nl-BE",
+      "datePublished": "{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}",
+      "dateModified": "{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}"
+    }
+    {{- end -}}
+    {{- if eq .Title "Contact" -}}
+    ,{
+      "@type": "ContactPage",
+      "@id": "{{ .Permalink }}#contactpage",
+      "url": "{{ .Permalink }}",
+      "name": "Contact - {{ .Site.Title }}",
+      "description": "Contacteer Akkervarken.be voor bestellingen en vragen over ons vers varkensvlees"
+    }
+    {{- end -}}
+  ]
+}
+</script>
+
+{{- /* Breadcrumb Structured Data */ -}}
+{{- if not .IsHome -}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ .Site.BaseURL }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ .Title }}",
+      "item": "{{ .Permalink }}"
+    }
+  ]
+}
+</script>
+{{- end -}}

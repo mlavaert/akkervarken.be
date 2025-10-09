@@ -1,0 +1,78 @@
+{{- /* SEO Meta Tags */ -}}
+{{- $title := .Title -}}
+{{- $description := .Description -}}
+{{- $keywords := .Keywords -}}
+{{- $image := .Params.image -}}
+
+{{- if .IsHome -}}
+    {{- $title = .Site.Title -}}
+    {{- $description = .Site.Params.description -}}
+{{- else -}}
+    {{- $title = printf "%s | %s" .Title .Site.Title -}}
+{{- end -}}
+
+{{- if not $description -}}
+    {{- $description = .Site.Params.description -}}
+{{- end -}}
+
+{{- if not $keywords -}}
+    {{- $keywords = .Site.Params.keywords -}}
+{{- end -}}
+
+{{- if not $image -}}
+    {{- if .Site.Params.images -}}
+        {{- $image = index .Site.Params.images 0 | absURL -}}
+    {{- end -}}
+{{- else -}}
+    {{- $image = $image | absURL -}}
+{{- end -}}
+
+{{- /* Basic Meta Tags */ -}}
+<meta name="description" content="{{ $description }}">
+{{- with $keywords -}}
+<meta name="keywords" content="{{ delimit . ", " }}">
+{{- end -}}
+<meta name="author" content="{{ .Site.Params.author }}">
+
+{{- /* Canonical URL */ -}}
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{- /* Open Graph / Facebook */ -}}
+<meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+{{- with $image -}}
+<meta property="og:image" content="{{ . }}">
+{{- end -}}
+<meta property="og:locale" content="nl_BE">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+
+{{- /* Twitter Card */ -}}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ .Permalink }}">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+{{- with $image -}}
+<meta name="twitter:image" content="{{ . }}">
+{{- end -}}
+
+{{- /* Robots Meta */ -}}
+{{- if .Params.noindex -}}
+<meta name="robots" content="noindex, nofollow">
+{{- else -}}
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+{{- end -}}
+
+{{- /* Language and Regional */ -}}
+<meta http-equiv="content-language" content="nl-BE">
+<meta name="language" content="Dutch">
+<meta name="geo.region" content="BE-VLG">
+<meta name="geo.placename" content="Opwijk">
+<meta name="geo.position" content="{{ .Site.Params.location.latitude }};{{ .Site.Params.location.longitude }}">
+<meta name="ICBM" content="{{ .Site.Params.location.latitude }}, {{ .Site.Params.location.longitude }}">
+
+{{- /* Additional SEO Meta */ -}}
+<meta name="revisit-after" content="7 days">
+<meta name="rating" content="general">
+<meta name="distribution" content="global">

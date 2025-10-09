@@ -1,5 +1,8 @@
 ---
 title: "Over ons"
+description: "Mathias en Jolien, twee boeren met passie voor dieren en natuur. Ontdek hoe wij onze akkervarkens houden met respect voor dier, mens en natuur."
+keywords: ["Mathias en Jolien", "boerderij Opwijk", "akkervarkens", "Mergellandschapen", "duurzaam boeren", "lokaal voeder"]
+image: "/img/me.jpg"
 ---
 ## Over ons
 
