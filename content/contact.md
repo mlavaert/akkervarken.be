@@ -11,17 +11,16 @@ Heb je vragen over ons vlees, de varkens, of hoe het er allemaal aan toe gaat op
 
 ## Hoe je ons bereikt
 
-**E-mail ons**
+**E-mail ons:**
 [info@akkervarken.be](mailto:info@akkervarken.be) \
 _Perfect voor bestellingen, vragen of gewoon een praatje_
 
-**Bel of stuur een berichtje**
+**Bel of stuur een berichtje:**
 [+32 494 18 50 76](tel:+32494185076) \
 _Ook beschikbaar via WhatsApp!_
 
 **Kom langs**
-Wolfstede 7
-1745 Opwijk \
+Wolfstede 7, 1745 Opwijk \
 _Let op: alleen op afspraak, zodat we er zeker voor je zijn_
 
 ## Wanneer horen we van je?
