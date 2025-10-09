@@ -1,0 +1,36 @@
+{{/*
+Image shortcode with styling support
+
+Usage:
+  {{< img src="/img/photo.jpg" alt="Description" style="polaroid" >}}
+
+Parameters:
+  - src: Image path (required)
+  - alt: Alt text (required)
+  - style: Style variant (optional, default: "center")
+    - "polaroid": White-bordered polaroid style
+    - "center": Standard centered image with shadow
+    - "tilt-left": Centered image tilted 2° left
+    - "tilt-right": Centered image tilted 2° right
+*/}}
+{{- $src := .Get "src" -}}
+{{- $alt := .Get "alt" -}}
+{{- $style := .Get "style" | default "center" -}}
+
+{{- if eq $style "polaroid" -}}
+<div class="polaroid">
+  <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+</div>
+{{- else if eq $style "tilt-left" -}}
+<div class="center-image tilt-left">
+  <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+</div>
+{{- else if eq $style "tilt-right" -}}
+<div class="center-image tilt-right">
+  <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+</div>
+{{- else if eq $style "center" -}}
+<img class="center-image" src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+{{- else -}}
+<img class="center-image" src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+{{- end -}}

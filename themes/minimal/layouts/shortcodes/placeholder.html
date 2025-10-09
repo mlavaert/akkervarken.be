@@ -1,0 +1,24 @@
+{{/*
+Image placeholder shortcode for temporary content boxes
+
+Usage:
+  {{< placeholder tilt="left" >}}
+  📷 Description of future image
+  {{< /placeholder >}}
+
+Parameters:
+  - tilt: Optional tilt direction
+    - "left": Tilted 2° left
+    - "right": Tilted 2° right
+    - (omit for no tilt)
+*/}}
+{{- $tilt := .Get "tilt" | default "" -}}
+{{- $class := "image-placeholder" -}}
+{{- if eq $tilt "left" -}}
+  {{- $class = "image-placeholder tilt-left" -}}
+{{- else if eq $tilt "right" -}}
+  {{- $class = "image-placeholder tilt-right" -}}
+{{- end -}}
+<div class="{{ $class }}">
+  {{ .Inner | markdownify }}
+</div>

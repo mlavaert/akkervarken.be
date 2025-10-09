@@ -32,7 +32,7 @@ _Let op: alleen op afspraak, zodat we er zeker voor je zijn_
 
 ## Zakelijke info
 
+**Bedrijfsnaam:** Pilcrow BV
 **BTW:** BE0661841094
-**Bedrijfsnaam:** Akkervarken.be
 
 _Mathias en Jolien kijken uit naar je bericht!_

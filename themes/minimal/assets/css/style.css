@@ -108,6 +108,70 @@ img {
      width: 70%;
 }
 
+/* Centered and playful images for content pages */
+.center-image {
+    display: block;
+    margin: 30px auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(106, 142, 106, 0.15);
+    transition: all 0.3s ease;
+    max-width: 85%;
+}
+
+.center-image:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(106, 142, 106, 0.25);
+}
+
+/* Polaroid style for hero images */
+.polaroid {
+    display: block;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(106, 142, 106, 0.2);
+    transition: all 0.3s ease;
+    max-width: 80%;
+}
+
+.polaroid:hover {
+    transform: rotate(0deg) translateY(-6px);
+    box-shadow: 0 15px 40px rgba(106, 142, 106, 0.3);
+}
+
+.polaroid img {
+    width: 100%;
+    border-radius: 4px;
+}
+
+/* Tilted playful image style */
+.tilt-left {
+    transform: rotate(-2deg);
+}
+
+.tilt-right {
+    transform: rotate(2deg);
+}
+
+.tilt-left:hover, .tilt-right:hover {
+    transform: rotate(0deg) translateY(-6px) scale(1.03);
+}
+
+/* Image placeholder styling */
+.image-placeholder {
+    display: block;
+    margin: 30px auto;
+    padding: 40px 30px;
+    background: linear-gradient(135deg, rgba(106, 142, 106, 0.08) 0%, rgba(106, 142, 106, 0.03) 100%);
+    border: 2px dashed rgba(106, 142, 106, 0.3);
+    border-radius: 16px;
+    text-align: center;
+    color: #6a8e6a;
+    font-style: italic;
+    max-width: 85%;
+}
+
 /* Slideshow Banner - Full Width */
 .slideshow-banner {
     position: relative;
@@ -1050,6 +1114,20 @@ footer {
 
     img {
         width: 100%;
+    }
+
+    .center-image, .polaroid, .image-placeholder {
+        max-width: 95%;
+        margin: 20px auto;
+    }
+
+    .polaroid {
+        padding: 15px;
+    }
+
+    .image-placeholder {
+        padding: 30px 20px;
+        font-size: 0.9em;
     }
 }
 
