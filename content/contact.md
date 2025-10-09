@@ -21,7 +21,7 @@ _Ook beschikbaar via WhatsApp!_
 
 **Kom langs**
 Wolfstede 7
-1745 Opwijk
+1745 Opwijk \
 _Let op: alleen op afspraak, zodat we er zeker voor je zijn_
 
 ## Wanneer horen we van je?
