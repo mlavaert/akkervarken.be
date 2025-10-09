@@ -1,12 +1,12 @@
 baseURL = 'https://akkervarken.be'
 languageCode = 'nl-be'
-title = 'Akkervarken.be - Vers varkensvlees van eigen boerderij'
+title = 'Akkervarken.be - Vers varkensvlees van de akker'
 theme = 'minimal'
-copyright = '© 2025 Akkervarken.be - Mathias en Jolien'
+copyright = '© 2025 Akkervarken.be - Pilcrow BV'
 enableRobotsTXT = true
 
 [params]
-  description = 'Vers varkensvlees rechtstreeks van onze boerderij in Opwijk. Varkens die buiten leven met veel ruimte en lokaal, duurzaam voeder. Bestel online uw vleespakketten.'
+  description = 'Vers varkensvlees rechtstreeks van buiten op de akker. Varkens die buiten leven met veel ruimte en lokaal, duurzaam voeder. Bestel online uw vleespakketten.'
   author = 'Mathias en Jolien'
   keywords = ['varkensvlees', 'boerderij', 'lokaal vlees', 'duurzaam vlees', 'Opwijk', 'akkervarkens', 'biologisch vlees', 'scharrelvlees', 'Vlaanderen']
   images = ['/img/slide1.jpg']
