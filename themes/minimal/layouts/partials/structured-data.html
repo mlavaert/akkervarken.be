@@ -44,7 +44,6 @@
       },
       "inLanguage": "nl-BE"
     }
-    {{- if .IsHome -}}
     ,{
       "@type": "LocalBusiness",
       "@id": "{{ .Site.BaseURL }}#localbusiness",
@@ -59,7 +58,8 @@
         "streetAddress": "{{ .Site.Params.location.address }}",
         "addressLocality": "{{ .Site.Params.location.city }}",
         "postalCode": "{{ .Site.Params.location.postalCode }}",
-        "addressCountry": "BE"
+        "addressCountry": "BE",
+        "addressRegion": "Vlaams-Brabant"
       },
       "geo": {
         "@type": "GeoCoordinates",
@@ -75,10 +75,18 @@
       },
       "priceRange": "€€",
       "servesCuisine": "Belgian",
-      "paymentAccepted": "Cash",
-      "currenciesAccepted": "EUR"
+      "paymentAccepted": "Cash, Payconiq",
+      "currenciesAccepted": "EUR",
+      "areaServed": {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": "{{ .Site.Params.location.latitude }}",
+          "longitude": "{{ .Site.Params.location.longitude }}"
+        },
+        "geoRadius": "50000"
+      }
     }
-    {{- end -}}
     {{- if eq .Section "webshop" -}}
     ,{
       "@type": "Store",

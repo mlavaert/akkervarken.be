@@ -2,11 +2,13 @@
 Image shortcode with styling support
 
 Usage:
-  {{< img src="/img/photo.jpg" alt="Description" style="polaroid" >}}
+  {{< img src="/img/photo.jpg" alt="Description" width="800" height="600" style="polaroid" >}}
 
 Parameters:
   - src: Image path (required)
   - alt: Alt text (required)
+  - width: Image width in pixels (optional, recommended for performance)
+  - height: Image height in pixels (optional, recommended for performance)
   - style: Style variant (optional, default: "center")
     - "polaroid": White-bordered polaroid style
     - "center": Standard centered image with shadow
@@ -15,22 +17,24 @@ Parameters:
 */}}
 {{- $src := .Get "src" -}}
 {{- $alt := .Get "alt" -}}
+{{- $width := .Get "width" -}}
+{{- $height := .Get "height" -}}
 {{- $style := .Get "style" | default "center" -}}
 
 {{- if eq $style "polaroid" -}}
 <div class="polaroid">
-  <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+  <img src="{{ $src | relURL }}" alt="{{ $alt }}" {{- with $width }} width="{{ . }}"{{ end }}{{- with $height }} height="{{ . }}"{{ end }} loading="lazy">
 </div>
 {{- else if eq $style "tilt-left" -}}
 <div class="center-image tilt-left">
-  <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+  <img src="{{ $src | relURL }}" alt="{{ $alt }}" {{- with $width }} width="{{ . }}"{{ end }}{{- with $height }} height="{{ . }}"{{ end }} loading="lazy">
 </div>
 {{- else if eq $style "tilt-right" -}}
 <div class="center-image tilt-right">
-  <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+  <img src="{{ $src | relURL }}" alt="{{ $alt }}" {{- with $width }} width="{{ . }}"{{ end }}{{- with $height }} height="{{ . }}"{{ end }} loading="lazy">
 </div>
 {{- else if eq $style "center" -}}
-<img class="center-image" src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+<img class="center-image" src="{{ $src | relURL }}" alt="{{ $alt }}" {{- with $width }} width="{{ . }}"{{ end }}{{- with $height }} height="{{ . }}"{{ end }} loading="lazy">
 {{- else -}}
-<img class="center-image" src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy">
+<img class="center-image" src="{{ $src | relURL }}" alt="{{ $alt }}" {{- with $width }} width="{{ . }}"{{ end }}{{- with $height }} height="{{ . }}"{{ end }} loading="lazy">
 {{- end -}}

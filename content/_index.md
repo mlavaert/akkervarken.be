@@ -37,7 +37,7 @@ Bestellen bij Akkervarken is eenvoudig:
 1. **Kies je pakket** in onze [webshop](/webshop/) uit de beschikbare batches
 2. **Plaats je bestelling** via e-mail — we bevestigen binnen één werkdag
 3. **Haal af op de boerderij** op één van de aangegeven ophaaldagen
-4. **Betaal bij afhaling** — contant of via Payqonic
+4. **Betaal bij afhaling** — contant of via Payconiq
 
 **Let op:** Elk pakket is uniek! We slachten niet op vaste gewichten zoals in de industrie, maar wanneer het dier er klaar voor is. Daardoor kan de samenstelling en het gewicht wat variëren. Geen eenheidsworst, maar wel (h)eerlijk vlees.
 
