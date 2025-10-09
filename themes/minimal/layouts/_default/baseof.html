@@ -2,8 +2,22 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ .Title }}</title>
-    <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+
+    {{- /* Resource hints for external resources */ -}}
+    <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com">
+    <link rel="dns-prefetch" href="https://scripts.simpleanalyticscdn.com">
+
+    {{- /* Use Hugo Pipes for CSS with minification and fingerprinting */ -}}
+    {{- $css := resources.Get "css/style.css" -}}
+    {{- if $css -}}
+        {{- $css = $css | minify | fingerprint -}}
+        <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+    {{- else -}}
+        <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+    {{- end -}}
+
     <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
 </head>
 <body>

@@ -2,3 +2,24 @@ baseURL = ''
 languageCode = 'nl-be'
 title = 'Akkervarken.be'
 theme = 'minimal'
+
+[imaging]
+  quality = 75
+  resampleFilter = "Lanczos"
+
+[minify]
+  disableCSS = false
+  disableHTML = false
+  disableJS = false
+  disableJSON = false
+  disableSVG = false
+  disableXML = false
+
+[minify.tdewolff.html]
+  keepWhitespace = false
+
+[minify.tdewolff.css]
+  keepCSS2 = false
+
+[minify.tdewolff.js]
+  keepVarNames = false
