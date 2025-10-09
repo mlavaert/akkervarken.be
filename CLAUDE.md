@@ -118,25 +118,23 @@ Key settings:
 
 ## Hugo Shortcodes
 
-The site includes custom shortcodes for images that replace raw HTML (which Hugo's default Goldmark renderer blocks):
+The site includes a custom `img` shortcode for images that replaces raw HTML (which Hugo's default Goldmark renderer blocks):
 
 ### img shortcode
 Displays images with various styling options:
 ```
 {{< img src="/img/photo.jpg" alt="Description" style="polaroid" >}}
 ```
-Style options: `polaroid`, `center`, `tilt-left`, `tilt-right`
 
-### placeholder shortcode
-Creates styled placeholder boxes for future images:
-```
-{{< placeholder tilt="left" >}}
-📷 Description of future image
-{{< /placeholder >}}
-```
-Tilt options: `left`, `right`, or omit for no tilt
+**Style options:**
+- `polaroid` - White-bordered polaroid style with shadow (best for content images)
+- `center` - Standard centered image with rounded corners (default)
+- `tilt-left` - Centered image tilted 2° left for visual interest
+- `tilt-right` - Centered image tilted 2° right for visual interest
 
-These shortcodes are defined in `themes/minimal/layouts/shortcodes/` and map to CSS classes in `style.css` (lines 112-173).
+The shortcode is defined in `themes/minimal/layouts/shortcodes/img.html` and maps to CSS classes in `style.css` (lines 112-173).
+
+**Image optimization:** All images should be resized to max 1200px (longest edge) and optimized to ~85% quality before adding to `/static/img/` to ensure fast page loads.
 
 ## Development Notes
 
