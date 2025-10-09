@@ -5,15 +5,34 @@ keywords: ["contact Akkervarken", "boerderij Opwijk contact", "vlees bestellen c
 image: "/img/slide3.jpg"
 ---
 
-# Contact
+# Laten we in contact komen!
 
-## Bereikbaarheid
+Heb je vragen over ons vlees, de varkens, of hoe het er allemaal aan toe gaat op de boerderij? Of wil je gewoon eens langskomen voor een babbel? We horen graag van je!
 
-- **E-mail:** [info@akkervarken.be](mailto:info@akkervarken.be)
-- **Telefoon:** +32494185076
-- **Adres:** Wolfstede 7, 1745 Opwijk
+## Hoe je ons bereikt
 
-## Openingstijden
+**E-mail ons**
+[info@akkervarken.be](mailto:info@akkervarken.be)
+_Perfect voor bestellingen, vragen of gewoon een praatje_
 
-- **Ophalen vlees:** Alleen op afspraak
-- **Vragen:** Dagelijks per e-mail
+**Bel of stuur een berichtje**
+[+32 494 18 50 76](tel:+32494185076)
+_Ook beschikbaar via WhatsApp!_
+
+**Kom langs**
+Wolfstede 7
+1745 Opwijk
+_Let op: alleen op afspraak, zodat we er zeker voor je zijn_
+
+## Wanneer horen we van je?
+
+- **Vragen over vlees of bestellingen?** Stuur gerust een mailtje of bel ons, we antwoorden meestal binnen een dag
+- **Interesse in hoe we werken?** We vertellen er graag over, misschien kunnen we zelfs een rondleiding regelen
+- **Ophalen van je bestelling?** We spreken samen een geschikt moment af
+
+## Zakelijke info
+
+**BTW:** BE0661841094
+**Bedrijfsnaam:** Akkervarken.be
+
+_Mathias en Jolien kijken uit naar je bericht!_

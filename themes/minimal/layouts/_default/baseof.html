@@ -51,7 +51,36 @@
     <main>
         {{ block "main" . }}{{ end }}
     </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Akkervarken.be</h3>
+                <p>Vers varkensvlees van eigen boerderij. Met respect voor dier, mens en natuur.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>
+                    <strong>{{ .Site.Params.location.name }}</strong><br>
+                    {{ .Site.Params.location.address }}<br>
+                    {{ .Site.Params.location.postalCode }} {{ .Site.Params.location.city }}<br>
+                    BTW: BE0661841094
+                </p>
+                <p>
+                    <a href="mailto:{{ .Site.Params.social.email }}">{{ .Site.Params.social.email }}</a><br>
+                    <a href="tel:{{ .Site.Params.social.phone }}">{{ .Site.Params.social.phone }}</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>{{ .Site.Copyright }}</p>
+        </div>
+    </footer>
+
     <!-- 100% privacy-first analytics -->
     <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
 </body>
 </html>

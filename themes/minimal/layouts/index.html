@@ -24,13 +24,17 @@
             <span class="dot active" onclick="currentSlide(1)"></span>
             <span class="dot" onclick="currentSlide(2)"></span>
             <span class="dot" onclick="currentSlide(3)"></span>
-            <span class="dot" onclick="currentSlide(4)"></span>
         </div>
     </div>
 </div>
 
-{{- $js := resources.Get "js/slideshow.js" | minify | fingerprint -}}
-<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{- $js := resources.Get "js/slideshow.js" -}}
+{{- if $js -}}
+    {{- $js = $js | minify | fingerprint -}}
+    <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{- else -}}
+    <script src="{{ "js/slideshow.js" | relURL }}" defer></script>
+{{- end -}}
 
 {{ .Content }}
 {{ end }}

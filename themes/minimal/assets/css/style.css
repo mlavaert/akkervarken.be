@@ -72,11 +72,27 @@ nav ul a {
     display: block;
     border-radius: 12px;
     font-weight: 500;
+    position: relative;
+}
+
+nav ul a::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #6a8e6a, transparent);
+    transition: transform 0.3s ease;
+}
+
+nav ul a:hover::after {
+    transform: translateX(-50%) scaleX(1);
 }
 
 nav ul a:hover {
-    background: rgba(106, 142, 106, 0.08);
-    box-shadow: 0 4px 16px rgba(106, 142, 106, 0.15);
+    color: #6a8e6a;
 }
 
 /* Main content */
@@ -84,7 +100,7 @@ main {
     min-height: calc(100vh - 60px);
     max-width: 800px;
     margin: 0 auto;
-    padding: 60px 20px;
+    padding: 60px 20px 40px;
     line-height: 1.7;
 }
 
@@ -489,7 +505,6 @@ main > a:hover, #send-order:hover {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
-    margin-bottom: 12px;
 }
 
 .info-item {
@@ -511,18 +526,6 @@ main > a:hover, #send-order:hover {
     font-size: 1.05em;
     color: #4a5c4a;
     font-weight: 600;
-}
-
-.batch-info-secondary {
-    padding-top: 12px;
-    border-top: 1px solid rgba(106, 142, 106, 0.1);
-    text-align: center;
-}
-
-.batch-info-secondary small {
-    color: #6b7c6b;
-    font-size: 0.9em;
-    font-style: italic;
 }
 
 .products {
@@ -728,6 +731,70 @@ main > a:hover, #send-order:hover {
     color: #6b7c6b;
 }
 
+/* Footer */
+footer {
+    background: linear-gradient(135deg, rgba(106, 142, 106, 0.08) 0%, rgba(106, 142, 106, 0.05) 100%);
+    border-top: 2px solid rgba(106, 142, 106, 0.15);
+    margin-top: 60px;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 50px 30px 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+.footer-section h3 {
+    color: #6a8e6a;
+    font-size: 1.2em;
+    margin: 0 0 16px 0;
+    font-weight: 600;
+}
+
+.footer-section p {
+    margin: 8px 0;
+    color: #4a5c4a;
+    font-size: 0.95em;
+    line-height: 1.7;
+}
+
+.footer-section ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin: 8px 0;
+}
+
+.footer-section a {
+    color: #4a5c4a;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: #6a8e6a;
+}
+
+.footer-bottom {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    border-top: 1px solid rgba(106, 142, 106, 0.15);
+    text-align: center;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: #6b7c6b;
+    font-size: 0.9em;
+}
+
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
     /* Navigation */
@@ -890,10 +957,6 @@ main > a:hover, #send-order:hover {
         font-size: 1em;
     }
 
-    .batch-info-secondary small {
-        font-size: 0.85em;
-    }
-
     /* Products */
     .product {
         padding: 16px;
@@ -960,6 +1023,29 @@ main > a:hover, #send-order:hover {
 
     .batches.has-order {
         padding-bottom: 350px;
+    }
+
+    /* Footer */
+    .footer-content {
+        padding: 40px 20px 20px;
+        gap: 30px;
+        grid-template-columns: 1fr;
+    }
+
+    .footer-section h3 {
+        font-size: 1.1em;
+    }
+
+    .footer-section p {
+        font-size: 0.9em;
+    }
+
+    .footer-bottom {
+        padding: 16px 20px;
+    }
+
+    .footer-bottom p {
+        font-size: 0.85em;
     }
 
     img {

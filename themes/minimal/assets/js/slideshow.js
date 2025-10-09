@@ -1,12 +1,15 @@
 let slideIndex = 1;
+let slides, dots;
 
 function currentSlide(n) {
     showSlide(slideIndex = n);
 }
 
 function showSlide(n) {
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.dot');
+    if (!slides) {
+        slides = document.querySelectorAll('.slide');
+        dots = document.querySelectorAll('.dot');
+    }
 
     if (n > slides.length) { slideIndex = 1; }
     if (n < 1) { slideIndex = slides.length; }
@@ -18,9 +21,15 @@ function showSlide(n) {
     dots[slideIndex - 1].classList.add('active');
 }
 
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    showSlide(slideIndex);
+});
+
 // Auto-advance slides every 6 seconds
 setInterval(() => {
+    if (!slides) return; // Don't run if not initialized
     slideIndex++;
-    if (slideIndex > 4) slideIndex = 1;
+    if (slideIndex > slides.length) slideIndex = 1;
     showSlide(slideIndex);
 }, 6000);
