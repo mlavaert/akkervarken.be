@@ -308,6 +308,92 @@ main > a:hover, #send-order:hover {
 }
 
 /* Webshop Styles */
+.order-instructions {
+    margin: 20px 0 30px;
+    border: 2px solid rgba(106, 142, 106, 0.2);
+    border-radius: 12px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.order-instructions:hover {
+    border-color: rgba(106, 142, 106, 0.3);
+    box-shadow: 0 2px 12px rgba(106, 142, 106, 0.1);
+}
+
+.order-instructions summary {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+    font-weight: 600;
+    color: #6a8e6a;
+    list-style: none;
+}
+
+.order-instructions summary::-webkit-details-marker {
+    display: none;
+}
+
+.summary-icon {
+    font-size: 1.2em;
+}
+
+.summary-text {
+    flex: 1;
+    font-size: 1.05em;
+}
+
+.summary-arrow {
+    transition: transform 0.3s ease;
+    font-size: 0.8em;
+}
+
+.order-instructions[open] .summary-arrow {
+    transform: rotate(180deg);
+}
+
+.instructions-content {
+    padding: 0 20px 20px;
+    border-top: 1px solid rgba(106, 142, 106, 0.1);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.instructions-content h3 {
+    color: #6a8e6a;
+    font-size: 1.1em;
+    margin: 20px 0 12px;
+}
+
+.instructions-content h3:first-child {
+    margin-top: 16px;
+}
+
+.instructions-content ol,
+.instructions-content ul {
+    margin: 8px 0;
+    padding-left: 28px;
+}
+
+.instructions-content li {
+    margin: 8px 0;
+    color: #4a5c4a;
+    line-height: 1.6;
+}
+
 .batches {
     margin: 30px 0;
     padding-bottom: 0;
@@ -738,6 +824,39 @@ main > a:hover, #send-order:hover {
         padding: 14px 28px;
         font-size: 1em;
         margin: 20px auto;
+    }
+
+    /* Webshop - Instructions */
+    .order-instructions summary {
+        padding: 14px 16px;
+        font-size: 1em;
+    }
+
+    .summary-icon {
+        font-size: 1.1em;
+    }
+
+    .summary-text {
+        font-size: 1em;
+    }
+
+    .instructions-content {
+        padding: 0 16px 16px;
+    }
+
+    .instructions-content h3 {
+        font-size: 1em;
+        margin: 16px 0 10px;
+    }
+
+    .instructions-content ol,
+    .instructions-content ul {
+        padding-left: 24px;
+    }
+
+    .instructions-content li {
+        font-size: 0.95em;
+        margin: 6px 0;
     }
 
     /* Webshop - Batch styles */

@@ -188,8 +188,9 @@ function sendOrder() {
         return;
     }
 
-    let emailBody = 'Beste Akkervarken.be,%0D%0A%0D%0A';
-    emailBody += 'Hierbij mijn bestelling:%0D%0A%0D%0A';
+    // Build email body with regular newlines first
+    let emailBody = 'Beste Akkervarken.be,\n\n';
+    emailBody += 'Hierbij mijn bestelling:\n\n';
 
     let totalItems = 0;
     let totalPrice = 0;
@@ -200,25 +201,26 @@ function sendOrder() {
     const pickupStart = firstItem.pickupStart;
     const pickupEnd = firstItem.pickupEnd;
 
-    emailBody += `Batch: ${batchName}%0D%0A`;
-    emailBody += `Ophalen tussen: ${pickupStart} en ${pickupEnd}%0D%0A%0D%0A`;
-    emailBody += 'Producten:%0D%0A';
+    emailBody += `Batch: ${batchName}\n`;
+    emailBody += `Ophalen tussen: ${pickupStart} en ${pickupEnd}\n\n`;
+    emailBody += 'Producten:\n';
 
     for (const [productId, item] of Object.entries(cart)) {
         const itemTotal = item.price * item.quantity;
         totalPrice += itemTotal;
         totalItems += item.quantity;
-        emailBody += `- ${item.quantity}x ${item.name} (${item.weight}) - ${formatPrice(itemTotal)}%0D%0A`;
+        emailBody += `- ${item.quantity}x ${item.name} (${item.weight}) - ${formatPrice(itemTotal)}\n`;
     }
 
-    emailBody += `%0D%0ATotaal: ${formatPrice(totalPrice)} (${totalItems} pakket(ten))%0D%0A%0D%0A`;
-    emailBody += 'Betaling bij afhaling.%0D%0A%0D%0A';
-    emailBody += 'Graag bevestiging van deze bestelling.%0D%0A%0D%0A';
-    emailBody += 'Met vriendelijke groeten,%0D%0A';
+    emailBody += `\nTotaal: ${formatPrice(totalPrice)} (${totalItems} pakket(ten))\n\n`;
+    emailBody += 'Betaling bij afhaling.\n\n';
+    emailBody += 'Graag bevestiging van deze bestelling.\n\n';
+    emailBody += 'Met vriendelijke groeten,\n';
     emailBody += '[Vul hier je naam in]';
 
     const subject = `Bestelling Akkervarken.be - ${batchName}`;
-    const mailtoLink = `mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}&body=${emailBody}`;
+    // Properly encode both subject and body
+    const mailtoLink = `mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
     window.location.href = mailtoLink;
 }

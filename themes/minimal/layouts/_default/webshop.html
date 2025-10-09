@@ -1,6 +1,30 @@
 {{ define "main" }}
 {{ .Content }}
 
+<details class="order-instructions">
+    <summary>
+        <span class="summary-icon">ℹ️</span>
+        <span class="summary-text">Hoe werkt bestellen?</span>
+        <span class="summary-arrow">▼</span>
+    </summary>
+    <div class="instructions-content">
+        <h3>Stap voor stap:</h3>
+        <ol>
+            <li>Selecteer de gewenste producten hieronder</li>
+            <li>Klik op "Bestelling versturen via e-mail"</li>
+            <li>We bevestigen je bestelling per e-mail</li>
+            <li>Betaling bij afhaling</li>
+        </ol>
+
+        <h3>Belangrijk:</h3>
+        <ul>
+            <li>Alle vlees moet afgehaald worden op de aangegeven ophaaldata</li>
+            <li><strong>Je kunt alleen producten uit één batch per bestelling selecteren</strong></li>
+            <li>Wil je vlees uit meerdere batches? Plaats dan afzonderlijke bestellingen</li>
+        </ul>
+    </div>
+</details>
+
 <div class="batches">
         {{ range $index, $batch := .Site.Data.batches.batches }}
         <div class="batch {{ if eq $index 0 }}open{{ else }}closed{{ end }}">
