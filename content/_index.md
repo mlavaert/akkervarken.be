@@ -16,7 +16,7 @@ besloten: dit moeten meer mensen proeven.
 
 Onze varkens leven **100% buiten**. Met veel ruimte, frisse lucht en de
 vrijheid om te doen wat varkens graag doen: wroeten, spelen en slapen in de
-modder. Geen krappe hokken, geen stress, gewoon varkens zijn.
+modder. Geen krappe hokken, geen stress, gewoon varken zijn.
 
 Door regelmatig te roteren tussen percelen blijven zowel de dieren als de bodem gezond. Het resultaat proef je: vlees met smaak en karakter.
 
