@@ -1,4 +1,4 @@
-look---
+---
 title: "Home"
 description: "Vers varkensvlees rechtstreeks van onze boerderij in Opwijk. Varkens die buiten leven met veel ruimte en lokaal, duurzaam voeder. Bestel online uw vleespakketten."
 keywords: ["varkensvlees", "boerderij Opwijk", "lokaal vlees", "duurzaam vlees", "akkervarkens", "scharrelvarken", "biologisch vlees Vlaanderen"]
