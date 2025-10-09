@@ -92,7 +92,13 @@
         <h3>Bestelling</h3>
         <div id="order-items"></div>
         <div id="order-total"></div>
-        <button id="send-order" onclick="sendOrder()" style="display: none;">Bestelling versturen via e-mail</button>
+        <div class="terms-agreement" id="terms-agreement-container" style="display: none;">
+            <label class="terms-checkbox">
+                <input type="checkbox" id="terms-checkbox" onchange="toggleSendButton()">
+                <span>Ik ga akkoord met de <a href="{{ "/algemene-voorwaarden/" | relURL }}" target="_blank">algemene voorwaarden</a></span>
+            </label>
+        </div>
+        <button id="send-order" onclick="sendOrder()" style="display: none;" disabled>Bestelling versturen via e-mail</button>
     </section>
 
 {{- $js := resources.Get "js/webshop.js" -}}

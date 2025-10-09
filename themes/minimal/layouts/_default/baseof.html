@@ -58,11 +58,9 @@
                 <h3>Akkervarken.be</h3>
                 <p>Vers varkensvlees van op de akker. Met respect voor dier, mens en natuur.</p>
             </div>
-
             <div class="footer-section">
                 <h3>Contact</h3>
                 <p>
-                    <strong>{{ .Site.Params.location.name }}</strong><br>
                     {{ .Site.Params.location.address }}<br>
                     {{ .Site.Params.location.postalCode }} {{ .Site.Params.location.city }}<br>
                     BTW: BE0661841094
@@ -71,6 +69,14 @@
                     <a href="mailto:{{ .Site.Params.social.email }}">{{ .Site.Params.social.email }}</a><br>
                     <a href="tel:{{ .Site.Params.social.phone }}">{{ .Site.Params.social.phone }}</a>
                 </p>
+            </div>
+            <div class="footer-section">
+                <h3>Nuttige links</h3>
+                <ul>
+                    <li><a href="{{ "/algemene-voorwaarden/" | relURL }}">Algemene voorwaarden</a></li>
+                    <li><a href="{{ "/privacyverklaring/" | relURL }}">Privacyverklaring</a></li>
+                    <li><a href="{{ "/retourbeleid/" | relURL }}">Retourbeleid</a></li>
+                </ul>
             </div>
         </div>
 

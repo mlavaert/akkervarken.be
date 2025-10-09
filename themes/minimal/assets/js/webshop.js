@@ -140,17 +140,39 @@ function decreaseQuantity(productId) {
     }
 }
 
+// Functions for modifying from order summary
+function increaseQuantityFromSummary(productId) {
+    increaseQuantity(productId);
+}
+
+function decreaseQuantityFromSummary(productId) {
+    decreaseQuantity(productId);
+}
+
+function removeFromCart(productId) {
+    // Set quantity to 0 which will remove it from cart
+    updateQuantity(productId, 0);
+}
+
 function updateOrderSummary() {
     const orderItems = document.getElementById('order-items');
     const orderTotal = document.getElementById('order-total');
     const sendButton = document.getElementById('send-order');
     const orderSummary = document.querySelector('.order-summary');
     const batches = document.querySelector('.batches');
+    const termsContainer = document.getElementById('terms-agreement-container');
+    const termsCheckbox = document.getElementById('terms-checkbox');
 
     if (Object.keys(cart).length === 0) {
         orderItems.innerHTML = '<p>Geen items geselecteerd</p>';
         orderTotal.innerHTML = '';
         sendButton.style.display = 'none';
+        if (termsContainer) {
+            termsContainer.style.display = 'none';
+            if (termsCheckbox) {
+                termsCheckbox.checked = false;
+            }
+        }
         orderSummary.classList.remove('has-items');
         if (batches) {
             batches.classList.remove('has-order');
@@ -165,7 +187,7 @@ function updateOrderSummary() {
     }
 
     // Since we only allow one batch, this is simplified
-    let html = `<div class="order-batch"><strong>${currentBatch}</strong><ul>`;
+    let html = `<div class="order-batch"><strong>${currentBatch}</strong><div class="order-items-list">`;
     let totalItems = 0;
     let totalPrice = 0;
 
@@ -173,18 +195,68 @@ function updateOrderSummary() {
         const itemTotal = item.price * item.quantity;
         totalPrice += itemTotal;
         totalItems += item.quantity;
-        html += `<li>${item.quantity}x ${item.name} (${item.weight}) - ${formatPrice(itemTotal)}<br><small>Ophalen: ${item.pickupStart} tot ${item.pickupEnd}</small></li>`;
+        // Get max quantity from the original product element
+        const productElement = document.querySelector(`[data-id="${productId}"]`);
+        const maxQty = productElement ? parseInt(document.getElementById(`qty-${productId}`).max) : 99;
+
+        html += `
+            <div class="order-item">
+                <div class="order-item-info">
+                    <div class="order-item-name">${item.name}</div>
+                    <div class="order-item-details">
+                        <span class="order-item-weight">${item.weight}</span>
+                        <span class="order-item-price">${formatPrice(itemTotal)}</span>
+                    </div>
+                    <small class="order-item-pickup">Ophalen: ${item.pickupStart} tot ${item.pickupEnd}</small>
+                </div>
+                <div class="order-item-controls">
+                    <button type="button" class="order-qty-btn" onclick="decreaseQuantityFromSummary('${productId}')" ${item.quantity <= 1 ? '' : ''}>−</button>
+                    <span class="order-qty-display">${item.quantity}</span>
+                    <button type="button" class="order-qty-btn" onclick="increaseQuantityFromSummary('${productId}')" ${item.quantity >= maxQty ? 'disabled' : ''}>+</button>
+                    <button type="button" class="order-remove-btn" onclick="removeFromCart('${productId}')" title="Verwijderen">×</button>
+                </div>
+            </div>
+        `;
     }
-    html += '</ul></div>';
+    html += '</div></div>';
 
     orderItems.innerHTML = html;
     orderTotal.innerHTML = `<div class="total-summary"><strong>Totaal:</strong> <span class="total-price">${formatPrice(totalPrice)}</span><br><small>${totalItems} pakket(ten)</small></div>`;
-    sendButton.style.display = 'block';
+
+    // Show terms agreement container
+    if (termsContainer) {
+        termsContainer.style.display = 'block';
+    }
+
+    // Enable/disable send button based on checkbox state
+    toggleSendButton();
+}
+
+function toggleSendButton() {
+    const sendButton = document.getElementById('send-order');
+    const termsCheckbox = document.getElementById('terms-checkbox');
+
+    if (sendButton && termsCheckbox) {
+        if (termsCheckbox.checked) {
+            sendButton.disabled = false;
+            sendButton.style.display = 'block';
+        } else {
+            sendButton.disabled = true;
+            sendButton.style.display = 'block';
+        }
+    }
 }
 
 function sendOrder() {
     if (Object.keys(cart).length === 0) {
         alert('Selecteer eerst producten om te bestellen.');
+        return;
+    }
+
+    // Check if terms are accepted
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    if (termsCheckbox && !termsCheckbox.checked) {
+        alert('Je moet akkoord gaan met de algemene voorwaarden om te bestellen.');
         return;
     }
 
