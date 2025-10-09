@@ -25,7 +25,7 @@ _Let op: alleen op afspraak, zodat we er zeker voor je zijn_
 
 ## Wanneer horen we van je?
 
-- **Vragen over vlees of bestellingen?** Stuur gerust een mailtje of bel ons, we antwoorden meestal binnen een dag
+- **Vragen over vlees of bestellingen?** Stuur gerust een mailtje of bel ons
 - **Interesse in hoe we werken?** We vertellen er graag over, misschien kunnen we zelfs een rondleiding regelen
 - **Ophalen van je bestelling?** We spreken samen een geschikt moment af
 
@@ -33,5 +33,3 @@ _Let op: alleen op afspraak, zodat we er zeker voor je zijn_
 
 **Bedrijfsnaam:** Pilcrow BV \
 **BTW:** BE0661841094
-
-_Mathias en Jolien kijken uit naar je bericht!_

@@ -6,6 +6,6 @@ keywords: ["varkensvlees bestellen", "vlees online kopen", "vleespakketten", "lo
 image: "/img/slide2.jpg"
 ---
 
-# Bestel vers varkensvlees
+# Bestel ons varkensvlees
 
 Selecteer hieronder je gewenste producten en plaats je bestelling.

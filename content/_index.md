@@ -16,7 +16,7 @@ besloten: dit moeten meer mensen proeven.
 
 Onze varkens leven **100% buiten**. Met veel ruimte, frisse lucht en de
 vrijheid om te doen wat varkens graag doen: wroeten, spelen en slapen in de
-modder. Geen hokken, geen stress, gewoon varkens zijn.
+modder. Geen krappe hokken, geen stress, gewoon varkens zijn.
 
 Door regelmatig te roteren tussen percelen blijven zowel de dieren als de bodem gezond. Het resultaat proef je: vlees met smaak en karakter.
 
@@ -40,14 +40,6 @@ Bestellen bij Akkervarken is eenvoudig:
 4. **Betaal bij afhaling** — contant of via Payqonic
 
 **Let op:** Elk pakket is uniek! We slachten niet op vaste gewichten zoals in de industrie, maar wanneer het dier er klaar voor is. Daardoor kan de samenstelling en het gewicht wat variëren. Geen eenheidsworst, maar wel (h)eerlijk vlees.
-
-## Over ons
-
-We zijn **Mathias en Jolien**, twee boeren met een hart voor dieren en natuur. Naast onze akkervarkens houden we ook Mergellandschapen — een zeldzaam, robuust ras dat perfect past bij onze filosofie: rustig boeren, kleinschalig, in harmonie met het landschap.
-
-Bij Akkervarken draait het om **respect voor dier, mens en natuur**. En dat proef je.
-
-[Lees ons volledige verhaal](/over-ons/)
 
 ## Klaar om te bestellen?
 
