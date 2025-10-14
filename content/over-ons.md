@@ -37,6 +37,10 @@ Zo sluiten we kringlopen en dragen we bij aan een eerlijker voedselsysteem. Goed
 
 {{< img src="/img/eet-varken.jpg" alt="Blij varken" style="polaroid" >}}
 
+Dit alles zou niet mogelijk zijn zonder de steun en hulp van de **familie Magnus**. Zij kweken het lokale voer voor onze varkens en stellen hun land beschikbaar zodat onze dieren er kunnen leven en wroeten.
+
+Zonder hun vertrouwen en bereidheid om samen te werken aan een regeneratief systeem, zou Akkervarken niet bestaan. Het is dankzij deze samenwerking dat we kunnen blijven doen wat we doen — kleinschalig, lokaal en met respect voor mens, dier en bodem.
+
 ## Waar het om draait
 
 Bij **Akkervarken** draait het om **respect voor dier, mens en natuur**. En dat proef je — in een (h)eerlijk stukje vlees, met smaak en verhaal.
