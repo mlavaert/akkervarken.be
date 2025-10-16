@@ -76,8 +76,7 @@ function updateQuantity(productId, quantity) {
             name: product.dataset.name,
             price: parseFloat(product.dataset.price),
             weight: product.dataset.weight,
-            pickupStart: product.dataset.pickupStart,
-            pickupEnd: product.dataset.pickupEnd,
+            pickupSlots: JSON.parse(product.dataset.pickupSlots || '[]'),
             batch: product.dataset.batch,
             quantity: quantity
         };
@@ -199,6 +198,9 @@ function updateOrderSummary() {
         const productElement = document.querySelector(`[data-id="${productId}"]`);
         const maxQty = productElement ? parseInt(document.getElementById(`qty-${productId}`).max) : 99;
 
+        // Format pickup slots for display
+        const pickupSlotsText = item.pickupSlots.map(slot => `${slot.date} om ${slot.time}`).join(', ');
+
         html += `
             <div class="order-item">
                 <div class="order-item-info">
@@ -207,7 +209,7 @@ function updateOrderSummary() {
                         <span class="order-item-weight">${item.weight}</span>
                         <span class="order-item-price">${formatPrice(itemTotal)}</span>
                     </div>
-                    <small class="order-item-pickup">Ophalen: ${item.pickupStart} tot ${item.pickupEnd}</small>
+                    <small class="order-item-pickup">Ophalen: ${pickupSlotsText}</small>
                 </div>
                 <div class="order-item-controls">
                     <button type="button" class="order-qty-btn" onclick="decreaseQuantityFromSummary('${productId}')" ${item.quantity <= 1 ? '' : ''}>−</button>
@@ -267,15 +269,17 @@ function sendOrder() {
     let totalItems = 0;
     let totalPrice = 0;
 
-    // Get batch name and pickup dates from first item
+    // Get batch name and pickup slots from first item
     const firstItem = Object.values(cart)[0];
     const batchName = firstItem.batch;
-    const pickupStart = firstItem.pickupStart;
-    const pickupEnd = firstItem.pickupEnd;
+    const pickupSlots = firstItem.pickupSlots;
 
     emailBody += `Batch: ${batchName}\n`;
-    emailBody += `Ophalen tussen: ${pickupStart} en ${pickupEnd}\n\n`;
-    emailBody += 'Producten:\n';
+    emailBody += 'Ophaalmomenten:\n';
+    pickupSlots.forEach(slot => {
+        emailBody += `  - ${slot.date} om ${slot.time}\n`;
+    });
+    emailBody += '\nProducten:\n';
 
     for (const [productId, item] of Object.entries(cart)) {
         const itemTotal = item.price * item.quantity;

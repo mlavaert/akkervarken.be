@@ -21,6 +21,7 @@
             <li>Alle vlees moet afgehaald worden op de aangegeven ophaaldata</li>
             <li><strong>Je kunt alleen producten uit één batch per bestelling selecteren</strong></li>
             <li>Wil je vlees uit meerdere batches? Plaats dan afzonderlijke bestellingen</li>
+            <li>Kun je niet op de opgegeven ophaalmomenten? <a href="/contact/">Neem contact op</a> voor een alternatief moment</li>
         </ul>
     </div>
 </details>
@@ -36,8 +37,12 @@
                 <div class="batch-info">
                     <div class="batch-info-primary">
                         <div class="info-item">
-                            <span class="info-label">📦 Ophalen</span>
-                            <span class="info-value">{{ index . "pickup-date-start" }} - {{ index . "pickup-date-end" }}</span>
+                            <span class="info-label">📦 Ophaalmomenten</span>
+                            <div class="info-value pickup-slots">
+                                {{ range index . "pickup-slots" }}
+                                <div class="pickup-slot">{{ .date }} om {{ .time }}</div>
+                                {{ end }}
+                            </div>
                         </div>
                         <div class="info-item">
                             <span class="info-label">📍 Locatie</span>
@@ -55,7 +60,8 @@
                     {{ if eq .id $productId }}
                     {{ $productName := .name }}
                     {{ $productImage := .image }}
-                    <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup-start="{{ index $batch "pickup-date-start" }}" data-pickup-end="{{ index $batch "pickup-date-end" }}" data-batch="{{ $batch.name }}">
+                    {{ $pickupSlots := index $batch "pickup-slots" | jsonify }}
+                    <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup-slots="{{ $pickupSlots }}" data-batch="{{ $batch.name }}">
                         {{ if and $productImage (ne (trim $productImage " ") "") }}
                         <div class="product-image">
                             <img src="{{ $productImage | relURL }}" alt="{{ $productName }}" loading="lazy">
