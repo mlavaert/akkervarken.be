@@ -521,6 +521,7 @@ main > a:hover, #send-order:hover {
     gap: 24px;
     margin: 16px 0;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .price {
@@ -534,11 +535,40 @@ main > a:hover, #send-order:hover {
     font-weight: 500;
 }
 
+.price-per-kg {
+    color: #6b7c6b;
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
 .stock {
     margin: 16px 0;
     color: #8a9a8a;
     font-size: 0.9em;
     font-style: italic;
+}
+
+.packaging-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin: 12px 0;
+    background: rgba(106, 142, 106, 0.08);
+    border-radius: 6px;
+    border: 1px solid rgba(106, 142, 106, 0.15);
+}
+
+.packaging-size {
+    color: #6b7c6b;
+    font-size: 0.95em;
+    font-weight: 500;
+}
+
+.expected-price {
+    color: #6a8e6a;
+    font-weight: 700;
+    font-size: 1.1em;
 }
 
 .quantity-controls {
@@ -614,6 +644,12 @@ main > a:hover, #send-order:hover {
     font-weight: 600;
 }
 
+.order-summary h3 small {
+    font-size: 0.7em;
+    color: #8a9a8a;
+    font-weight: 400;
+}
+
 .order-batch {
     margin: 12px 0;
 }
@@ -645,7 +681,6 @@ main > a:hover, #send-order:hover {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 12px;
 }
 
 .order-item {
@@ -681,6 +716,18 @@ main > a:hover, #send-order:hover {
 .order-item-weight {
     color: #6b7c6b;
     font-size: 0.9em;
+}
+
+.order-item-packaging {
+    color: #6b7c6b;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.order-item-per-kg {
+    color: #8a9a8a;
+    font-size: 0.85em;
+    font-style: italic;
 }
 
 .order-item-price {
@@ -757,11 +804,51 @@ main > a:hover, #send-order:hover {
     border-color: #dc3545;
 }
 
-.total-summary {
+.order-summary-footer {
     margin-top: 16px;
     padding-top: 16px;
     border-top: 2px solid rgba(106, 142, 106, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.pickup-info {
+    flex: 1;
+    font-size: 0.9em;
+    color: #6b7c6b;
+}
+
+.pickup-batch {
+    margin-bottom: 8px;
+}
+
+.pickup-slots-header {
+    margin-bottom: 4px;
+}
+
+.pickup-slot-item {
+    margin-left: 20px;
+    line-height: 1.6;
+}
+
+.total-summary {
     text-align: right;
+    flex-shrink: 0;
+}
+
+.total-label {
+    font-weight: 600;
+    color: #4a5c4a;
+    margin-bottom: 4px;
+}
+
+.total-amount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
 }
 
 .total-price {
@@ -772,6 +859,23 @@ main > a:hover, #send-order:hover {
 
 .total-summary small {
     color: #6b7c6b;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 600px) {
+    .order-summary-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .total-summary {
+        text-align: left;
+        width: 100%;
+    }
+
+    .total-amount {
+        align-items: flex-start;
+    }
 }
 
 .terms-agreement {

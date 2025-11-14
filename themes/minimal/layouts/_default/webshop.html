@@ -60,7 +60,18 @@
                     {{ $productName := .name }}
                     {{ $productImage := .image }}
                     {{ $pickupSlots := index $batch "pickup-slots" | jsonify }}
-                    <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup-slots="{{ $pickupSlots }}" data-batch="{{ $batch.name }}">
+                    {{ $packagingPieces := .packaging_pieces | default 0 }}
+                    {{ $packagingGrams := .packaging_grams | default 0 }}
+                    {{ $expectedPrice := 0.0 }}
+                    {{ $isPricePerKg := strings.Contains .weight "per kg" }}
+                    {{ if and (gt $packagingGrams 0) $isPricePerKg }}
+                        {{ $pricePerGram := div .price 1000.0 }}
+                        {{ $rawPrice := mul $pricePerGram (float $packagingGrams) }}
+                        {{ $centPrice := mul $rawPrice 100 }}
+                        {{ $roundedCents := math.Round $centPrice }}
+                        {{ $expectedPrice = div $roundedCents 100.0 }}
+                    {{ end }}
+                    <div class="product" data-id="{{ $batchId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup-slots="{{ $pickupSlots }}" data-batch="{{ $batch.name }}" data-packaging-pieces="{{ $packagingPieces }}" data-packaging-grams="{{ $packagingGrams }}" data-expected-price="{{ $expectedPrice }}">
                         {{ if and $productImage (ne (trim $productImage " ") "") }}
                         <div class="product-image">
                             <img src="{{ $productImage | relURL }}" alt="{{ $productName }}" loading="lazy">
@@ -68,10 +79,24 @@
                         {{ end }}
                         <h4>{{ .name }}</h4>
                         <p class="description">{{ .description | markdownify }}</p>
+                        {{ if and (gt $packagingGrams 0) (gt $expectedPrice 0) }}
+                        <div class="packaging-info">
+                            {{ if gt $packagingPieces 1 }}
+                            <span class="packaging-size">{{ $packagingPieces }} stuks × ±{{ $packagingGrams }}g</span>
+                            {{ else }}
+                            <span class="packaging-size">±{{ $packagingGrams }}g per pakket</span>
+                            {{ end }}
+                            <span class="expected-price">≈ €{{ printf "%.2f" $expectedPrice | replaceRE "\\." "," }}</span>
+                        </div>
+                        <div class="product-details">
+                            <span class="price-per-kg">€{{ printf "%.2f" .price | replaceRE "\\." "," }} {{ .weight }}</span>
+                        </div>
+                        {{ else }}
                         <div class="product-details">
                             <span class="price">€{{ printf "%.2f" .price | replaceRE "\\." "," }}</span>
                             <span class="weight">{{ .weight }}</span>
                         </div>
+                        {{ end }}
                         <div class="quantity-controls">
                             <button type="button" class="qty-btn qty-decrease" onclick="decreaseQuantity('{{ $batchId }}-{{ .id }}')">−</button>
                             <div class="qty-display">
@@ -91,7 +116,7 @@
     </div>
 
     <section class="order-summary">
-        <h3>Bestelling</h3>
+        <h3 id="order-summary-title">Bestelling</h3>
         <div id="order-items"></div>
         <div id="order-total"></div>
         <div class="terms-agreement" id="terms-agreement-container" style="display: none;">

@@ -78,7 +78,10 @@ function updateQuantity(productId, quantity) {
             weight: product.dataset.weight,
             pickupSlots: JSON.parse(product.dataset.pickupSlots || '[]'),
             batch: product.dataset.batch,
-            quantity: quantity
+            quantity: quantity,
+            packagingPieces: parseInt(product.dataset.packagingPieces) || 0,
+            packagingGrams: parseInt(product.dataset.packagingGrams) || 0,
+            expectedPrice: parseFloat(product.dataset.expectedPrice) || 0
         };
     }
     updateOrderSummary();
@@ -155,6 +158,7 @@ function updateOrderSummary() {
     const orderTotal = document.getElementById('order-total');
     const sendButton = document.getElementById('send-order');
     const orderSummary = document.querySelector('.order-summary');
+    const orderSummaryTitle = document.getElementById('order-summary-title');
     const batches = document.querySelector('.batches');
     const termsContainer = document.getElementById('terms-agreement-container');
     const termsCheckbox = document.getElementById('terms-checkbox');
@@ -163,6 +167,9 @@ function updateOrderSummary() {
         orderItems.innerHTML = '<p>Geen items geselecteerd</p>';
         orderTotal.innerHTML = '';
         sendButton.style.display = 'none';
+        if (orderSummaryTitle) {
+            orderSummaryTitle.textContent = 'Bestelling';
+        }
         if (termsContainer) {
             termsContainer.style.display = 'none';
             if (termsCheckbox) {
@@ -182,28 +189,61 @@ function updateOrderSummary() {
         batches.classList.add('has-order');
     }
 
+    // Get pickup slots from first item (all items in cart have same pickup slots since only one batch allowed)
+    const firstItem = Object.values(cart)[0];
+    const pickupSlotsHtml = firstItem.pickupSlots.map(slot => `<div class="pickup-slot-item">${slot.date} om ${slot.time}</div>`).join('');
+
+    // Update the order summary title with batch name
+    if (orderSummaryTitle) {
+        orderSummaryTitle.innerHTML = `Bestelling <small>(${currentBatch})</small>`;
+    }
+
     // Since we only allow one batch, this is simplified
-    let html = `<div class="order-batch"><strong>${currentBatch}</strong><div class="order-items-list">`;
+    let html = `<div class="order-batch"><div class="order-items-list">`;
     let totalItems = 0;
     let totalPrice = 0;
 
     for (const [productId, item] of Object.entries(cart)) {
-        const itemTotal = item.price * item.quantity;
+        // Use expectedPrice if available (for per kg items), otherwise use the fixed price
+        const pricePerItem = item.expectedPrice > 0 ? item.expectedPrice : item.price;
+        const itemTotal = pricePerItem * item.quantity;
         totalPrice += itemTotal;
         totalItems += item.quantity;
 
-        // Format pickup slots for display
-        const pickupSlotsText = item.pickupSlots.map(slot => `${slot.date} om ${slot.time}`).join(', ');
+        // Build packaging info text and price per kg info
+        let packagingText = '';
+        let pricePerKgText = '';
+
+        if (item.expectedPrice > 0) {
+            // For per kg items, show packaging and price per kg
+            if (item.packagingGrams > 0) {
+                if (item.packagingPieces > 1) {
+                    packagingText = `<span class="order-item-packaging">${item.packagingPieces} stuks × ±${item.packagingGrams}g</span>`;
+                } else {
+                    packagingText = `<span class="order-item-packaging">±${item.packagingGrams}g per pakket</span>`;
+                }
+            }
+            pricePerKgText = `<span class="order-item-per-kg">${formatPrice(item.price)}/kg</span>`;
+        } else {
+            // For fixed-price items
+            if (item.packagingGrams > 0) {
+                if (item.packagingPieces > 1) {
+                    packagingText = `<span class="order-item-packaging">${item.packagingPieces} stuks × ±${item.packagingGrams}g</span>`;
+                } else {
+                    packagingText = `<span class="order-item-packaging">±${item.packagingGrams}g</span>`;
+                }
+            }
+        }
 
         html += `
             <div class="order-item">
                 <div class="order-item-info">
                     <div class="order-item-name">${item.name}</div>
                     <div class="order-item-details">
-                        <span class="order-item-weight">${item.weight}</span>
+                        ${packagingText}
+                        ${pricePerKgText}
                         <span class="order-item-price">${formatPrice(itemTotal)}</span>
                     </div>
-                    <small class="order-item-pickup">Ophalen: ${pickupSlotsText}</small>
                 </div>
                 <div class="order-item-controls">
                     <button type="button" class="order-qty-btn" onclick="decreaseQuantityFromSummary('${productId}')" ${item.quantity <= 1 ? '' : ''}>−</button>
@@ -217,7 +257,24 @@ function updateOrderSummary() {
     html += '</div></div>';
 
     orderItems.innerHTML = html;
-    orderTotal.innerHTML = `<div class="total-summary"><strong>Totaal:</strong> <span class="total-price">${formatPrice(totalPrice)}</span><br><small>${totalItems} pakket(ten)</small></div>`;
+    orderTotal.innerHTML = `
+        <div class="order-summary-footer">
+            <div class="pickup-info">
+                <div class="pickup-batch"><strong>Batch:</strong> ${currentBatch}</div>
+                <div class="pickup-slots">
+                    <div class="pickup-slots-header">📦 <strong>Ophalen:</strong></div>
+                    ${pickupSlotsHtml}
+                </div>
+            </div>
+            <div class="total-summary">
+                <div class="total-label">Totaal:</div>
+                <div class="total-amount">
+                    <span class="total-price">${formatPrice(totalPrice)}</span>
+                    <small>${totalItems} pakket(ten)</small>
+                </div>
+            </div>
+        </div>
+    `;
 
     // Show terms agreement container
     if (termsContainer) {
@@ -276,10 +333,33 @@ function sendOrder() {
     emailBody += '\nProducten:\n';
 
     for (const [productId, item] of Object.entries(cart)) {
-        const itemTotal = item.price * item.quantity;
+        // Use expectedPrice if available (for per kg items), otherwise use the fixed price
+        const pricePerItem = item.expectedPrice > 0 ? item.expectedPrice : item.price;
+        const itemTotal = pricePerItem * item.quantity;
         totalPrice += itemTotal;
         totalItems += item.quantity;
-        emailBody += `- ${item.quantity}x ${item.name} (${item.weight}) - ${formatPrice(itemTotal)}\n`;
+
+        // Build packaging info for email
+        let packagingInfo = '';
+        let priceInfo = '';
+
+        if (item.packagingGrams > 0 && item.expectedPrice > 0) {
+            // For per kg items, show packaging and price per kg
+            if (item.packagingPieces > 1) {
+                packagingInfo = ` (${item.packagingPieces} stuks × ±${item.packagingGrams}g, ${formatPrice(item.expectedPrice)}/pakket)`;
+            } else {
+                packagingInfo = ` (±${item.packagingGrams}g, ${formatPrice(item.expectedPrice)}/pakket)`;
+            }
+            priceInfo = ` @ ${formatPrice(item.price)}/kg`;
+        } else {
+            // For fixed-price items, just show the unit
+            packagingInfo = item.packagingGrams > 0 && item.packagingPieces > 1
+                ? ` (${item.packagingPieces} stuks)`
+                : '';
+            priceInfo = ` (${item.weight})`;
+        }
+
+        emailBody += `- ${item.quantity}x ${item.name}${packagingInfo}${priceInfo} - ${formatPrice(itemTotal)}\n`;
     }
 
     emailBody += `\nTotaal: ${formatPrice(totalPrice)} (${totalItems} pakket(ten))\n\n`;

@@ -3,8 +3,10 @@
 #   - id: unique product identifier (required)
 #   - name: product display name (required)
 #   - description: product description, supports markdown (required)
-#   - price: product price as numeric value in euros (required, e.g., 87.50)
-#   - weight: product weight/size (required)
+#   - price: product price as numeric value in euros per kg (required, e.g., 87.50)
+#   - weight: product weight/size display (required)
+#   - packaging_pieces: number of pieces per package (optional)
+#   - packaging_grams: approximate grams per package (optional)
 #   - image: path to product image (optional - can be omitted or left empty)
 
 products:
@@ -12,12 +14,13 @@ products:
     name: "Varkensvlees Pakket"
     description: >
       Gemengd pakket met verschillende stukken van het varken:
-        - Filetkotelet
-        - Spieringkotelet
-        - Worst
-        - Vers spek
-        - Varkenslapje
-        - Gehakt
+        - 2x Filetkotelet
+        - 2x Spieringkotelet
+        - 4x Worst
+        - 4x Hamburger
+        - 8x Spek
+        - 750g stoofvlees
+        - 1kg gehakt
 
       _**Let op, geen eenheidsworst!** Elk varken groeit op zijn eigen tempo en heeft
         zijn eigen formaat. We slachten niet op vaste gewichten zoals in de
@@ -25,59 +28,79 @@ products:
         samenstelling en het gewicht van je pakket wat variëren. Dat maakt
         elk pakket uniek - net zoals onze varkens!_
 
-    price: 87.50
-    weight: "+- 5kg"
+    price: 17.50
+    weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 5000
 
   - id: "filetkotelet"
     name: "Filetkotelet"
-    description: "Malse filetkotelet van varken, verpakt per stuk"
+    description: "Malse filetkotelet van varken"
     price: 19.50
     weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 200
 
   - id: "spieringkotelet"
     name: "Spieringkotelet"
-    description: "Sappige spieringkotelet van varken, verpakt per stuk"
+    description: "Sappige spieringkotelet van varken"
     price: 19.50
     weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 250
 
   - id: "stoofvlees"
     name: "Stoofvlees"
-    description: "Mals stoofvlees van varken, verpakt per 750g"
+    description: "Mals stoofvlees van varken"
     price: 19.50
     weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 750
 
   - id: "spek"
     name: "Spek"
-    description: "Vers spek van varken, verpakt per 4 stuks (± 250g per pakket)"
+    description: "Vers spek van varken"
     price: 17.50
     weight: "per kg"
+    packaging_pieces: 4
+    packaging_grams: 250
 
   - id: "hamburger"
     name: "Hamburger"
-    description: "Hamburgers van varkensvlees, verpakt per 2 stuks"
+    description: "Hamburgers van varkensvlees"
     price: 17.50
     weight: "per kg"
+    packaging_pieces: 2
+    packaging_grams: 250
 
   - id: "boerenworst"
     name: "Boerenworst"
-    description: "Verse boerenworst van varken, verpakt per 4 stuks"
+    description: "Verse boerenworst van varken"
     price: 17.50
     weight: "per kg"
+    packaging_pieces: 4
+    packaging_grams: 500
 
   - id: "gehakt"
     name: "Gehakt"
-    description: "100% varkensgehakt, verpakt per 500g"
+    description: "100% varkensgehakt"
     price: 15.00
     weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 500
 
   - id: "zwarte-pens"
     name: "Zwarte Pens"
-    description: "Zwarte pens van varken, verpakt per 2 stuks"
+    description: "Zwarte pens van varken"
     price: 4.50
     weight: "per 2 stuks"
+    packaging_pieces: 2
+    packaging_grams: 300
 
   - id: "varkenshaas"
     name: "Varkenshaas"
     description: "Malse varkenshaas"
     price: 26.00
     weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 500
