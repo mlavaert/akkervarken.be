@@ -82,7 +82,7 @@
                         {{ if and (gt $packagingGrams 0) (gt $expectedPrice 0) }}
                         <div class="packaging-info">
                             {{ if gt $packagingPieces 1 }}
-                            <span class="packaging-size">{{ $packagingPieces }} stuks × ±{{ $packagingGrams }}g</span>
+                            <span class="packaging-size">{{ $packagingPieces }} stuks (totaal ±{{ $packagingGrams }}g)</span>
                             {{ else }}
                             <span class="packaging-size">±{{ $packagingGrams }}g per pakket</span>
                             {{ end }}
