@@ -38,8 +38,8 @@ products:
     description: "Malse filetkotelet van varken"
     price: 19.50
     weight: "per kg"
-    packaging_pieces: 1
-    packaging_grams: 200
+    packaging_pieces: 2
+    packaging_grams: 400
 
   - id: "spieringkotelet"
     name: "Spieringkotelet"
