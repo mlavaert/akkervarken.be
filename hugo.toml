@@ -10,6 +10,9 @@ enableRobotsTXT = true
   author = 'Mathias en Jolien'
   keywords = ['varkensvlees', 'boerderij', 'lokaal vlees', 'duurzaam vlees', 'Opwijk', 'akkervarkens', 'biologisch vlees', 'scharrelvlees', 'Vlaanderen']
   images = ['/img/slide1.jpg']
+  # Google Analytics Measurement ID (format: G-XXXXXXXXXX)
+  # Replace with your actual GA4 measurement ID to enable tracking
+  googleAnalytics = 'G-51L2822M52'
 
 [params.social]
   email = 'info@akkervarken.be'

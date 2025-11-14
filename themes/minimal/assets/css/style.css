@@ -1264,6 +1264,122 @@ footer {
     }
 }
 
+/* Cookie Consent Banner */
+.cookie-consent-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    border-top: 3px solid #6a8e6a;
+    animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.cookie-consent-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+.cookie-consent-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.cookie-consent-text h3 {
+    color: #6a8e6a;
+    margin: 0 0 8px 0;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.cookie-consent-text p {
+    margin: 0;
+    color: #4a5c4a;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.cookie-consent-buttons {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.cookie-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.cookie-btn-accept {
+    background: #6a8e6a;
+    color: white;
+}
+
+.cookie-btn-accept:hover {
+    background: #5a7e5a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(106, 142, 106, 0.3);
+}
+
+.cookie-btn-decline {
+    background: #e8e8e8;
+    color: #4a5c4a;
+}
+
+.cookie-btn-decline:hover {
+    background: #d8d8d8;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .cookie-consent-content {
+        flex-direction: column;
+        padding: 20px;
+        gap: 16px;
+    }
+
+    .cookie-consent-text h3 {
+        font-size: 1.1em;
+    }
+
+    .cookie-consent-text p {
+        font-size: 0.9em;
+    }
+
+    .cookie-consent-buttons {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .cookie-btn {
+        width: 100%;
+        padding: 14px;
+    }
+}
+
 /* Extra small devices (phones, 480px and down) */
 @media (max-width: 480px) {
     nav h1 a {

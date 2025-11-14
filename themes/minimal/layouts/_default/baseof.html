@@ -85,6 +85,23 @@
         </div>
     </footer>
 
+    {{- /* Cookie Consent Banner */ -}}
+    {{- partial "cookie-consent.html" . -}}
+
+    {{- /* Google Analytics Configuration */ -}}
+    {{- if .Site.Params.googleAnalytics -}}
+    <script>
+        window.GA_MEASUREMENT_ID = '{{ .Site.Params.googleAnalytics }}';
+    </script>
+    {{- end -}}
+
+    {{- /* Cookie Consent Script */ -}}
+    {{- $cookieJS := resources.Get "js/cookie-consent.js" -}}
+    {{- if $cookieJS -}}
+        {{- $cookieJS = $cookieJS | minify | fingerprint -}}
+        <script src="{{ $cookieJS.RelPermalink }}" integrity="{{ $cookieJS.Data.Integrity }}"></script>
+    {{- end -}}
+
     <!-- 100% privacy-first analytics -->
     <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
     <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
