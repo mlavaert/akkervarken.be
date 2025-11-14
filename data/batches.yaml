@@ -11,7 +11,15 @@ batches:
         time: "09:00 - 12:00"
     available-products:
       - product-id: "pakket-klein"
-        stock: 8
+      - product-id: "filetkotelet"
+      - product-id: "spieringkotelet"
+      - product-id: "stoofvlees"
+      - product-id: "spek"
+      - product-id: "hamburger"
+      - product-id: "boerenworst"
+      - product-id: "gehakt"
+      - product-id: "zwarte-pens"
+      - product-id: "varkenshaas"
   - id: "17-november-2025"
     name: "17 november 2025"
     pickup-location: "Wolfstede 7, 1745 Opwijk"
@@ -24,4 +32,12 @@ batches:
         time: "09:00 - 12:00"
     available-products:
       - product-id: "pakket-klein"
-        stock: 32
+      - product-id: "filetkotelet"
+      - product-id: "spieringkotelet"
+      - product-id: "stoofvlees"
+      - product-id: "spek"
+      - product-id: "hamburger"
+      - product-id: "boerenworst"
+      - product-id: "gehakt"
+      - product-id: "zwarte-pens"
+      - product-id: "varkenshaas"

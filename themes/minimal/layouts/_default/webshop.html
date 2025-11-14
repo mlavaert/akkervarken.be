@@ -54,7 +54,6 @@
                 <div class="products">
                     {{ range index . "available-products" }}
                     {{ $productId := index . "product-id" }}
-                    {{ $stock := .stock }}
                     {{ $batchId := $batch.id }}
                     {{ range $.Site.Data.products.products }}
                     {{ if eq .id $productId }}
@@ -73,14 +72,11 @@
                             <span class="price">€{{ printf "%.2f" .price | replaceRE "\\." "," }}</span>
                             <span class="weight">{{ .weight }}</span>
                         </div>
-                        <div class="stock">
-                            <small>Nog {{ $stock }} beschikbaar</small>
-                        </div>
                         <div class="quantity-controls">
                             <button type="button" class="qty-btn qty-decrease" onclick="decreaseQuantity('{{ $batchId }}-{{ .id }}')">−</button>
                             <div class="qty-display">
                                 <span id="qty-display-{{ $batchId }}-{{ .id }}" class="qty-number">0</span>
-                                <input type="hidden" id="qty-{{ $batchId }}-{{ .id }}" value="0" min="0" max="{{ $stock }}">
+                                <input type="hidden" id="qty-{{ $batchId }}-{{ .id }}" value="0" min="0">
                             </div>
                             <button type="button" class="qty-btn qty-increase" onclick="increaseQuantity('{{ $batchId }}-{{ .id }}')">+</button>
                         </div>

@@ -45,7 +45,7 @@ The webshop is powered by YAML data files rather than a traditional database:
 
 - **`/data/batches.yaml`**: Slaughter/pickup batches
   - Each batch specifies: id, name, pickup date range, location
-  - Links products to batches with stock quantities
+  - Links products to batches (lists available product IDs)
   - **Critical constraint**: Customers can only order from ONE batch per order
 
 ### Theme Structure (`/themes/minimal/`)
@@ -85,13 +85,13 @@ The webshop enforces single-batch ordering:
 - Each product card includes `data-batch` attribute
 - JavaScript validates all items in cart belong to same batch
 - Users must place separate orders for different batches
-- Stock is tracked per batch-product combination (not global)
+- No stock tracking - customers can order unlimited quantities
 
 ### Product Display Pattern
 Products are rendered by:
 1. Iterating through batches in `batches.yaml`
 2. For each batch's `available-products`, looking up full product details from `products.yaml`
-3. Displaying product with batch-specific stock and pickup info
+3. Displaying product with batch-specific pickup info
 4. Generating unique product IDs as `{batch-id}-{product-id}`
 
 ### Order Submission
@@ -140,7 +140,7 @@ The shortcode is defined in `themes/minimal/layouts/shortcodes/img.html` and map
 
 ### When Adding Products
 1. Add product definition to `data/products.yaml` with unique ID
-2. Add product to relevant batch(es) in `data/batches.yaml` with stock count
+2. Add product ID to relevant batch(es) in `data/batches.yaml`
 3. Optionally add product image to `/static/img/`
 
 ### When Adding New Batches
@@ -149,11 +149,11 @@ The shortcode is defined in `themes/minimal/layouts/shortcodes/img.html` and map
    - Human-readable name
    - Pickup date range (YYYY-MM-DD format)
    - Pickup location
-   - Available products with stock quantities
+   - List of available product IDs
 
 ### Webshop JavaScript Dependencies
 The `webshop.js` file must handle:
-- Quantity increase/decrease with stock limits
+- Quantity increase/decrease (no limits)
 - Cart total calculation
 - Batch validation (single batch per order)
 - Email order generation with proper formatting

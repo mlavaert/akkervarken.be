@@ -27,3 +27,57 @@ products:
 
     price: 87.50
     weight: "+- 5kg"
+
+  - id: "filetkotelet"
+    name: "Filetkotelet"
+    description: "Malse filetkotelet van varken, verpakt per stuk"
+    price: 19.50
+    weight: "per kg"
+
+  - id: "spieringkotelet"
+    name: "Spieringkotelet"
+    description: "Sappige spieringkotelet van varken, verpakt per stuk"
+    price: 19.50
+    weight: "per kg"
+
+  - id: "stoofvlees"
+    name: "Stoofvlees"
+    description: "Mals stoofvlees van varken, verpakt per 750g"
+    price: 19.50
+    weight: "per kg"
+
+  - id: "spek"
+    name: "Spek"
+    description: "Vers spek van varken, verpakt per 4 stuks (± 250g per pakket)"
+    price: 17.50
+    weight: "per kg"
+
+  - id: "hamburger"
+    name: "Hamburger"
+    description: "Hamburgers van varkensvlees, verpakt per 2 stuks"
+    price: 17.50
+    weight: "per kg"
+
+  - id: "boerenworst"
+    name: "Boerenworst"
+    description: "Verse boerenworst van varken, verpakt per 4 stuks"
+    price: 17.50
+    weight: "per kg"
+
+  - id: "gehakt"
+    name: "Gehakt"
+    description: "100% varkensgehakt, verpakt per 500g"
+    price: 15.00
+    weight: "per kg"
+
+  - id: "zwarte-pens"
+    name: "Zwarte Pens"
+    description: "Zwarte pens van varken, verpakt per 2 stuks"
+    price: 4.50
+    weight: "per 2 stuks"
+
+  - id: "varkenshaas"
+    name: "Varkenshaas"
+    description: "Malse varkenshaas"
+    price: 26.00
+    weight: "per kg"

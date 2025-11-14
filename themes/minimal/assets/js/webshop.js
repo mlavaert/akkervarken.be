@@ -122,12 +122,9 @@ function enableAllBatches() {
 
 function increaseQuantity(productId) {
     const input = document.getElementById(`qty-${productId}`);
-    const max = parseInt(input.max);
     const current = parseInt(input.value) || 0;
-    if (current < max) {
-        input.value = current + 1;
-        updateQuantity(productId, input.value);
-    }
+    input.value = current + 1;
+    updateQuantity(productId, input.value);
 }
 
 function decreaseQuantity(productId) {
@@ -194,9 +191,6 @@ function updateOrderSummary() {
         const itemTotal = item.price * item.quantity;
         totalPrice += itemTotal;
         totalItems += item.quantity;
-        // Get max quantity from the original product element
-        const productElement = document.querySelector(`[data-id="${productId}"]`);
-        const maxQty = productElement ? parseInt(document.getElementById(`qty-${productId}`).max) : 99;
 
         // Format pickup slots for display
         const pickupSlotsText = item.pickupSlots.map(slot => `${slot.date} om ${slot.time}`).join(', ');
@@ -214,7 +208,7 @@ function updateOrderSummary() {
                 <div class="order-item-controls">
                     <button type="button" class="order-qty-btn" onclick="decreaseQuantityFromSummary('${productId}')" ${item.quantity <= 1 ? '' : ''}>−</button>
                     <span class="order-qty-display">${item.quantity}</span>
-                    <button type="button" class="order-qty-btn" onclick="increaseQuantityFromSummary('${productId}')" ${item.quantity >= maxQty ? 'disabled' : ''}>+</button>
+                    <button type="button" class="order-qty-btn" onclick="increaseQuantityFromSummary('${productId}')">+</button>
                     <button type="button" class="order-remove-btn" onclick="removeFromCart('${productId}')" title="Verwijderen">×</button>
                 </div>
             </div>
