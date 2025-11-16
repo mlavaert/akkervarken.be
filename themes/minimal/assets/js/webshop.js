@@ -36,6 +36,9 @@ function toggleBatch(header) {
 function updateQuantity(productId, quantity) {
     quantity = parseInt(quantity) || 0;
 
+    // Track the old quantity for analytics
+    const oldQuantity = cart[productId] ? cart[productId].quantity : 0;
+
     // Update the visual display
     const display = document.getElementById(`qty-display-${productId}`);
     const input = document.getElementById(`qty-${productId}`);
@@ -48,6 +51,22 @@ function updateQuantity(productId, quantity) {
     }
 
     if (quantity <= 0) {
+        // Track remove_from_cart event
+        if (oldQuantity > 0 && window.gtag) {
+            const removedItem = cart[productId];
+            window.gtag('event', 'remove_from_cart', {
+                currency: 'EUR',
+                value: (removedItem.expectedPrice > 0 ? removedItem.expectedPrice : removedItem.price) * removedItem.quantity,
+                items: [{
+                    item_id: productId,
+                    item_name: removedItem.name,
+                    item_category: removedItem.batch,
+                    price: removedItem.expectedPrice > 0 ? removedItem.expectedPrice : removedItem.price,
+                    quantity: removedItem.quantity
+                }]
+            });
+        }
+
         delete cart[productId];
         // If cart is empty, reset current batch
         if (Object.keys(cart).length === 0) {
@@ -72,17 +91,35 @@ function updateQuantity(productId, quantity) {
             disableOtherBatches(productBatch);
         }
 
+        const price = parseFloat(product.dataset.price);
+        const expectedPrice = parseFloat(product.dataset.expectedPrice) || 0;
+
         cart[productId] = {
             name: product.dataset.name,
-            price: parseFloat(product.dataset.price),
+            price: price,
             weight: product.dataset.weight,
             pickupSlots: JSON.parse(product.dataset.pickupSlots || '[]'),
             batch: product.dataset.batch,
             quantity: quantity,
             packagingPieces: parseInt(product.dataset.packagingPieces) || 0,
             packagingGrams: parseInt(product.dataset.packagingGrams) || 0,
-            expectedPrice: parseFloat(product.dataset.expectedPrice) || 0
+            expectedPrice: expectedPrice
         };
+
+        // Track add_to_cart event (only when item is first added, not on quantity increase)
+        if (oldQuantity === 0 && window.gtag) {
+            window.gtag('event', 'add_to_cart', {
+                currency: 'EUR',
+                value: expectedPrice > 0 ? expectedPrice : price,
+                items: [{
+                    item_id: productId,
+                    item_name: product.dataset.name,
+                    item_category: productBatch,
+                    price: expectedPrice > 0 ? expectedPrice : price,
+                    quantity: 1
+                }]
+            });
+        }
     }
     updateOrderSummary();
 }
@@ -187,6 +224,28 @@ function updateOrderSummary() {
     orderSummary.classList.add('has-items');
     if (batches) {
         batches.classList.add('has-order');
+    }
+
+    // Track view_cart event when cart has items
+    if (window.gtag) {
+        const cartItems = Object.entries(cart).map(([productId, item]) => ({
+            item_id: productId,
+            item_name: item.name,
+            item_category: item.batch,
+            price: item.expectedPrice > 0 ? item.expectedPrice : item.price,
+            quantity: item.quantity
+        }));
+
+        const cartValue = Object.values(cart).reduce((sum, item) => {
+            const price = item.expectedPrice > 0 ? item.expectedPrice : item.price;
+            return sum + (price * item.quantity);
+        }, 0);
+
+        window.gtag('event', 'view_cart', {
+            currency: 'EUR',
+            value: cartValue,
+            items: cartItems
+        });
     }
 
     // Get pickup slots from first item (all items in cart have same pickup slots since only one batch allowed)
@@ -372,5 +431,53 @@ function sendOrder() {
     // Properly encode both subject and body
     const mailtoLink = `mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
+    // Track conversion event with Google Analytics
+    if (window.gtag) {
+        // GA4 e-commerce event (can be imported as conversion in Google Ads when linked)
+        window.gtag('event', 'begin_checkout', {
+            currency: 'EUR',
+            value: totalPrice,
+            items: Object.entries(cart).map(([productId, item]) => ({
+                item_id: productId,
+                item_name: item.name,
+                item_category: batchName,
+                price: item.expectedPrice > 0 ? item.expectedPrice : item.price,
+                quantity: item.quantity
+            }))
+        });
+    }
+
     window.location.href = mailtoLink;
 }
+
+// Track view_item_list event when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.gtag) {
+        const products = document.querySelectorAll('.product');
+        const items = [];
+
+        products.forEach((product, index) => {
+            const productId = product.dataset.id;
+            const productName = product.dataset.name;
+            const productPrice = parseFloat(product.dataset.price);
+            const productBatch = product.dataset.batch;
+            const expectedPrice = parseFloat(product.dataset.expectedPrice) || 0;
+
+            items.push({
+                item_id: productId,
+                item_name: productName,
+                item_category: productBatch,
+                price: expectedPrice > 0 ? expectedPrice : productPrice,
+                index: index
+            });
+        });
+
+        if (items.length > 0) {
+            window.gtag('event', 'view_item_list', {
+                item_list_id: 'webshop_products',
+                item_list_name: 'Webshop Producten',
+                items: items
+            });
+        }
+    }
+});
