@@ -262,9 +262,9 @@ h3 {
 }
 
 h4 {
-    margin: 0 0 12px 0;
+    margin: 0 0 8px 0;
     color: #4a5c4a;
-    font-size: 1.1em;
+    font-size: 1.05em;
     font-weight: 600;
 }
 
@@ -400,6 +400,86 @@ main > a:hover, #send-order:hover {
     line-height: 1.6;
 }
 
+/* Batch Overview Cards */
+.batch-overview {
+    margin: 30px 0;
+    padding: 24px;
+    background: rgba(106, 142, 106, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(106, 142, 106, 0.15);
+}
+
+.batch-overview h3 {
+    margin: 0 0 16px 0;
+    color: #6a8e6a;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.batch-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.batch-card {
+    background: white;
+    border: 2px solid rgba(106, 142, 106, 0.2);
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.batch-card:hover {
+    border-color: #6a8e6a;
+    box-shadow: 0 4px 12px rgba(106, 142, 106, 0.15);
+    transform: translateY(-2px);
+}
+
+.batch-card.freezer-card {
+    border-color: rgba(66, 153, 225, 0.3);
+}
+
+.batch-card.freezer-card:hover {
+    border-color: #4299e1;
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+}
+
+.batch-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #4a5c4a;
+    font-size: 1.05em;
+}
+
+.batch-card-icon {
+    font-size: 1.3em;
+}
+
+.batch-card-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.batch-card-info {
+    color: #6b7c6b;
+    font-size: 0.9em;
+}
+
+.batch-card-count {
+    color: #6a8e6a;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
 .batches {
     margin: 30px 0;
     padding-bottom: 0;
@@ -420,7 +500,7 @@ main > a:hover, #send-order:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
+    padding: 16px 20px;
     cursor: pointer;
     background: rgba(106, 142, 106, 0.05);
     border-bottom: 1px solid rgba(106, 142, 106, 0.1);
@@ -429,7 +509,7 @@ main > a:hover, #send-order:hover {
 .batch-header h3 {
     margin: 0;
     color: #6a8e6a;
-    font-size: 1.4em;
+    font-size: 1.2em;
     font-weight: 600;
 }
 
@@ -442,7 +522,7 @@ main > a:hover, #send-order:hover {
 }
 
 .batch-content {
-    padding: 24px;
+    padding: 20px;
 }
 
 .batch.closed .batch-content {
@@ -469,9 +549,9 @@ main > a:hover, #send-order:hover {
 
 .batch-info {
     background: white;
-    padding: 20px;
+    padding: 16px;
     border-radius: 8px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     border: 1px solid rgba(106, 142, 106, 0.2);
 }
 
@@ -504,32 +584,37 @@ main > a:hover, #send-order:hover {
 
 .products {
     display: grid;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
 }
 
 .product {
     border: 1px solid rgba(106, 142, 106, 0.2);
     border-radius: 8px;
-    padding: 20px;
+    padding: 16px;
     background: white;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-image {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     overflow: hidden;
+    border-radius: 6px;
 }
 
 .product-image img {
     width: 100%;
-    height: 180px;
+    height: 140px;
     object-fit: cover;
 }
 
 .product p {
-    margin: 12px 0;
+    margin: 8px 0;
     color: #6b7c6b;
-    font-size: 0.95em;
-    line-height: 1.5;
+    font-size: 0.9em;
+    line-height: 1.45;
+    flex: 1;
 }
 
 .product-details {
@@ -568,8 +653,8 @@ main > a:hover, #send-order:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px;
-    margin: 12px 0;
+    padding: 10px;
+    margin: 8px 0;
     background: rgba(106, 142, 106, 0.08);
     border-radius: 6px;
     border: 1px solid rgba(106, 142, 106, 0.15);
@@ -577,33 +662,33 @@ main > a:hover, #send-order:hover {
 
 .packaging-size {
     color: #6b7c6b;
-    font-size: 0.95em;
+    font-size: 0.85em;
     font-weight: 500;
 }
 
 .expected-price {
     color: #6a8e6a;
     font-weight: 700;
-    font-size: 1.1em;
+    font-size: 1.05em;
 }
 
 .quantity-controls {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 12px;
 }
 
 .qty-btn {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border: 2px solid rgba(106, 142, 106, 0.3);
     background: white;
     border-radius: 50%;
     color: #6a8e6a;
     font-weight: 700;
-    font-size: 1.5em;
+    font-size: 1.3em;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -622,12 +707,12 @@ main > a:hover, #send-order:hover {
 }
 
 .qty-display {
-    min-width: 80px;
+    min-width: 60px;
     text-align: center;
 }
 
 .qty-number {
-    font-size: 2em;
+    font-size: 1.6em;
     font-weight: 700;
     color: #6a8e6a;
 }
@@ -1106,6 +1191,37 @@ footer {
         margin: 20px auto;
     }
 
+    /* Batch Overview */
+    .batch-overview {
+        padding: 16px;
+    }
+
+    .batch-overview h3 {
+        font-size: 1.15em;
+        margin-bottom: 12px;
+    }
+
+    .batch-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .batch-card {
+        padding: 14px;
+    }
+
+    .batch-card-header {
+        font-size: 1em;
+    }
+
+    .batch-card-info {
+        font-size: 0.85em;
+    }
+
+    .batch-card-count {
+        font-size: 0.8em;
+    }
+
     /* Webshop - Instructions */
     .order-instructions summary {
         padding: 14px 16px;
@@ -1171,8 +1287,12 @@ footer {
     }
 
     /* Products */
+    .products {
+        grid-template-columns: 1fr;
+    }
+
     .product {
-        padding: 16px;
+        padding: 14px;
     }
 
     .product h4 {
@@ -1180,36 +1300,54 @@ footer {
     }
 
     .product p {
-        font-size: 0.9em;
-        margin: 10px 0;
+        font-size: 0.88em;
+        margin: 6px 0;
+    }
+
+    .product-image img {
+        height: 120px;
     }
 
     .product-details {
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
         align-items: flex-start;
     }
 
     .price {
-        font-size: 1.1em;
+        font-size: 1.05em;
+    }
+
+    .packaging-info {
+        padding: 8px;
+        margin: 6px 0;
+    }
+
+    .packaging-size {
+        font-size: 0.8em;
+    }
+
+    .expected-price {
+        font-size: 1em;
     }
 
     .quantity-controls {
-        gap: 12px;
+        gap: 10px;
+        margin-top: 10px;
     }
 
     .qty-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3em;
+        width: 38px;
+        height: 38px;
+        font-size: 1.2em;
     }
 
     .qty-display {
-        min-width: 60px;
+        min-width: 50px;
     }
 
     .qty-number {
-        font-size: 1.8em;
+        font-size: 1.5em;
     }
 
     /* Order summary */
@@ -1433,11 +1571,21 @@ footer {
     }
 
     .product-image img {
-        height: 150px;
+        height: 110px;
     }
 
     .batches.has-order {
         padding-bottom: 300px;
+    }
+
+    .qty-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1em;
+    }
+
+    .qty-number {
+        font-size: 1.4em;
     }
 }
 

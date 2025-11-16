@@ -6,6 +6,24 @@ function formatPrice(price) {
     return '€' + parseFloat(price).toFixed(2).replace('.', ',');
 }
 
+// Scroll to a specific batch and open it
+function scrollToBatch(batchId) {
+    const batchElement = document.getElementById(batchId);
+    if (batchElement) {
+        // Open the batch if it's closed
+        if (batchElement.classList.contains('closed')) {
+            const header = batchElement.querySelector('.batch-header');
+            if (header) {
+                toggleBatch(header);
+            }
+        }
+        // Scroll to the batch with offset for sticky header
+        const yOffset = -20;
+        const y = batchElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+}
+
 function toggleBatch(header) {
     const batch = header.parentElement;
     const content = batch.querySelector('.batch-content');
@@ -93,13 +111,26 @@ function updateQuantity(productId, quantity) {
 
         const price = parseFloat(product.dataset.price);
         const expectedPrice = parseFloat(product.dataset.expectedPrice) || 0;
+        const batchType = product.dataset.batchType || 'regular';
+
+        // Get pickup info - either slots (for batches) or text (for freezer)
+        let pickupSlots = [];
+        let pickupText = '';
+
+        if (batchType === 'freezer') {
+            pickupText = JSON.parse(product.dataset.pickupText || '""');
+        } else {
+            pickupSlots = JSON.parse(product.dataset.pickupSlots || '[]');
+        }
 
         cart[productId] = {
             name: product.dataset.name,
             price: price,
             weight: product.dataset.weight,
-            pickupSlots: JSON.parse(product.dataset.pickupSlots || '[]'),
+            pickupSlots: pickupSlots,
+            pickupText: pickupText,
             batch: product.dataset.batch,
+            batchType: batchType,
             quantity: quantity,
             packagingPieces: parseInt(product.dataset.packagingPieces) || 0,
             packagingGrams: parseInt(product.dataset.packagingGrams) || 0,
@@ -248,9 +279,15 @@ function updateOrderSummary() {
         });
     }
 
-    // Get pickup slots from first item (all items in cart have same pickup slots since only one batch allowed)
+    // Get pickup info from first item (all items in cart have same batch since only one batch/freezer allowed)
     const firstItem = Object.values(cart)[0];
-    const pickupSlotsHtml = firstItem.pickupSlots.map(slot => `<div class="pickup-slot-item">${slot.date} om ${slot.time}</div>`).join('');
+    let pickupSlotsHtml = '';
+
+    if (firstItem.batchType === 'freezer') {
+        pickupSlotsHtml = `<div class="pickup-slot-item">${firstItem.pickupText}</div>`;
+    } else {
+        pickupSlotsHtml = firstItem.pickupSlots.map(slot => `<div class="pickup-slot-item">${slot.date} om ${slot.time}</div>`).join('');
+    }
 
     // Update the order summary title with batch name
     if (orderSummaryTitle) {
@@ -379,16 +416,22 @@ function sendOrder() {
     let totalItems = 0;
     let totalPrice = 0;
 
-    // Get batch name and pickup slots from first item
+    // Get batch name and pickup info from first item
     const firstItem = Object.values(cart)[0];
     const batchName = firstItem.batch;
-    const pickupSlots = firstItem.pickupSlots;
+    const batchType = firstItem.batchType || 'regular';
 
     emailBody += `Batch: ${batchName}\n`;
-    emailBody += 'Ophaalmomenten:\n';
-    pickupSlots.forEach(slot => {
-        emailBody += `  - ${slot.date} om ${slot.time}\n`;
-    });
+
+    if (batchType === 'freezer') {
+        emailBody += `Ophalen: ${firstItem.pickupText}\n`;
+    } else {
+        emailBody += 'Ophaalmomenten:\n';
+        firstItem.pickupSlots.forEach(slot => {
+            emailBody += `  - ${slot.date} om ${slot.time}\n`;
+        });
+    }
+
     emailBody += '\nProducten:\n';
 
     for (const [productId, item] of Object.entries(cart)) {

@@ -19,18 +19,136 @@
         <h3>Belangrijk:</h3>
         <ul>
             <li>Alle vlees moet afgehaald worden op de aangegeven ophaaldata</li>
-            <li><strong>Je kunt alleen producten uit één batch per bestelling selecteren</strong></li>
-            <li>Wil je vlees uit meerdere batches? Plaats dan afzonderlijke bestellingen</li>
+            <li><strong>Je kunt alleen producten uit één batch of uit de vriezer per bestelling selecteren</strong></li>
+            <li>Wil je vlees uit meerdere batches/vriezer? Plaats dan afzonderlijke bestellingen</li>
             <li>Kun je niet op de opgegeven ophaalmomenten? <a href="/contact/">Neem contact op</a> voor een alternatief moment</li>
         </ul>
     </div>
 </details>
 
+<div class="batch-overview">
+    <h3>Beschikbare batches</h3>
+    <div class="batch-cards">
+        {{ if .Site.Data.batches.freezer }}
+        {{ $freezer := .Site.Data.batches.freezer }}
+        {{ if gt (len (index $freezer "available-products")) 0 }}
+        <div class="batch-card freezer-card" onclick="scrollToBatch('freezer-batch')">
+            <div class="batch-card-header">
+                <span class="batch-card-icon">❄️</span>
+                <span class="batch-card-name">{{ $freezer.name }}</span>
+            </div>
+            <div class="batch-card-info">Direct beschikbaar</div>
+            <div class="batch-card-count">{{ len (index $freezer "available-products") }} producten</div>
+        </div>
+        {{ end }}
+        {{ end }}
+
+        {{ range $index, $batch := .Site.Data.batches.batches }}
+        <div class="batch-card" onclick="scrollToBatch('batch-{{ $index }}')">
+            <div class="batch-card-header">
+                <span class="batch-card-icon">📦</span>
+                <span class="batch-card-name">{{ .name }}</span>
+            </div>
+            <div class="batch-card-info">{{ (index (index . "pickup-slots") 0).date }}</div>
+            <div class="batch-card-count">{{ len (index . "available-products") }} producten</div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+
+{{ if .Site.Data.batches.freezer }}
+{{ $freezer := .Site.Data.batches.freezer }}
+{{ if gt (len (index $freezer "available-products")) 0 }}
+<div class="freezer-section">
+    <div class="batch closed" id="freezer-batch">
+        <div class="batch-header" onclick="toggleBatch(this)">
+            <h3>❄️ {{ $freezer.name }} - Direct beschikbaar</h3>
+            <span class="toggle-icon">+</span>
+        </div>
+        <div class="batch-content">
+            <div class="batch-info">
+                <div class="batch-info-primary">
+                    <div class="info-item">
+                        <span class="info-label">📦 Ophalen</span>
+                        <span class="info-value">{{ index $freezer "pickup-text" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📍 Locatie</span>
+                        <span class="info-value">{{ index $freezer "pickup-location" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="products">
+                {{ range index $freezer "available-products" }}
+                {{ $productId := index . "product-id" }}
+                {{ $freezerId := $freezer.id }}
+                {{ range $.Site.Data.products.products }}
+                {{ if eq .id $productId }}
+                {{ $productName := .name }}
+                {{ $productImage := .image }}
+                {{ $pickupText := index $freezer "pickup-text" | jsonify }}
+                {{ $packagingPieces := .packaging_pieces | default 0 }}
+                {{ $packagingGrams := .packaging_grams | default 0 }}
+                {{ $expectedPrice := 0.0 }}
+                {{ $isPricePerKg := strings.Contains .weight "per kg" }}
+                {{ if and (gt $packagingGrams 0) $isPricePerKg }}
+                    {{ $pricePerGram := div .price 1000.0 }}
+                    {{ $rawPrice := mul $pricePerGram (float $packagingGrams) }}
+                    {{ $centPrice := mul $rawPrice 100 }}
+                    {{ $roundedCents := math.Round $centPrice }}
+                    {{ $expectedPrice = div $roundedCents 100.0 }}
+                {{ end }}
+                <div class="product" data-id="{{ $freezerId }}-{{ .id }}" data-name="{{ .name }}" data-price="{{ .price }}" data-weight="{{ .weight }}" data-pickup-text="{{ $pickupText }}" data-batch="{{ $freezer.name }}" data-batch-type="freezer" data-packaging-pieces="{{ $packagingPieces }}" data-packaging-grams="{{ $packagingGrams }}" data-expected-price="{{ $expectedPrice }}">
+                    {{ if and $productImage (ne (trim $productImage " ") "") }}
+                    <div class="product-image">
+                        <img src="{{ $productImage | relURL }}" alt="{{ $productName }}" loading="lazy">
+                    </div>
+                    {{ end }}
+                    <h4>{{ .name }}</h4>
+                    <p class="description">{{ .description | markdownify }}</p>
+                    {{ if and (gt $packagingGrams 0) (gt $expectedPrice 0) }}
+                    <div class="packaging-info">
+                        {{ if gt $packagingPieces 1 }}
+                        <span class="packaging-size">{{ $packagingPieces }} stuks (totaal ±{{ $packagingGrams }}g)</span>
+                        {{ else }}
+                        <span class="packaging-size">±{{ $packagingGrams }}g per pakket</span>
+                        {{ end }}
+                        <span class="expected-price">≈ €{{ printf "%.2f" $expectedPrice | replaceRE "\\." "," }}</span>
+                    </div>
+                    <div class="product-details">
+                        <span class="price-per-kg">€{{ printf "%.2f" .price | replaceRE "\\." "," }} {{ .weight }}</span>
+                    </div>
+                    {{ else }}
+                    <div class="product-details">
+                        <span class="price">€{{ printf "%.2f" .price | replaceRE "\\." "," }}</span>
+                        <span class="weight">{{ .weight }}</span>
+                    </div>
+                    {{ end }}
+                    <div class="quantity-controls">
+                        <button type="button" class="qty-btn qty-decrease" onclick="decreaseQuantity('{{ $freezerId }}-{{ .id }}')">−</button>
+                        <div class="qty-display">
+                            <span id="qty-display-{{ $freezerId }}-{{ .id }}" class="qty-number">0</span>
+                            <input type="hidden" id="qty-{{ $freezerId }}-{{ .id }}" value="0" min="0">
+                        </div>
+                        <button type="button" class="qty-btn qty-increase" onclick="increaseQuantity('{{ $freezerId }}-{{ .id }}')">+</button>
+                    </div>
+                </div>
+                {{ end }}
+                {{ end }}
+                {{ end }}
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
+{{ end }}
+
 <div class="batches">
         {{ range $index, $batch := .Site.Data.batches.batches }}
-        <div class="batch {{ if eq $index 0 }}open{{ else }}closed{{ end }}">
+        <div class="batch {{ if eq $index 0 }}open{{ else }}closed{{ end }}" id="batch-{{ $index }}">
             <div class="batch-header" onclick="toggleBatch(this)">
-                <h3>{{ .name }}</h3>
+                <h3>📦 {{ .name }}</h3>
                 <span class="toggle-icon">{{ if eq $index 0 }}−{{ else }}+{{ end }}</span>
             </div>
             <div class="batch-content">
