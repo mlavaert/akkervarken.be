@@ -7,7 +7,7 @@ image: "/img/slide1.jpg"
 
 # Privacyverklaring
 
-**Laatst bijgewerkt:** 9 oktober 2025
+**Laatst bijgewerkt:** 14 november 2025
 
 Akkervarken.be, geëxploiteerd door Pilcrow BV, hecht veel waarde aan de bescherming van je persoonsgegevens. In deze privacyverklaring leggen we uit welke gegevens we verzamelen, waarom we dat doen, en wat je rechten zijn.
 
@@ -34,9 +34,15 @@ We verzamelen alleen gegevens die noodzakelijk zijn voor het uitvoeren van beste
 - **Telefoonnummer** (voor contact over afhaling)
 
 ### 2.2 Websitegebruik
-- We gebruiken **Simple Analytics**, een privacy-vriendelijke analytics dienst die **geen cookies** gebruikt en **geen persoonlijke gegevens** verzamelt
-- Er worden geen IP-adressen of andere identificeerbare gegevens opgeslagen
-- Meer info: [simpleanalytics.com](https://simpleanalytics.com)
+- We gebruiken **Google Analytics** om te begrijpen hoe bezoekers onze website gebruiken
+- Google Analytics verzamelt gegevens zoals:
+  - Je IP-adres (geanonimiseerd)
+  - Browsertype en besturingssysteem
+  - Bezochte pagina's en duur van bezoek
+  - Hoe je op onze website bent gekomen (verwijzende websites)
+- Deze gegevens worden gebruikt om onze website te verbeteren
+- Google kan deze gegevens gebruiken conform hun eigen privacybeleid
+- Meer info: [policies.google.com/privacy](https://policies.google.com/privacy)
 
 ### 2.3 E-mailcommunicatie
 - E-mailcorrespondentie over bestellingen wordt bewaard voor administratieve doeleinden
@@ -70,9 +76,11 @@ Na deze periode worden je gegevens veilig verwijderd.
 
 ## 6. Delen we je gegevens met anderen?
 
-**Nee.** We verkopen, verhuren of delen je persoonsgegevens niet met derden.
+**Nee.** We verkopen, verhuren of delen je persoonsgegevens niet met derden voor marketingdoeleinden.
 
-**Uitzondering:** We kunnen gegevens delen indien wettelijk verplicht (bijvoorbeeld met belastingdienst of bij gerechtelijk bevel).
+**Uitzonderingen:**
+- **Google Analytics:** We delen geanonimiseerde gebruiksgegevens met Google voor analytics doeleinden. Google verwerkt deze gegevens als verwerker conform hun privacybeleid
+- **Wettelijke verplichting:** We kunnen gegevens delen indien wettelijk verplicht (bijvoorbeeld met belastingdienst of bij gerechtelijk bevel)
 
 ## 7. Hoe beveiligen we je gegevens?
 
@@ -81,7 +89,7 @@ We nemen passende technische en organisatorische maatregelen om je gegevens te b
 - **E-mailbeveiliging** - versleutelde e-mailcommunicatie waar mogelijk
 - **Beperkte toegang** - alleen geauthoriseerde personen hebben toegang tot klantgegevens
 - **Veilige opslag** - gegevens worden beveiligd opgeslagen
-- **Geen cookies** - onze website gebruikt geen tracking cookies
+- **IP-anonimisering** - Google Analytics is geconfigureerd om IP-adressen te anonimiseren
 
 ## 8. Jouw rechten
 
@@ -120,7 +128,28 @@ We reageren binnen 1 maand op je verzoek. In complexe gevallen kunnen we deze te
 
 ## 10. Cookies
 
-Onze website gebruikt **geen tracking cookies**. We gebruiken Simple Analytics, een privacy-vriendelijke analytics dienst die werkt zonder cookies en volledig AVG-compliant is.
+Onze website gebruikt **Google Analytics cookies** om websitegebruik te analyseren en onze dienstverlening te verbeteren.
+
+### 10.1 Welke cookies gebruiken we?
+
+**Analytische cookies (Google Analytics):**
+- `_ga` - Gebruikt om gebruikers te onderscheiden (verloopt na 2 jaar)
+- `_ga_*` - Gebruikt om sessiegegevens te bewaren (verloopt na 2 jaar)
+- `_gid` - Gebruikt om gebruikers te onderscheiden (verloopt na 24 uur)
+
+Deze cookies verzamelen informatie over hoe bezoekers onze website gebruiken, zoals welke pagina's het meest worden bezocht. Alle informatie die door deze cookies wordt verzameld, is geaggregeerd en daarom anoniem.
+
+### 10.2 Cookies beheren
+
+Je kunt cookies op elk moment weigeren of verwijderen via je browserinstellingen:
+- **Chrome:** Instellingen > Privacy en beveiliging > Cookies en andere sitegegevens
+- **Firefox:** Opties > Privacy en beveiliging > Cookies en sitegegevens
+- **Safari:** Voorkeuren > Privacy > Cookies en websitegegevens
+- **Edge:** Instellingen > Cookies en sitegegevens
+
+Je kunt ook Google Analytics uitschakelen via: [tools.google.com/dlpage/gaoptout](https://tools.google.com/dlpage/gaoptout)
+
+**Let op:** Het blokkeren van cookies kan de functionaliteit van de website beïnvloeden.
 
 ## 11. Externe links
 
@@ -130,7 +159,7 @@ Onze website kan links bevatten naar externe websites. We zijn niet verantwoorde
 
 We kunnen deze privacyverklaring van tijd tot tijd aanpassen. De meest recente versie vind je altijd op deze pagina. Materiële wijzigingen communiceren we via e-mail aan bestaande klanten.
 
-**Datum laatste wijziging:** 9 oktober 2025
+**Datum laatste wijziging:** 14 november 2025
 
 ## 13. Vragen?
 
