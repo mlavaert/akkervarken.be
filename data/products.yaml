@@ -105,3 +105,27 @@ products:
     weight: "per kg"
     packaging_pieces: 1
     packaging_grams: 500
+
+  - id: "hespengebraad"
+    name: "Hespengebraad"
+    description: "Sappig hespengebraad van varken. Vacuüm verpakt."
+    price: 21.00
+    weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 1000
+
+  - id: "carre-gebraad"
+    name: "Carré Gebraad"
+    description: "Mals carré gebraad van varken. Vacuüm verpakt."
+    price: 21.00
+    weight: "per kg"
+    packaging_pieces: 1
+    packaging_grams: 1000
+
+  - id: "varkenspoot"
+    name: "Varkenspoot"
+    description: "Varkenspoot. Vacuüm verpakt."
+    price: 3.00
+    weight: "per 2 stuks"
+    packaging_pieces: 2
+    packaging_grams: 800

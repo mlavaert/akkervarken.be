@@ -19,6 +19,9 @@ batches:
       - product-id: "gehakt"
       - product-id: "zwarte-pens"
       - product-id: "varkenshaas"
+      - product-id: "hespengebraad"
+      - product-id: "carre-gebraad"
+      - product-id: "varkenspoot"
 
   - id: "january-2026"
     name: "Januari 2026"
@@ -40,6 +43,9 @@ batches:
       - product-id: "gehakt"
       - product-id: "zwarte-pens"
       - product-id: "varkenshaas"
+      - product-id: "hespengebraad"
+      - product-id: "carre-gebraad"
+      - product-id: "varkenspoot"
 
 # Freezer section - products from recent slaughters available for immediate pickup
 # No specific pickup dates - customers arrange pickup when ordering
@@ -57,5 +63,8 @@ freezer:
     - product-id: "boerenworst"
     - product-id: "gehakt"
     - product-id: "zwarte-pens"
+    - product-id: "hespengebraad"
+    - product-id: "carre-gebraad"
+    - product-id: "varkenspoot"
   # When freezer is empty, set available-products to an empty array: []
   #
