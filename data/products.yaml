@@ -22,6 +22,8 @@ products:
         - 750g stoofvlees
         - 1kg gehakt
 
+      Alle producten zijn vacuüm verpakt.
+
       _**Let op, geen eenheidsworst!** Elk varken groeit op zijn eigen tempo en heeft
         zijn eigen formaat. We slachten niet op vaste gewichten zoals in de
         industrie, maar wanneer het dier er klaar voor is. Daardoor kan de
@@ -35,7 +37,7 @@ products:
 
   - id: "filetkotelet"
     name: "Filetkotelet"
-    description: "Malse filetkotelet van varken"
+    description: "Malse filetkotelet van varken. Vacuüm verpakt."
     price: 19.50
     weight: "per kg"
     packaging_pieces: 2
@@ -43,7 +45,7 @@ products:
 
   - id: "spieringkotelet"
     name: "Spieringkotelet"
-    description: "Sappige spieringkotelet van varken"
+    description: "Sappige spieringkotelet van varken. Vacuüm verpakt."
     price: 19.50
     weight: "per kg"
     packaging_pieces: 1
@@ -51,7 +53,7 @@ products:
 
   - id: "stoofvlees"
     name: "Stoofvlees"
-    description: "Mals stoofvlees van varken"
+    description: "Mals stoofvlees van varken. Vacuüm verpakt."
     price: 19.50
     weight: "per kg"
     packaging_pieces: 1
@@ -59,7 +61,7 @@ products:
 
   - id: "spek"
     name: "Spek"
-    description: "Vers spek van varken"
+    description: "Vers spek van varken. Vacuüm verpakt."
     price: 17.50
     weight: "per kg"
     packaging_pieces: 4
@@ -67,7 +69,7 @@ products:
 
   - id: "hamburger"
     name: "Hamburger"
-    description: "Hamburgers van varkensvlees"
+    description: "Hamburgers van varkensvlees. Vacuüm verpakt."
     price: 17.50
     weight: "per kg"
     packaging_pieces: 2
@@ -75,7 +77,7 @@ products:
 
   - id: "boerenworst"
     name: "Boerenworst"
-    description: "Verse boerenworst van varken"
+    description: "Verse boerenworst van varken. Vacuüm verpakt."
     price: 17.50
     weight: "per kg"
     packaging_pieces: 4
@@ -83,7 +85,7 @@ products:
 
   - id: "gehakt"
     name: "Gehakt"
-    description: "100% varkensgehakt"
+    description: "100% varkensgehakt. Vacuüm verpakt."
     price: 15.00
     weight: "per kg"
     packaging_pieces: 1
@@ -91,7 +93,7 @@ products:
 
   - id: "zwarte-pens"
     name: "Zwarte Pens"
-    description: "Zwarte pens van varken"
+    description: "Zwarte pens van varken. Vacuüm verpakt."
     price: 4.50
     weight: "per 2 stuks"
     packaging_pieces: 2
@@ -99,7 +101,7 @@ products:
 
   - id: "varkenshaas"
     name: "Varkenshaas"
-    description: "Malse varkenshaas"
+    description: "Malse varkenshaas. Vacuüm verpakt."
     price: 26.00
     weight: "per kg"
     packaging_pieces: 1

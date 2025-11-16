@@ -321,6 +321,22 @@ main > a:hover, #send-order:hover {
 }
 
 /* Webshop Styles */
+.product-info-banner {
+    margin: 20px 0;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, rgba(106, 142, 106, 0.08) 0%, rgba(106, 142, 106, 0.12) 100%);
+    border-left: 4px solid #6a8e6a;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(106, 142, 106, 0.1);
+}
+
+.product-info-banner p {
+    margin: 0;
+    color: #4a5c4a;
+    font-size: 1.05em;
+    line-height: 1.5;
+}
+
 .order-instructions {
     margin: 20px 0 30px;
     border: 2px solid rgba(106, 142, 106, 0.2);
