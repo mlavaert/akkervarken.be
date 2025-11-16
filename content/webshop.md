@@ -8,4 +8,4 @@ image: "/img/slide2.jpg"
 
 # Bestel ons varkensvlees
 
-Selecteer hieronder je gewenste producten en plaats je bestelling.
+Selecteer hieronder je gewenste producten en plaats je bestelling. Staat je gewenste product er niet tussen? Neem gerust [contact](/contact) met ons op voor specifieke wensen en op maat gemaakte bestellingen.
