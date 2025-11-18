@@ -13,22 +13,12 @@ products:
   - id: "pakket-klein"
     name: "Varkensvlees Pakket"
     description: >
-      Gemengd pakket met verschillende stukken van het varken:
-        - 2x Filetkotelet
-        - 2x Spieringkotelet
-        - 4x Worst
-        - 4x Hamburger
-        - 8x Spek
-        - 750g stoofvlees
-        - 1kg gehakt
+      Gemengd pakket met verschillende stukken van het varken. Het pakket bevat
+      altijd: filetkotelet, spiering, spek en gehakt. Verder wordt het
+      gevarieerd met hespelapjes, stoofvlees, hamburgers, blinde vink,
+      boerenworst of chipolata.
 
       Alle producten zijn vacuüm verpakt.
-
-      _**Let op, geen eenheidsworst!** Elk varken groeit op zijn
-      eigen tempo en heeft zijn eigen formaat. Daardoor kan de
-      samenstelling en het gewicht van je pakket wat variëren.
-      Dat maakt elk pakket uniek - net zoals onze varkens!_
-
     price: 17.50
     weight: "per kg"
     packaging_pieces: 1
@@ -81,6 +71,22 @@ products:
     weight: "per kg"
     packaging_pieces: 4
     packaging_grams: 500
+
+  - id: "chipolata"
+    name: "Chipolata"
+    description: "Verse chiploatas van varken"
+    price: 17.50
+    weight: "per kg"
+    packaging_pieces: 4
+    packaging_grams: 500
+
+  - id: "blinde-vink"
+    name: "Blinde Vink"
+    description: "Blinde vinken van varkensvlees"
+    price: 18.50
+    weight: "per kg"
+    packaging_pieces: 2
+    packaging_grams: 300
 
   - id: "gehakt"
     name: "Gehakt"
