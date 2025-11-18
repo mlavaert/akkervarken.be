@@ -1,9 +1,23 @@
 let cart = {};
-let currentBatch = null; // Track which batch is currently selected
+let currentBatch = null;
 
-// Helper function to format price in euros
+// Helper functions
 function formatPrice(price) {
     return '€' + parseFloat(price).toFixed(2).replace('.', ',');
+}
+
+function getItemPrice(item) {
+    return item.expectedPrice > 0 ? item.expectedPrice : item.price;
+}
+
+function calculateCartTotals() {
+    let totalItems = 0;
+    let totalPrice = 0;
+    Object.values(cart).forEach(item => {
+        totalItems += item.quantity;
+        totalPrice += getItemPrice(item) * item.quantity;
+    });
+    return { totalItems, totalPrice };
 }
 
 // Scroll to a specific batch and open it
@@ -26,22 +40,17 @@ function scrollToBatch(batchId) {
 
 function toggleBatch(header) {
     const batch = header.parentElement;
-    const content = batch.querySelector('.batch-content');
     const icon = header.querySelector('.toggle-icon');
-    const allBatches = document.querySelectorAll('.batch');
 
     // If this batch is already open, don't close it (keep at least one open)
-    if (batch.classList.contains('open')) {
-        return;
-    }
+    if (batch.classList.contains('open')) return;
 
     // Close all other batches
-    allBatches.forEach(otherBatch => {
+    document.querySelectorAll('.batch').forEach(otherBatch => {
         if (otherBatch !== batch) {
             otherBatch.classList.remove('open');
             otherBatch.classList.add('closed');
-            const otherIcon = otherBatch.querySelector('.toggle-icon');
-            otherIcon.textContent = '+';
+            otherBatch.querySelector('.toggle-icon').textContent = '+';
         }
     });
 
@@ -72,14 +81,15 @@ function updateQuantity(productId, quantity) {
         // Track remove_from_cart event
         if (oldQuantity > 0 && window.gtag) {
             const removedItem = cart[productId];
+            const itemPrice = getItemPrice(removedItem);
             window.gtag('event', 'remove_from_cart', {
                 currency: 'EUR',
-                value: (removedItem.expectedPrice > 0 ? removedItem.expectedPrice : removedItem.price) * removedItem.quantity,
+                value: itemPrice * removedItem.quantity,
                 items: [{
                     item_id: productId,
                     item_name: removedItem.name,
                     item_category: removedItem.batch,
-                    price: removedItem.expectedPrice > 0 ? removedItem.expectedPrice : removedItem.price,
+                    price: itemPrice,
                     quantity: removedItem.quantity
                 }]
             });
@@ -137,16 +147,17 @@ function updateQuantity(productId, quantity) {
             expectedPrice: expectedPrice
         };
 
-        // Track add_to_cart event (only when item is first added, not on quantity increase)
+        // Track add_to_cart event (only when item is first added)
         if (oldQuantity === 0 && window.gtag) {
+            const itemPrice = expectedPrice > 0 ? expectedPrice : price;
             window.gtag('event', 'add_to_cart', {
                 currency: 'EUR',
-                value: expectedPrice > 0 ? expectedPrice : price,
+                value: itemPrice,
                 items: [{
                     item_id: productId,
                     item_name: product.dataset.name,
                     item_category: productBatch,
-                    price: expectedPrice > 0 ? expectedPrice : price,
+                    price: itemPrice,
                     quantity: 1
                 }]
             });
@@ -207,43 +218,13 @@ function decreaseQuantity(productId) {
     }
 }
 
-// Functions for modifying from order summary
-function increaseQuantityFromSummary(productId) {
-    increaseQuantity(productId);
-}
-
-function decreaseQuantityFromSummary(productId) {
-    decreaseQuantity(productId);
-}
-
-function removeFromCart(productId) {
-    // Set quantity to 0 which will remove it from cart
-    updateQuantity(productId, 0);
-}
-
 function updateOrderSummary() {
     const orderItems = document.getElementById('order-items');
-    const orderTotal = document.getElementById('order-total');
-    const sendButton = document.getElementById('send-order');
     const orderSummary = document.querySelector('.order-summary');
-    const orderSummaryTitle = document.getElementById('order-summary-title');
     const batches = document.querySelector('.batches');
-    const termsContainer = document.getElementById('terms-agreement-container');
-    const termsCheckbox = document.getElementById('terms-checkbox');
 
     if (Object.keys(cart).length === 0) {
-        orderItems.innerHTML = '<p>Geen items geselecteerd</p>';
-        orderTotal.innerHTML = '';
-        sendButton.style.display = 'none';
-        if (orderSummaryTitle) {
-            orderSummaryTitle.textContent = 'Bestelling';
-        }
-        if (termsContainer) {
-            termsContainer.style.display = 'none';
-            if (termsCheckbox) {
-                termsCheckbox.checked = false;
-            }
-        }
+        orderItems.innerHTML = '';
         orderSummary.classList.remove('has-items');
         if (batches) {
             batches.classList.remove('has-order');
@@ -257,77 +238,124 @@ function updateOrderSummary() {
         batches.classList.add('has-order');
     }
 
+    const { totalItems, totalPrice } = calculateCartTotals();
+
     // Track view_cart event when cart has items
     if (window.gtag) {
-        const cartItems = Object.entries(cart).map(([productId, item]) => ({
-            item_id: productId,
-            item_name: item.name,
-            item_category: item.batch,
-            price: item.expectedPrice > 0 ? item.expectedPrice : item.price,
-            quantity: item.quantity
-        }));
-
-        const cartValue = Object.values(cart).reduce((sum, item) => {
-            const price = item.expectedPrice > 0 ? item.expectedPrice : item.price;
-            return sum + (price * item.quantity);
-        }, 0);
-
         window.gtag('event', 'view_cart', {
             currency: 'EUR',
-            value: cartValue,
-            items: cartItems
+            value: totalPrice,
+            items: Object.entries(cart).map(([productId, item]) => ({
+                item_id: productId,
+                item_name: item.name,
+                item_category: item.batch,
+                price: getItemPrice(item),
+                quantity: item.quantity
+            }))
         });
     }
 
-    // Get pickup info from first item (all items in cart have same batch since only one batch/freezer allowed)
+    // Compact summary - single line layout
+    orderItems.innerHTML = `
+        <div class="compact-cart-summary">
+            <span class="cart-batch-name">${currentBatch}</span>
+            <span class="cart-separator">|</span>
+            <span class="cart-item-count">${totalItems} stuks</span>
+            <span class="cart-total-price">${formatPrice(totalPrice)}</span>
+            <button id="send-order" onclick="showCheckout()">Bestellen</button>
+        </div>
+    `;
+}
+
+function showCheckout() {
+    if (Object.keys(cart).length === 0) {
+        alert('Selecteer eerst producten om te bestellen.');
+        return;
+    }
+
+    // Populate checkout order summary
+    populateCheckoutSummary();
+
+    // Show the checkout overlay
+    const overlay = document.getElementById('checkout-overlay');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+    // Clear any previous form inputs
+    document.getElementById('form-name').value = '';
+    document.getElementById('form-phone').value = '';
+    document.getElementById('form-notes').value = '';
+    document.getElementById('checkout-terms-checkbox').checked = false;
+
+    // Update submit button state
+    updateCheckoutSubmitButton();
+
+    // Track begin_checkout event
+    if (window.gtag) {
+        const firstItem = Object.values(cart)[0];
+        const batchName = firstItem.batch;
+        const { totalPrice } = calculateCartTotals();
+
+        window.gtag('event', 'begin_checkout', {
+            currency: 'EUR',
+            value: totalPrice,
+            items: Object.entries(cart).map(([productId, item]) => ({
+                item_id: productId,
+                item_name: item.name,
+                item_category: batchName,
+                price: getItemPrice(item),
+                quantity: item.quantity
+            }))
+        });
+    }
+}
+
+function hideCheckout() {
+    const overlay = document.getElementById('checkout-overlay');
+    overlay.style.display = 'none';
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+function populateCheckoutSummary() {
+    const checkoutItems = document.getElementById('checkout-order-items');
+    const checkoutTotal = document.getElementById('checkout-order-total');
+
+    // Get batch name and pickup info from first item
     const firstItem = Object.values(cart)[0];
-    let pickupSlotsHtml = '';
+    const batchName = firstItem.batch;
+    const batchType = firstItem.batchType || 'regular';
 
-    if (firstItem.batchType === 'freezer') {
-        pickupSlotsHtml = `<div class="pickup-slot-item">${firstItem.pickupText}</div>`;
+    // Build pickup info text
+    let pickupInfo = '';
+    if (batchType === 'freezer') {
+        pickupInfo = firstItem.pickupText;
     } else {
-        pickupSlotsHtml = firstItem.pickupSlots.map(slot => `<div class="pickup-slot-item">${slot.date} om ${slot.time}</div>`).join('');
+        pickupInfo = firstItem.pickupSlots.map(slot => `${slot.date} om ${slot.time}`).join(', ');
     }
 
-    // Update the order summary title with batch name
-    if (orderSummaryTitle) {
-        orderSummaryTitle.innerHTML = `Bestelling <small>(${currentBatch})</small>`;
-    }
-
-    // Since we only allow one batch, this is simplified
-    let html = `<div class="order-batch"><div class="order-items-list">`;
-    let totalItems = 0;
-    let totalPrice = 0;
+    const { totalItems, totalPrice } = calculateCartTotals();
+    let html = '<div class="order-items-list">';
+    let orderDetails = '';
 
     for (const [productId, item] of Object.entries(cart)) {
-        // Use expectedPrice if available (for per kg items), otherwise use the fixed price
-        const pricePerItem = item.expectedPrice > 0 ? item.expectedPrice : item.price;
+        const pricePerItem = getItemPrice(item);
         const itemTotal = pricePerItem * item.quantity;
-        totalPrice += itemTotal;
-        totalItems += item.quantity;
 
-        // Build packaging info text and price per kg info
+        // Build packaging info text
         let packagingText = '';
-        let pricePerKgText = '';
-
         if (item.expectedPrice > 0) {
-            // For per kg items, show packaging and price per kg
+            // For per kg items
             if (item.packagingGrams > 0) {
                 if (item.packagingPieces > 1) {
-                    packagingText = `<span class="order-item-packaging">${item.packagingPieces} stuks × ±${item.packagingGrams}g</span>`;
+                    packagingText = `${item.packagingPieces} stuks × ±${item.packagingGrams}g`;
                 } else {
-                    packagingText = `<span class="order-item-packaging">±${item.packagingGrams}g per pakket</span>`;
+                    packagingText = `±${item.packagingGrams}g`;
                 }
             }
-            pricePerKgText = `<span class="order-item-per-kg">${formatPrice(item.price)}/kg</span>`;
         } else {
             // For fixed-price items
-            if (item.packagingGrams > 0) {
-                if (item.packagingPieces > 1) {
-                    packagingText = `<span class="order-item-packaging">${item.packagingPieces} stuks × ±${item.packagingGrams}g</span>`;
-                } else {
-                    packagingText = `<span class="order-item-packaging">±${item.packagingGrams}g</span>`;
-                }
+            if (item.packagingGrams > 0 && item.packagingPieces > 1) {
+                packagingText = `${item.packagingPieces} stuks`;
             }
         }
 
@@ -336,85 +364,84 @@ function updateOrderSummary() {
                 <div class="order-item-info">
                     <div class="order-item-name">${item.name}</div>
                     <div class="order-item-details">
-                        ${packagingText}
-                        ${pricePerKgText}
+                        ${packagingText ? `<span class="order-item-packaging-small">${packagingText}</span>` : ''}
                         <span class="order-item-price">${formatPrice(itemTotal)}</span>
                     </div>
                 </div>
                 <div class="order-item-controls">
-                    <button type="button" class="order-qty-btn" onclick="decreaseQuantityFromSummary('${productId}')" ${item.quantity <= 1 ? '' : ''}>−</button>
-                    <span class="order-qty-display">${item.quantity}</span>
-                    <button type="button" class="order-qty-btn" onclick="increaseQuantityFromSummary('${productId}')">+</button>
-                    <button type="button" class="order-remove-btn" onclick="removeFromCart('${productId}')" title="Verwijderen">×</button>
+                    <button type="button" class="order-qty-btn-small" onclick="decreaseQuantityFromCheckout('${productId}')">−</button>
+                    <span class="order-qty-display-small" id="checkout-qty-${productId}">${item.quantity}</span>
+                    <button type="button" class="order-qty-btn-small" onclick="increaseQuantityFromCheckout('${productId}')">+</button>
                 </div>
             </div>
         `;
     }
-    html += '</div></div>';
+    html += '</div>';
 
-    orderItems.innerHTML = html;
-    orderTotal.innerHTML = `
-        <div class="order-summary-footer">
-            <div class="pickup-info">
-                <div class="pickup-batch"><strong>Batch:</strong> ${currentBatch}</div>
-                <div class="pickup-slots">
-                    <div class="pickup-slots-header">📦 <strong>Ophalen:</strong></div>
-                    ${pickupSlotsHtml}
-                </div>
-            </div>
-            <div class="total-summary">
-                <div class="total-label">Totaal:</div>
-                <div class="total-amount">
-                    <span class="total-price">${formatPrice(totalPrice)}</span>
-                    <small>${totalItems} pakket(ten)</small>
-                </div>
-            </div>
+    checkoutItems.innerHTML = html;
+    checkoutTotal.innerHTML = `
+        <div class="pickup-batch"><strong>Batch:</strong> ${batchName}</div>
+        <div class="pickup-info-text"><strong>📦 Ophalen:</strong> ${pickupInfo}</div>
+        <div class="total-line">
+            <span class="total-label">Totaal:</span>
+            <span class="total-price">${formatPrice(totalPrice)}</span>
         </div>
+        <div class="total-items">${totalItems} pakket(ten)</div>
     `;
-
-    // Show terms agreement container
-    if (termsContainer) {
-        termsContainer.style.display = 'block';
-    }
-
-    // Enable/disable send button based on checkbox state
-    toggleSendButton();
 }
 
-function toggleSendButton() {
-    const sendButton = document.getElementById('send-order');
-    const termsCheckbox = document.getElementById('terms-checkbox');
+function increaseQuantityFromCheckout(productId) {
+    increaseQuantity(productId);
+    // Update the checkout display
+    const checkoutQty = document.getElementById(`checkout-qty-${productId}`);
+    if (checkoutQty && cart[productId]) {
+        checkoutQty.textContent = cart[productId].quantity;
+    }
+    // Refresh checkout summary to update totals
+    populateCheckoutSummary();
+}
 
-    if (sendButton && termsCheckbox) {
-        if (termsCheckbox.checked) {
-            sendButton.disabled = false;
-            sendButton.style.display = 'block';
+function decreaseQuantityFromCheckout(productId) {
+    decreaseQuantity(productId);
+
+    // If item was removed, refresh the entire checkout
+    if (!cart[productId]) {
+        if (Object.keys(cart).length === 0) {
+            // Cart is empty, close checkout
+            hideCheckout();
         } else {
-            sendButton.disabled = true;
-            sendButton.style.display = 'block';
+            // Refresh checkout summary
+            populateCheckoutSummary();
         }
+    } else {
+        // Update the checkout display
+        const checkoutQty = document.getElementById(`checkout-qty-${productId}`);
+        if (checkoutQty) {
+            checkoutQty.textContent = cart[productId].quantity;
+        }
+        // Refresh checkout summary to update totals
+        populateCheckoutSummary();
     }
 }
 
-function sendOrder() {
-    if (Object.keys(cart).length === 0) {
-        alert('Selecteer eerst producten om te bestellen.');
-        return;
-    }
+function updateCheckoutSubmitButton() {
+    const submitBtn = document.getElementById('checkout-submit');
+    const termsCheckbox = document.getElementById('checkout-terms-checkbox');
+    const nameInput = document.getElementById('form-name');
+    const phoneInput = document.getElementById('form-phone');
 
-    // Check if terms are accepted
-    const termsCheckbox = document.getElementById('terms-checkbox');
-    if (termsCheckbox && !termsCheckbox.checked) {
-        alert('Je moet akkoord gaan met de algemene voorwaarden om te bestellen.');
-        return;
+    if (submitBtn && termsCheckbox && nameInput && phoneInput) {
+        const isValid = termsCheckbox.checked &&
+                       nameInput.value.trim() !== '' &&
+                       phoneInput.value.trim() !== '';
+        submitBtn.disabled = !isValid;
     }
+}
 
-    // Build email body with regular newlines first
+function buildOrderEmailBody(name, phone, notes) {
+    // Build email body
     let emailBody = 'Beste Akkervarken.be,\n\n';
     emailBody += 'Hierbij mijn bestelling:\n\n';
-
-    let totalItems = 0;
-    let totalPrice = 0;
 
     // Get batch name and pickup info from first item
     const firstItem = Object.values(cart)[0];
@@ -434,9 +461,11 @@ function sendOrder() {
 
     emailBody += '\nProducten:\n';
 
+    let totalItems = 0;
+    let totalPrice = 0;
+
     for (const [productId, item] of Object.entries(cart)) {
-        // Use expectedPrice if available (for per kg items), otherwise use the fixed price
-        const pricePerItem = item.expectedPrice > 0 ? item.expectedPrice : item.price;
+        const pricePerItem = getItemPrice(item);
         const itemTotal = pricePerItem * item.quantity;
         totalPrice += itemTotal;
         totalItems += item.quantity;
@@ -466,31 +495,202 @@ function sendOrder() {
 
     emailBody += `\nTotaal: ${formatPrice(totalPrice)} (${totalItems} pakket(ten))\n\n`;
     emailBody += 'Betaling bij afhaling.\n\n';
-    emailBody += 'Graag bevestiging van deze bestelling.\n\n';
-    emailBody += 'Met vriendelijke groeten,\n';
-    emailBody += '[Vul hier je naam in]';
 
+    if (notes) {
+        emailBody += `Opmerkingen:\n${notes}\n\n`;
+    }
+
+    emailBody += 'Contactgegevens:\n';
+    emailBody += `Naam: ${name}\n`;
+    emailBody += `Telefoon: ${phone}\n`;
+    emailBody += '\nGraag bevestiging van deze bestelling.\n\n';
+    emailBody += 'Met vriendelijke groeten,\n';
+    emailBody += name;
+
+    return { emailBody, batchName, totalPrice };
+}
+
+function showMailtoFallback(emailBody, subject) {
+    // Get phone number from overlay data attribute
+    const overlay = document.getElementById('checkout-overlay');
+    const phoneNumber = overlay.dataset.phone || '+32494185076';
+    const phoneDisplay = phoneNumber;
+    const whatsappLink = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Ik wil graag bestellen bij Akkervarken.be')}`;
+
+    // Replace the checkout content with fallback instructions
+    const checkoutContent = document.querySelector('.checkout-content');
+    checkoutContent.innerHTML = `
+        <div style="grid-column: 1 / -1;">
+            <div class="mailto-fallback">
+                <h4>⚠️ E-mailclient niet beschikbaar</h4>
+                <p class="mailto-fallback-text">
+                    Het lijkt erop dat je geen e-mailclient hebt geconfigureerd. Geen probleem!
+                    Je kunt je bestelling handmatig versturen naar <strong>info@akkervarken.be</strong>.
+                </p>
+
+                <p class="mailto-fallback-text">
+                    Hieronder vind je alle details van je bestelling. Kopieer deze en plak ze in een e-mail:
+                </p>
+
+                <div class="order-details-box" id="order-details-text">${emailBody}</div>
+
+                <div class="fallback-actions">
+                    <button class="btn-copy" onclick="copyOrderDetails()">
+                        <span>📋</span>
+                        <span id="copy-btn-text">Kopieer bestelling</span>
+                    </button>
+                    <a href="mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}"
+                       class="btn-copy"
+                       style="text-decoration: none;">
+                        <span>✉️</span>
+                        <span>Probeer opnieuw</span>
+                    </a>
+                </div>
+
+                <div class="contact-info-box">
+                    <strong>Alternatieve contactmethoden:</strong><br>
+                    📞 Bel ons op <a href="tel:${phoneNumber}" style="color: #6a8e6a; font-weight: 600;">${phoneDisplay}</a><br>
+                    💬 <a href="${whatsappLink}" target="_blank" style="color: #6a8e6a; font-weight: 600;">Verstuur via WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function copyOrderDetails() {
+    const orderText = document.getElementById('order-details-text').textContent;
+    const copyBtn = document.getElementById('copy-btn-text');
+    const copyButton = event.currentTarget;
+
+    navigator.clipboard.writeText(orderText).then(() => {
+        // Show success state
+        copyBtn.textContent = '✓ Gekopieerd!';
+        copyButton.classList.add('copied');
+
+        // Reset after 3 seconds
+        setTimeout(() => {
+            copyBtn.textContent = 'Kopieer bestelling';
+            copyButton.classList.remove('copied');
+        }, 3000);
+    }).catch(err => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = orderText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            copyBtn.textContent = '✓ Gekopieerd!';
+            copyButton.classList.add('copied');
+            setTimeout(() => {
+                copyBtn.textContent = 'Kopieer bestelling';
+                copyButton.classList.remove('copied');
+            }, 3000);
+        } catch (err) {
+            alert('Kopiëren mislukt. Selecteer de tekst handmatig en druk op Ctrl+C (of Cmd+C op Mac).');
+        }
+        document.body.removeChild(textArea);
+    });
+}
+
+function submitOrder() {
+    if (Object.keys(cart).length === 0) {
+        alert('Selecteer eerst producten om te bestellen.');
+        return;
+    }
+
+    // Get form values
+    const name = document.getElementById('form-name').value.trim();
+    const phone = document.getElementById('form-phone').value.trim();
+    const notes = document.getElementById('form-notes').value.trim();
+    const termsCheckbox = document.getElementById('checkout-terms-checkbox');
+
+    // Validate
+    if (!name || !phone) {
+        alert('Vul alstublieft je naam en telefoonnummer in.');
+        return;
+    }
+
+    if (!termsCheckbox.checked) {
+        alert('Je moet akkoord gaan met de algemene voorwaarden om te bestellen.');
+        return;
+    }
+
+    // Build email body
+    const { emailBody, batchName, totalPrice } = buildOrderEmailBody(name, phone, notes);
     const subject = `Bestelling Akkervarken.be - ${batchName}`;
-    // Properly encode both subject and body
     const mailtoLink = `mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
     // Track conversion event with Google Analytics
     if (window.gtag) {
-        // GA4 e-commerce event (can be imported as conversion in Google Ads when linked)
-        window.gtag('event', 'begin_checkout', {
+        window.gtag('event', 'purchase', {
             currency: 'EUR',
             value: totalPrice,
             items: Object.entries(cart).map(([productId, item]) => ({
                 item_id: productId,
                 item_name: item.name,
                 item_category: batchName,
-                price: item.expectedPrice > 0 ? item.expectedPrice : item.price,
+                price: getItemPrice(item),
                 quantity: item.quantity
             }))
         });
     }
 
+    // Instead of trying to detect failure, show a helper message
+    // and give users an easy way to access the fallback if needed
+    showOrderConfirmationWithFallback(emailBody, subject, mailtoLink);
+}
+
+function showOrderConfirmationWithFallback(emailBody, subject, mailtoLink) {
+    // Replace checkout content with confirmation and fallback option
+    const checkoutContent = document.querySelector('.checkout-content');
+
+    checkoutContent.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px;">
+            <div style="font-size: 3em; margin-bottom: 20px;">✅</div>
+            <h3 style="color: #6a8e6a; margin-bottom: 16px;">Bestelling wordt geopend in je e-mailprogramma</h3>
+            <p style="color: #6b7c6b; margin-bottom: 24px; line-height: 1.6;">
+                Je e-mailprogramma zou nu moeten openen met een vooraf ingevulde bestelling.<br>
+                Controleer de gegevens en verstuur de e-mail om je bestelling af te ronden.
+            </p>
+
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px;">
+                <a href="${mailtoLink}" class="btn-primary" style="text-decoration: none;">
+                    ✉️ Open e-mail opnieuw
+                </a>
+                <button type="button" class="btn-secondary" onclick="showManualFallback('${encodeURIComponent(emailBody)}', '${encodeURIComponent(subject)}')">
+                    📋 Handmatig versturen
+                </button>
+            </div>
+
+            <details style="max-width: 600px; margin: 0 auto; text-align: left;">
+                <summary style="cursor: pointer; padding: 12px; background: rgba(106, 142, 106, 0.05); border-radius: 8px; margin-bottom: 12px;">
+                    <strong style="color: #6a8e6a;">❓ Werkt het niet? Klik hier voor hulp</strong>
+                </summary>
+                <div style="padding: 16px; background: rgba(106, 142, 106, 0.03); border-radius: 8px; margin-top: 12px;">
+                    <p style="margin-bottom: 12px; color: #6b7c6b;">
+                        Als je e-mailprogramma niet opent, kan je:
+                    </p>
+                    <ul style="color: #6b7c6b; line-height: 1.8; padding-left: 20px;">
+                        <li>Op de knop <strong>"Handmatig versturen"</strong> klikken om de bestelgegevens te kopiëren</li>
+                        <li>Een andere e-mail app proberen (Gmail, Outlook, etc.)</li>
+                        <li>Ons direct contacteren via telefoon of WhatsApp</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+    `;
+
+    // Automatically try to open mailto
     window.location.href = mailtoLink;
+}
+
+function showManualFallback(encodedEmailBody, encodedSubject) {
+    const emailBody = decodeURIComponent(encodedEmailBody);
+    const subject = decodeURIComponent(encodedSubject);
+    showMailtoFallback(emailBody, subject);
 }
 
 // Track view_item_list event when page loads

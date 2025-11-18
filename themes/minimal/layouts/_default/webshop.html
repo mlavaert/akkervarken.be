@@ -234,17 +234,51 @@
     </div>
 
     <section class="order-summary">
-        <h3 id="order-summary-title">Bestelling</h3>
+        <h3 id="order-summary-title">🛒 Winkelmandje</h3>
         <div id="order-items"></div>
-        <div id="order-total"></div>
-        <div class="terms-agreement" id="terms-agreement-container" style="display: none;">
-            <label class="terms-checkbox">
-                <input type="checkbox" id="terms-checkbox" onchange="toggleSendButton()">
-                <span>Ik ga akkoord met de <a href="{{ "/algemene-voorwaarden/" | relURL }}" target="_blank">algemene voorwaarden</a></span>
-            </label>
-        </div>
-        <button id="send-order" onclick="sendOrder()" style="display: none;" disabled>Bestelling versturen via e-mail</button>
     </section>
+
+    <!-- Checkout Overlay -->
+    <div id="checkout-overlay" class="checkout-overlay" style="display: none;" data-phone="{{ .Site.Params.social.phone }}">
+        <div class="checkout-container">
+            <div class="checkout-header">
+                <h2>Bestelling afronden</h2>
+                <button class="checkout-close" onclick="hideCheckout()" aria-label="Sluiten">&times;</button>
+            </div>
+            <div class="checkout-content">
+                <div class="checkout-summary">
+                    <h3>Bestelling</h3>
+                    <div id="checkout-order-items"></div>
+                    <div class="checkout-total-summary" id="checkout-order-total"></div>
+                </div>
+                <div class="checkout-form-section">
+                    <h3>Contactgegevens</h3>
+                    <div class="form-group">
+                        <label for="form-name">Naam *</label>
+                        <input type="text" id="form-name" required oninput="updateCheckoutSubmitButton()">
+                    </div>
+                    <div class="form-group">
+                        <label for="form-phone">Telefoon *</label>
+                        <input type="tel" id="form-phone" required oninput="updateCheckoutSubmitButton()">
+                    </div>
+                    <div class="form-group">
+                        <label for="form-notes">Opmerkingen (optioneel)</label>
+                        <textarea id="form-notes" placeholder="Bijvoorbeeld: voorkeuren voor ophaaltijd, verpakking, etc."></textarea>
+                    </div>
+                    <div class="checkout-terms">
+                        <label class="terms-checkbox-checkout">
+                            <input type="checkbox" id="checkout-terms-checkbox" onchange="updateCheckoutSubmitButton()">
+                            <span>Ik ga akkoord met de <a href="{{ "/algemene-voorwaarden/" | relURL }}" target="_blank">algemene voorwaarden</a></span>
+                        </label>
+                    </div>
+                    <div class="checkout-actions">
+                        <button type="button" class="btn-secondary" onclick="hideCheckout()">Annuleren</button>
+                        <button type="button" class="btn-primary" id="checkout-submit" onclick="submitOrder()" disabled>Bestelling versturen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {{- $js := resources.Get "js/webshop.js" -}}
 {{- if $js -}}
