@@ -10,6 +10,13 @@ This is a Hugo-based static website for Akkervarken.be, a Belgian farm selling f
 **Language**: Dutch (nl-BE)
 **Location**: Opwijk, Belgium
 
+## Coding Style
+
+### YAML
+
+- Always use lisp-case
+- Always use 2-space indents
+
 ## Building and Running
 
 ### Local Development
@@ -28,6 +35,10 @@ The site auto-deploys to GitHub Pages via `.github/workflows/hugo.yml` on pushes
 - Deploys the `./public` directory
 
 ## Project Structure
+
+### Documentation
+
+Project documentation should go into the `docs` directory
 
 ### Content Architecture
 - **Content files** (`/content/*.md`): Markdown pages with front matter
