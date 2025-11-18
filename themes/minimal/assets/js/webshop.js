@@ -428,12 +428,10 @@ function updateCheckoutSubmitButton() {
     const submitBtn = document.getElementById('checkout-submit');
     const termsCheckbox = document.getElementById('checkout-terms-checkbox');
     const nameInput = document.getElementById('form-name');
-    const phoneInput = document.getElementById('form-phone');
 
-    if (submitBtn && termsCheckbox && nameInput && phoneInput) {
+    if (submitBtn && termsCheckbox && nameInput) {
         const isValid = termsCheckbox.checked &&
-                       nameInput.value.trim() !== '' &&
-                       phoneInput.value.trim() !== '';
+                       nameInput.value.trim() !== '';
         submitBtn.disabled = !isValid;
     }
 }
@@ -502,7 +500,9 @@ function buildOrderEmailBody(name, phone, notes) {
 
     emailBody += 'Contactgegevens:\n';
     emailBody += `Naam: ${name}\n`;
-    emailBody += `Telefoon: ${phone}\n`;
+    if (phone) {
+        emailBody += `Telefoon: ${phone}\n`;
+    }
     emailBody += '\nGraag bevestiging van deze bestelling.\n\n';
     emailBody += 'Met vriendelijke groeten,\n';
     emailBody += name;
@@ -608,8 +608,8 @@ function submitOrder() {
     const termsCheckbox = document.getElementById('checkout-terms-checkbox');
 
     // Validate
-    if (!name || !phone) {
-        alert('Vul alstublieft je naam en telefoonnummer in.');
+    if (!name) {
+        alert('Vul alstublieft je naam in.');
         return;
     }
 
