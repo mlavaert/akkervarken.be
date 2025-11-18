@@ -1,6 +1,7 @@
 /**
  * Cookie Consent Management for Google Analytics
  * Manages user consent for analytics cookies without using a CMP
+ * Uses Google Consent Mode v2 for improved measurement
  */
 
 (function() {
@@ -9,6 +10,30 @@
     const CONSENT_COOKIE_NAME = 'cookie_consent';
     const CONSENT_EXPIRY_DAYS = 365;
     const GA_MEASUREMENT_ID = window.GA_MEASUREMENT_ID; // Set from Hugo config
+
+    /**
+     * Initialize Google Consent Mode v2 with default deny state
+     * This must run BEFORE gtag.js loads
+     */
+    function initializeConsentMode() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            window.dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+
+        // Set default consent state to 'denied' before any tracking
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied',
+            'functionality_storage': 'denied',
+            'personalization_storage': 'denied',
+            'security_storage': 'granted', // Always allowed for security
+            'wait_for_update': 500 // Wait 500ms for consent update
+        });
+    }
 
     /**
      * Get cookie value by name
@@ -31,9 +56,10 @@
     }
 
     /**
-     * Initialize Google Analytics with gtag.js
+     * Load Google Analytics gtag.js script
+     * This can be loaded early because Consent Mode controls data collection
      */
-    function initializeGoogleAnalytics() {
+    function loadGtagScript() {
         if (!GA_MEASUREMENT_ID) {
             console.warn('Google Analytics Measurement ID not configured');
             return;
@@ -45,32 +71,52 @@
         script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
         document.head.appendChild(script);
 
-        // Initialize gtag
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            window.dataLayer.push(arguments);
-        }
-        window.gtag = gtag;
-
-        gtag('js', new Date());
-        gtag('config', GA_MEASUREMENT_ID, {
-            'anonymize_ip': true, // IP anonymization for privacy
-            'cookie_flags': 'SameSite=Lax;Secure'
-        });
-
-        console.log('Google Analytics initialized');
+        // Configure GA4 with privacy settings
+        script.onload = function() {
+            window.gtag('js', new Date());
+            window.gtag('config', GA_MEASUREMENT_ID, {
+                'anonymize_ip': true,
+                'cookie_flags': 'SameSite=Lax;Secure',
+                'allow_google_signals': false, // Disable for privacy
+                'allow_ad_personalization_signals': false
+            });
+        };
     }
 
     /**
-     * Remove Google Analytics cookies and scripts
+     * Grant consent and update Consent Mode
      */
-    function disableGoogleAnalytics() {
-        // Disable GA by setting the disable flag
-        if (GA_MEASUREMENT_ID) {
-            window[`ga-disable-${GA_MEASUREMENT_ID}`] = true;
+    function grantConsent() {
+        if (window.gtag) {
+            window.gtag('consent', 'update', {
+                'analytics_storage': 'granted',
+                'functionality_storage': 'granted',
+                'personalization_storage': 'granted'
+            });
+            console.log('Google Analytics consent granted');
         }
+    }
 
-        // Remove GA cookies
+    /**
+     * Deny consent and update Consent Mode
+     */
+    function denyConsent() {
+        if (window.gtag) {
+            window.gtag('consent', 'update', {
+                'analytics_storage': 'denied',
+                'functionality_storage': 'denied',
+                'personalization_storage': 'denied'
+            });
+            console.log('Google Analytics consent denied');
+        }
+        // Remove any existing GA cookies
+        removeGACookies();
+    }
+
+    /**
+     * Remove Google Analytics cookies
+     */
+    function removeGACookies() {
         const gaCookies = ['_ga', '_gat', '_gid'];
         gaCookies.forEach(cookieName => {
             document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
@@ -79,8 +125,6 @@
             document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=${domain}`;
             document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.${domain}`;
         });
-
-        console.log('Google Analytics disabled and cookies removed');
     }
 
     /**
@@ -108,8 +152,8 @@
      */
     function acceptCookies() {
         setCookie(CONSENT_COOKIE_NAME, 'accepted', CONSENT_EXPIRY_DAYS);
+        grantConsent();
         hideBanner();
-        initializeGoogleAnalytics();
     }
 
     /**
@@ -117,24 +161,32 @@
      */
     function declineCookies() {
         setCookie(CONSENT_COOKIE_NAME, 'declined', CONSENT_EXPIRY_DAYS);
+        denyConsent();
         hideBanner();
-        disableGoogleAnalytics();
     }
 
     /**
      * Initialize consent management
      */
     function init() {
+        // Initialize Consent Mode v2 first (before GA loads)
+        initializeConsentMode();
+
+        // Load GA script immediately (Consent Mode controls data collection)
+        loadGtagScript();
+
+        // Check existing consent and update consent state accordingly
         const consentStatus = getCookie(CONSENT_COOKIE_NAME);
 
         if (consentStatus === 'accepted') {
-            // User has already accepted - load GA
-            initializeGoogleAnalytics();
+            // User has already accepted - grant consent
+            grantConsent();
         } else if (consentStatus === 'declined') {
-            // User has declined - ensure GA is disabled
-            disableGoogleAnalytics();
+            // User has declined - deny consent and remove cookies
+            denyConsent();
         } else {
             // No consent decision yet - show banner
+            // Consent Mode keeps analytics_storage as 'denied' until user decides
             showBanner();
         }
 
@@ -161,7 +213,7 @@
     // Expose function to allow users to change their consent
     window.resetCookieConsent = function() {
         document.cookie = `${CONSENT_COOKIE_NAME}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-        disableGoogleAnalytics();
+        denyConsent();
         location.reload();
     };
 

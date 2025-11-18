@@ -717,6 +717,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (items.length > 0) {
             window.gtag('event', 'view_item_list', {
+                currency: 'EUR',
                 item_list_id: 'webshop_products',
                 item_list_name: 'Webshop Producten',
                 items: items
