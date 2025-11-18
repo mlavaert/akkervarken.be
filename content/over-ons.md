@@ -6,7 +6,7 @@ image: "/img/me.jpg"
 ---
 # Over ons
 
-We zijn twee boeren met een hart voor dieren en de natuur. Al jarenlang houden
+Wij zijn Mathias en Jolien met een hart voor dieren en de natuur. Al jarenlang houden
 we **Mergellandschapen** — een robuust en zeldzaam ras dat perfect bij ons
 past. Rustig boeren, kleinschalig, en in harmonie met het landschap. Dat is
 onze stijl.

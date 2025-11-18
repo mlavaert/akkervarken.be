@@ -52,7 +52,7 @@ batches:
 # No specific pickup dates - customers arrange pickup when ordering
 freezer:
   id: "vriezer"
-  name: "Vriezer"
+  name: "Diepvries"
   pickup-location: "Wolfstede 7, 1745 Opwijk"
   pickup-text: "Op afspraak"
   available-products:
@@ -68,4 +68,3 @@ freezer:
     - product-id: "carre-gebraad"
     - product-id: "varkenspoot"
   # When freezer is empty, set available-products to an empty array: []
-  #
