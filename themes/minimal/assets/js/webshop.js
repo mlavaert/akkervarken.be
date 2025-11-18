@@ -441,23 +441,13 @@ function buildOrderEmailBody(name, phone, notes) {
     let emailBody = 'Beste Akkervarken.be,\n\n';
     emailBody += 'Hierbij mijn bestelling:\n\n';
 
-    // Get batch name and pickup info from first item
+    // Get batch info for pickup details and subject
     const firstItem = Object.values(cart)[0];
     const batchName = firstItem.batch;
     const batchType = firstItem.batchType || 'regular';
 
-    emailBody += `Batch: ${batchName}\n`;
-
-    if (batchType === 'freezer') {
-        emailBody += `Ophalen: ${firstItem.pickupText}\n`;
-    } else {
-        emailBody += 'Ophaalmomenten:\n';
-        firstItem.pickupSlots.forEach(slot => {
-            emailBody += `  - ${slot.date} om ${slot.time}\n`;
-        });
-    }
-
-    emailBody += '\nProducten:\n';
+    // List products first
+    emailBody += 'Producten:\n';
 
     let totalItems = 0;
     let totalPrice = 0;
@@ -468,44 +458,45 @@ function buildOrderEmailBody(name, phone, notes) {
         totalPrice += itemTotal;
         totalItems += item.quantity;
 
-        // Build packaging info for email
-        let packagingInfo = '';
+        // Build price info for email
         let priceInfo = '';
 
         if (item.packagingGrams > 0 && item.expectedPrice > 0) {
-            // For per kg items, show packaging and price per kg
-            if (item.packagingPieces > 1) {
-                packagingInfo = ` (${item.packagingPieces} stuks × ±${item.packagingGrams}g, ${formatPrice(item.expectedPrice)}/pakket)`;
-            } else {
-                packagingInfo = ` (±${item.packagingGrams}g, ${formatPrice(item.expectedPrice)}/pakket)`;
-            }
+            // For per kg items, show price per kg
             priceInfo = ` @ ${formatPrice(item.price)}/kg`;
         } else {
-            // For fixed-price items, just show the unit
-            packagingInfo = item.packagingGrams > 0 && item.packagingPieces > 1
-                ? ` (${item.packagingPieces} stuks)`
-                : '';
-            priceInfo = ` (${item.weight})`;
+            // For fixed-price items, no additional price info
+            priceInfo = '';
         }
 
-        emailBody += `- ${item.quantity}x ${item.name}${packagingInfo}${priceInfo} - ${formatPrice(itemTotal)}\n`;
+        emailBody += `- ${item.quantity}x ${item.name}${priceInfo} - ${formatPrice(itemTotal)}\n`;
     }
 
-    emailBody += `\nTotaal: ${formatPrice(totalPrice)} (${totalItems} pakket(ten))\n\n`;
+    emailBody += `\nTotaal: ${formatPrice(totalPrice)} (${totalItems} stuks)\n\n`;
+
+    // Pickup information
+    if (batchType === 'freezer') {
+        emailBody += `Ophalen: ${firstItem.pickupText}\n\n`;
+    } else {
+        emailBody += 'Ophaalmomenten:\n';
+        firstItem.pickupSlots.forEach(slot => {
+            emailBody += `  - ${slot.date} om ${slot.time}\n`;
+        });
+        emailBody += '\n';
+    }
+
     emailBody += 'Betaling bij afhaling.\n\n';
 
     if (notes) {
         emailBody += `Opmerkingen:\n${notes}\n\n`;
     }
 
-    emailBody += 'Contactgegevens:\n';
-    emailBody += `Naam: ${name}\n`;
-    if (phone) {
-        emailBody += `Telefoon: ${phone}\n`;
-    }
-    emailBody += '\nGraag bevestiging van deze bestelling.\n\n';
+    emailBody += 'Graag bevestiging van deze bestelling.\n\n';
     emailBody += 'Met vriendelijke groeten,\n';
     emailBody += name;
+    if (phone) {
+        emailBody += `\n${phone}`;
+    }
 
     return { emailBody, batchName, totalPrice };
 }
@@ -515,7 +506,7 @@ function showMailtoFallback(emailBody, subject) {
     const overlay = document.getElementById('checkout-overlay');
     const phoneNumber = overlay.dataset.phone || '+32494185076';
     const phoneDisplay = phoneNumber;
-    const whatsappLink = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent('Ik wil graag bestellen bij Akkervarken.be')}`;
+    const whatsappLink = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(emailBody)}`;
 
     // Replace the checkout content with fallback instructions
     const checkoutContent = document.querySelector('.checkout-content');
