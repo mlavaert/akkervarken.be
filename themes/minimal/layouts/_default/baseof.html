@@ -18,8 +18,8 @@
     {{- partial "structured-data.html" . -}}
 
     {{- /* Resource hints for external resources */ -}}
-    <link rel="preconnect" href="https://scripts.simpleanalyticscdn.com">
-    <link rel="dns-prefetch" href="https://scripts.simpleanalyticscdn.com">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
     {{- /* Use Hugo Pipes for CSS with minification and fingerprinting */ -}}
     {{- $css := resources.Get "css/style.css" -}}
@@ -66,8 +66,8 @@
                     BTW: BE0661841094
                 </p>
                 <p>
-                    <a href="mailto:{{ .Site.Params.social.email }}">{{ .Site.Params.social.email }}</a><br>
-                    <a href="tel:{{ .Site.Params.social.phone }}">{{ .Site.Params.social.phone }}</a>
+                    <a href="mailto:{{ .Site.Params.social.email }}" onclick="if(window.Analytics)window.Analytics.trackContact('email','{{ .Site.Params.social.email }}')">{{ .Site.Params.social.email }}</a><br>
+                    <a href="tel:{{ .Site.Params.social.phone }}" onclick="if(window.Analytics)window.Analytics.trackContact('phone','{{ .Site.Params.social.phone }}')">{{ .Site.Params.social.phone }}</a>
                 </p>
             </div>
             <div class="footer-section">
@@ -102,8 +102,11 @@
         <script src="{{ $cookieJS.RelPermalink }}" integrity="{{ $cookieJS.Data.Integrity }}"></script>
     {{- end -}}
 
-    <!-- 100% privacy-first analytics -->
-    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+    {{- /* Analytics Tracking Script */ -}}
+    {{- $trackingJS := resources.Get "js/tracking.js" -}}
+    {{- if $trackingJS -}}
+        {{- $trackingJS = $trackingJS | minify | fingerprint -}}
+        <script src="{{ $trackingJS.RelPermalink }}" integrity="{{ $trackingJS.Data.Integrity }}"></script>
+    {{- end -}}
 </body>
 </html>

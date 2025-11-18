@@ -78,21 +78,9 @@ function updateQuantity(productId, quantity) {
     }
 
     if (quantity <= 0) {
-        // Track remove_from_cart event
-        if (oldQuantity > 0 && window.gtag) {
-            const removedItem = cart[productId];
-            const itemPrice = getItemPrice(removedItem);
-            window.gtag('event', 'remove_from_cart', {
-                currency: 'EUR',
-                value: itemPrice * removedItem.quantity,
-                items: [{
-                    item_id: productId,
-                    item_name: removedItem.name,
-                    item_category: removedItem.batch,
-                    price: itemPrice,
-                    quantity: removedItem.quantity
-                }]
-            });
+        // Track removal if item was in cart
+        if (oldQuantity > 0 && window.Analytics) {
+            window.Analytics.trackRemoveFromCart(productId, cart[productId]);
         }
 
         delete cart[productId];
@@ -147,20 +135,13 @@ function updateQuantity(productId, quantity) {
             expectedPrice: expectedPrice
         };
 
-        // Track add_to_cart event (only when item is first added)
-        if (oldQuantity === 0 && window.gtag) {
-            const itemPrice = expectedPrice > 0 ? expectedPrice : price;
-            window.gtag('event', 'add_to_cart', {
-                currency: 'EUR',
-                value: itemPrice,
-                items: [{
-                    item_id: productId,
-                    item_name: product.dataset.name,
-                    item_category: productBatch,
-                    price: itemPrice,
-                    quantity: 1
-                }]
-            });
+        // Track add to cart (only when item is first added)
+        if (oldQuantity === 0 && window.Analytics) {
+            window.Analytics.trackAddToCart(productId, {
+                name: product.dataset.name,
+                price: price,
+                expectedPrice: expectedPrice
+            }, productBatch);
         }
     }
     updateOrderSummary();
@@ -241,18 +222,8 @@ function updateOrderSummary() {
     const { totalItems, totalPrice } = calculateCartTotals();
 
     // Track view_cart event when cart has items
-    if (window.gtag) {
-        window.gtag('event', 'view_cart', {
-            currency: 'EUR',
-            value: totalPrice,
-            items: Object.entries(cart).map(([productId, item]) => ({
-                item_id: productId,
-                item_name: item.name,
-                item_category: item.batch,
-                price: getItemPrice(item),
-                quantity: item.quantity
-            }))
-        });
+    if (window.Analytics) {
+        window.Analytics.trackViewCart(cart, totalPrice);
     }
 
     // Compact summary - single line layout
@@ -291,27 +262,24 @@ function showCheckout() {
     updateCheckoutSubmitButton();
 
     // Track begin_checkout event
-    if (window.gtag) {
+    if (window.Analytics) {
         const firstItem = Object.values(cart)[0];
         const batchName = firstItem.batch;
         const { totalPrice } = calculateCartTotals();
 
-        window.gtag('event', 'begin_checkout', {
-            currency: 'EUR',
-            value: totalPrice,
-            items: Object.entries(cart).map(([productId, item]) => ({
-                item_id: productId,
-                item_name: item.name,
-                item_category: batchName,
-                price: getItemPrice(item),
-                quantity: item.quantity
-            }))
-        });
+        window.Analytics.trackBeginCheckout(cart, batchName, totalPrice);
     }
 }
 
 function hideCheckout() {
     const overlay = document.getElementById('checkout-overlay');
+
+    // Track checkout abandonment if cart has items
+    if (Object.keys(cart).length > 0 && window.Analytics) {
+        const { totalPrice } = calculateCartTotals();
+        window.Analytics.trackCheckoutAbandonment('user_cancelled', cart, totalPrice);
+    }
+
     overlay.style.display = 'none';
     document.body.style.overflow = ''; // Restore scrolling
 }
@@ -532,7 +500,8 @@ function showMailtoFallback(emailBody, subject) {
                     </button>
                     <a href="mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}"
                        class="btn-copy"
-                       style="text-decoration: none;">
+                       style="text-decoration: none;"
+                       onclick="if(window.Analytics)window.Analytics.trackOrderFallback('retry_mailto')">
                         <span>✉️</span>
                         <span>Probeer opnieuw</span>
                     </a>
@@ -540,8 +509,8 @@ function showMailtoFallback(emailBody, subject) {
 
                 <div class="contact-info-box">
                     <strong>Alternatieve contactmethoden:</strong><br>
-                    📞 Bel ons op <a href="tel:${phoneNumber}" style="color: #6a8e6a; font-weight: 600;">${phoneDisplay}</a><br>
-                    💬 <a href="${whatsappLink}" target="_blank" style="color: #6a8e6a; font-weight: 600;">Verstuur via WhatsApp</a>
+                    📞 Bel ons op <a href="tel:${phoneNumber}" style="color: #6a8e6a; font-weight: 600;" onclick="if(window.Analytics)window.Analytics.trackContact('phone','${phoneNumber}')">${phoneDisplay}</a><br>
+                    💬 <a href="${whatsappLink}" target="_blank" style="color: #6a8e6a; font-weight: 600;" onclick="if(window.Analytics)window.Analytics.trackContact('whatsapp','${phoneNumber}')">Verstuur via WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -552,6 +521,11 @@ function copyOrderDetails() {
     const orderText = document.getElementById('order-details-text').textContent;
     const copyBtn = document.getElementById('copy-btn-text');
     const copyButton = event.currentTarget;
+
+    // Track copy action
+    if (window.Analytics) {
+        window.Analytics.trackOrderFallback('copy_order');
+    }
 
     navigator.clipboard.writeText(orderText).then(() => {
         // Show success state
@@ -614,19 +588,9 @@ function submitOrder() {
     const subject = `Bestelling Akkervarken.be - ${batchName}`;
     const mailtoLink = `mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
-    // Track conversion event with Google Analytics
-    if (window.gtag) {
-        window.gtag('event', 'purchase', {
-            currency: 'EUR',
-            value: totalPrice,
-            items: Object.entries(cart).map(([productId, item]) => ({
-                item_id: productId,
-                item_name: item.name,
-                item_category: batchName,
-                price: getItemPrice(item),
-                quantity: item.quantity
-            }))
-        });
+    // Track conversion event
+    if (window.Analytics) {
+        window.Analytics.trackPurchase(cart, batchName, totalPrice);
     }
 
     // Instead of trying to detect failure, show a helper message
@@ -648,10 +612,10 @@ function showOrderConfirmationWithFallback(emailBody, subject, mailtoLink) {
             </p>
 
             <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px;">
-                <a href="${mailtoLink}" class="btn-primary" style="text-decoration: none;">
+                <a href="${mailtoLink}" class="btn-primary" style="text-decoration: none;" onclick="if(window.Analytics)window.Analytics.trackOrderFallback('reopen_mailto')">
                     ✉️ Open e-mail opnieuw
                 </a>
-                <button type="button" class="btn-secondary" onclick="showManualFallback('${encodeURIComponent(emailBody)}', '${encodeURIComponent(subject)}')">
+                <button type="button" class="btn-secondary" onclick="if(window.Analytics)window.Analytics.trackOrderFallback('manual_send');showManualFallback('${encodeURIComponent(emailBody)}', '${encodeURIComponent(subject)}')">
                     📋 Handmatig versturen
                 </button>
             </div>
@@ -686,33 +650,22 @@ function showManualFallback(encodedEmailBody, encodedSubject) {
 
 // Track view_item_list event when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.gtag) {
-        const products = document.querySelectorAll('.product');
-        const items = [];
+    if (window.Analytics) {
+        const productElements = document.querySelectorAll('.product');
+        const products = [];
 
-        products.forEach((product, index) => {
-            const productId = product.dataset.id;
-            const productName = product.dataset.name;
-            const productPrice = parseFloat(product.dataset.price);
-            const productBatch = product.dataset.batch;
-            const expectedPrice = parseFloat(product.dataset.expectedPrice) || 0;
-
-            items.push({
-                item_id: productId,
-                item_name: productName,
-                item_category: productBatch,
-                price: expectedPrice > 0 ? expectedPrice : productPrice,
-                index: index
+        productElements.forEach((product) => {
+            products.push({
+                id: product.dataset.id,
+                name: product.dataset.name,
+                price: parseFloat(product.dataset.price),
+                batch: product.dataset.batch,
+                expectedPrice: parseFloat(product.dataset.expectedPrice) || 0
             });
         });
 
-        if (items.length > 0) {
-            window.gtag('event', 'view_item_list', {
-                currency: 'EUR',
-                item_list_id: 'webshop_products',
-                item_list_name: 'Webshop Producten',
-                items: items
-            });
+        if (products.length > 0) {
+            window.Analytics.trackProductList(products);
         }
     }
 });

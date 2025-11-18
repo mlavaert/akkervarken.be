@@ -74,6 +74,8 @@ Custom theme with these key components:
 - `assets/css/style.css` - Main stylesheet
 - `assets/js/webshop.js` - Shopping cart logic, batch validation, email ordering
 - `assets/js/slideshow.js` - Homepage image carousel
+- `assets/js/cookie-consent.js` - GDPR cookie consent management with Google Consent Mode v2
+- `assets/js/tracking.js` - Centralized analytics tracking (GA4 e-commerce events)
 
 Hugo Pipes processes these assets with minification and fingerprinting for cache-busting.
 
@@ -125,7 +127,9 @@ Key settings:
 - robots.txt enabled (`enableRobotsTXT = true`)
 - Custom SEO partial with Open Graph and Twitter Cards
 - JSON-LD structured data for LocalBusiness and products
-- Privacy-first analytics via SimpleAnalytics (not Google Analytics)
+- Google Analytics 4 (GA4) with GDPR-compliant cookie consent
+- Google Consent Mode v2 implementation for privacy compliance
+- E-commerce tracking: product views, cart actions, checkout flow, purchases
 
 ## Hugo Shortcodes
 
@@ -162,12 +166,26 @@ The shortcode is defined in `themes/minimal/layouts/shortcodes/img.html` and map
    - Pickup location
    - List of available product IDs
 
-### Webshop JavaScript Dependencies
-The `webshop.js` file must handle:
+### JavaScript Architecture
+
+**Webshop (`webshop.js`)**:
 - Quantity increase/decrease (no limits)
 - Cart total calculation
 - Batch validation (single batch per order)
 - Email order generation with proper formatting
+- Dispatches events to analytics module
+
+**Analytics (`tracking.js`)**:
+- Centralized tracking API: `window.Analytics.trackXXX()`
+- Handles all Google Analytics 4 e-commerce events
+- Respects user consent (checks for `window.gtag`)
+- Events tracked: `view_item_list`, `add_to_cart`, `remove_from_cart`, `view_cart`, `begin_checkout`, `purchase`
+
+**Cookie Consent (`cookie-consent.js`)**:
+- Implements Google Consent Mode v2
+- Shows GDPR-compliant cookie banner
+- Manages consent state and GA4 initialization
+- Provides `window.resetCookieConsent()` for user preference changes
 
 ### Content Updates
 All content is in Dutch. Key terminology:
