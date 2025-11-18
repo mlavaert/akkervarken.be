@@ -483,34 +483,49 @@ function showMailtoFallback(emailBody, subject) {
             <div class="mailto-fallback">
                 <h4>⚠️ E-mailclient niet beschikbaar</h4>
                 <p class="mailto-fallback-text">
-                    Het lijkt erop dat je geen e-mailclient hebt geconfigureerd. Geen probleem!
-                    Je kunt je bestelling handmatig versturen naar <strong>info@akkervarken.be</strong>.
+                    Het lijkt erop dat je geen e-mailclient hebt geconfigureerd. Geen probleem!<br>
+                    <strong>Verstuur je bestelling eenvoudig via WhatsApp of kopieer de gegevens handmatig.</strong>
                 </p>
 
-                <p class="mailto-fallback-text">
-                    Hieronder vind je alle details van je bestelling. Kopieer deze en plak ze in een e-mail:
-                </p>
-
-                <div class="order-details-box" id="order-details-text">${emailBody}</div>
-
-                <div class="fallback-actions">
-                    <button class="btn-copy" onclick="copyOrderDetails()">
-                        <span>📋</span>
-                        <span id="copy-btn-text">Kopieer bestelling</span>
-                    </button>
+                <div class="fallback-actions" style="margin-bottom: 24px;">
+                    <a href="${whatsappLink}"
+                       target="_blank"
+                       class="btn-whatsapp btn-whatsapp-large"
+                       style="text-decoration: none;"
+                       onclick="if(window.Analytics)window.Analytics.trackContact('whatsapp','${phoneNumber}')">
+                        <span>💬</span>
+                        <span>Verstuur via WhatsApp</span>
+                    </a>
                     <a href="mailto:info@akkervarken.be?subject=${encodeURIComponent(subject)}"
                        class="btn-copy"
                        style="text-decoration: none;"
                        onclick="if(window.Analytics)window.Analytics.trackOrderFallback('retry_mailto')">
                         <span>✉️</span>
-                        <span>Probeer opnieuw</span>
+                        <span>Open e-mail opnieuw</span>
                     </a>
                 </div>
 
-                <div class="contact-info-box">
-                    <strong>Alternatieve contactmethoden:</strong><br>
-                    📞 Bel ons op <a href="tel:${phoneNumber}" style="color: #6a8e6a; font-weight: 600;" onclick="if(window.Analytics)window.Analytics.trackContact('phone','${phoneNumber}')">${phoneDisplay}</a><br>
-                    💬 <a href="${whatsappLink}" target="_blank" style="color: #6a8e6a; font-weight: 600;" onclick="if(window.Analytics)window.Analytics.trackContact('whatsapp','${phoneNumber}')">Verstuur via WhatsApp</a>
+                <details style="margin-top: 24px;">
+                    <summary style="cursor: pointer; padding: 12px; background: rgba(133, 100, 4, 0.1); border-radius: 8px; margin-bottom: 12px; font-weight: 600; color: #856404;">
+                        📋 Of kopieer de bestelling handmatig
+                    </summary>
+                    <div>
+                        <p class="mailto-fallback-text" style="margin-bottom: 12px;">
+                            Hieronder vind je alle details van je bestelling. Kopieer deze en plak ze in een e-mail naar <strong>info@akkervarken.be</strong>:
+                        </p>
+
+                        <div class="order-details-box" id="order-details-text">${emailBody}</div>
+
+                        <button class="btn-copy" onclick="copyOrderDetails()" style="width: 100%; justify-content: center; margin-top: 12px;">
+                            <span>📋</span>
+                            <span id="copy-btn-text">Kopieer bestelling</span>
+                        </button>
+                    </div>
+                </details>
+
+                <div class="contact-info-box" style="margin-top: 24px;">
+                    <strong>Direct contact:</strong><br>
+                    📞 Bel ons op <a href="tel:${phoneNumber}" style="color: #6a8e6a; font-weight: 600;" onclick="if(window.Analytics)window.Analytics.trackContact('phone','${phoneNumber}')">${phoneDisplay}</a>
                 </div>
             </div>
         </div>
@@ -602,6 +617,11 @@ function showOrderConfirmationWithFallback(emailBody, subject, mailtoLink) {
     // Replace checkout content with confirmation and fallback option
     const checkoutContent = document.querySelector('.checkout-content');
 
+    // Get phone number for WhatsApp
+    const overlay = document.getElementById('checkout-overlay');
+    const phoneNumber = overlay.dataset.phone || '+32494185076';
+    const whatsappLink = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(emailBody)}`;
+
     checkoutContent.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px;">
             <div style="font-size: 3em; margin-bottom: 20px;">✅</div>
@@ -615,24 +635,25 @@ function showOrderConfirmationWithFallback(emailBody, subject, mailtoLink) {
                 <a href="${mailtoLink}" class="btn-primary" style="text-decoration: none;" onclick="if(window.Analytics)window.Analytics.trackOrderFallback('reopen_mailto')">
                     ✉️ Open e-mail opnieuw
                 </a>
-                <button type="button" class="btn-secondary" onclick="if(window.Analytics)window.Analytics.trackOrderFallback('manual_send');showManualFallback('${encodeURIComponent(emailBody)}', '${encodeURIComponent(subject)}')">
-                    📋 Handmatig versturen
-                </button>
+                <a href="${whatsappLink}" target="_blank" class="btn-whatsapp" style="text-decoration: none;" onclick="if(window.Analytics)window.Analytics.trackContact('whatsapp','${phoneNumber}')">
+                    💬 Verstuur via WhatsApp
+                </a>
             </div>
 
             <details style="max-width: 600px; margin: 0 auto; text-align: left;">
                 <summary style="cursor: pointer; padding: 12px; background: rgba(106, 142, 106, 0.05); border-radius: 8px; margin-bottom: 12px;">
-                    <strong style="color: #6a8e6a;">❓ Werkt het niet? Klik hier voor hulp</strong>
+                    <strong style="color: #6a8e6a;">❓ Werkt het niet? Klik hier voor meer opties</strong>
                 </summary>
                 <div style="padding: 16px; background: rgba(106, 142, 106, 0.03); border-radius: 8px; margin-top: 12px;">
-                    <p style="margin-bottom: 12px; color: #6b7c6b;">
-                        Als je e-mailprogramma niet opent, kan je:
+                    <p style="margin-bottom: 16px; color: #6b7c6b;">
+                        Als je e-mailprogramma niet opent, kan je ook:
                     </p>
-                    <ul style="color: #6b7c6b; line-height: 1.8; padding-left: 20px;">
-                        <li>Op de knop <strong>"Handmatig versturen"</strong> klikken om de bestelgegevens te kopiëren</li>
-                        <li>Een andere e-mail app proberen (Gmail, Outlook, etc.)</li>
-                        <li>Ons direct contacteren via telefoon of WhatsApp</li>
-                    </ul>
+                    <button type="button" class="btn-secondary" style="width: 100%; margin-bottom: 12px;" onclick="if(window.Analytics)window.Analytics.trackOrderFallback('manual_send');showManualFallback('${encodeURIComponent(emailBody)}', '${encodeURIComponent(subject)}')">
+                        📋 Kopieer bestelling om handmatig te versturen
+                    </button>
+                    <p style="color: #6b7c6b; font-size: 0.9em; margin-top: 12px;">
+                        Of neem direct contact op via telefoon: <a href="tel:${phoneNumber}" style="color: #6a8e6a; font-weight: 600;">${phoneNumber}</a>
+                    </p>
                 </div>
             </details>
         </div>

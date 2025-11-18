@@ -1241,6 +1241,40 @@ main > a:hover, #send-order:hover {
     transform: none;
 }
 
+/* WhatsApp Button */
+.btn-whatsapp {
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    background: linear-gradient(135deg, #25D366 0%, #20BA5A 100%);
+    color: white;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    background: linear-gradient(135deg, #20BA5A 0%, #1EA952 100%);
+}
+
+.btn-whatsapp:active {
+    transform: translateY(0);
+}
+
+.btn-whatsapp-large {
+    font-size: 1.1em;
+    padding: 16px 32px;
+    flex: 2;
+}
+
 /* Mailto Fallback */
 .mailto-fallback {
     background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0.05) 100%);
