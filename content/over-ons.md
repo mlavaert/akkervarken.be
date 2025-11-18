@@ -25,6 +25,17 @@ En zo ontstond **Akkervarken**.
 
 Onze varkens leven buiten. Met **veel ruimte, frisse lucht en zachte aarde onder hun poten**. We houden het bewust kleinschalig, zodat we elk dier de aandacht kunnen geven die het verdient. Geen nummers, maar karakters.
 
+## Werkende varkens voor een gezonde bodem
+
+Onze varkens zijn niet alleen onze dieren, ze zijn ook onze **natuurlijke helpers op het land**. Ze doen wat varkens het beste kunnen: wroeten, graven en schoffelen met hun snuit.
+
+We zetten ze in om:
+- **Velden op te ruimen na de oogst** — ze eten gewasresten en ongedierte weg
+- **Invasieve onkruiden te bestrijden** — distel, braam, akkerdistel... de varkens pakken het aan
+- **Compacte grond los te woelen** — hun natuurlijke graafwerk maakt de bodem luchtiger en gezonder
+
+Waar een tractor energie kost en de grond verdicht, zorgen varkens voor **natuurlijke bodemverbetering**. Ze mengen organisch materiaal door de grond, maken stikstof beschikbaar via hun mest, en laten een vruchtbaar stuk land achter.
+
 Door regelmatig te roteren tussen percelen houden we zowel de dieren als de bodem gezond. De varkens zijn blij, de grond wordt rijker, en wij zijn tevreden. Win-win-win!
 
 {{< img src="/img/modder-varken.jpg" alt="Blij varken" style="polaroid" >}}
