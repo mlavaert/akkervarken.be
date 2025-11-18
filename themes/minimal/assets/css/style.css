@@ -1957,3 +1957,741 @@ footer {
     }
 }
 
+/* Point of Sale (POS) Styles */
+.pos-body {
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.pos-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100vh;
+}
+
+.pos-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+/* Products Section */
+.products-section h2 {
+  color: #6a8e6a;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.product-card {
+  background: white;
+  border: 2px solid rgba(106, 142, 106, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  touch-action: manipulation;
+}
+
+.product-card:hover {
+  border-color: #6a8e6a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(106, 142, 106, 0.2);
+}
+
+.product-card:active {
+  transform: translateY(0);
+}
+
+.product-name {
+  font-weight: 600;
+  color: #4a5c4a;
+  margin-bottom: 8px;
+  font-size: 1em;
+}
+
+.product-price {
+  color: #6a8e6a;
+  font-weight: 700;
+  font-size: 1.3em;
+  margin-bottom: 4px;
+}
+
+.product-weight {
+  color: #6b7c6b;
+  font-size: 0.85em;
+}
+
+/* Sale Panel */
+.sale-panel {
+  position: sticky;
+  top: 20px;
+  background: white;
+  border: 2px solid rgba(106, 142, 106, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.sale-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(106, 142, 106, 0.2);
+}
+
+.sale-header h2 {
+  margin: 0;
+  color: #6a8e6a;
+  font-size: 1.4em;
+}
+
+.btn-new-sale {
+  background: #e8e8e8;
+  border: 2px solid rgba(106, 142, 106, 0.2);
+  color: #4a5c4a;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95em;
+  touch-action: manipulation;
+}
+
+.btn-new-sale:hover {
+  background: #d8d8d8;
+  border-color: #6a8e6a;
+}
+
+/* Sale Items */
+.sale-items {
+  min-height: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.empty-sale {
+  text-align: center;
+  color: #8a9a8a;
+  padding: 60px 20px;
+  font-style: italic;
+}
+
+.sale-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sale-item {
+  background: rgba(106, 142, 106, 0.05);
+  border: 1px solid rgba(106, 142, 106, 0.15);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.sale-item-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sale-item-name {
+  font-weight: 600;
+  color: #4a5c4a;
+  font-size: 1em;
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: #d9534f;
+  font-size: 1.8em;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.btn-remove:hover {
+  background: rgba(217, 83, 79, 0.1);
+  color: #c9302c;
+}
+
+.sale-item-details {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.9em;
+  color: #6b7c6b;
+}
+
+.sale-item-quantity {
+  font-weight: 600;
+}
+
+.sale-item-subtotal {
+  margin-left: auto;
+  color: #6a8e6a;
+  font-weight: 700;
+  font-size: 1em;
+}
+
+/* Total */
+.sale-total {
+  padding-top: 20px;
+  border-top: 2px solid rgba(106, 142, 106, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #4a5c4a;
+}
+
+.total-amount {
+  font-size: 2em;
+  font-weight: 700;
+  color: #6a8e6a;
+}
+
+/* Print Receipt Button */
+.btn-print {
+  width: 100%;
+  padding: 16px 24px;
+  margin-top: 16px;
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-print:hover {
+  background: linear-gradient(135deg, #357abd 0%, #2868a8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.btn-print:active {
+  transform: translateY(0);
+}
+
+.print-icon {
+  font-size: 1.2em;
+}
+
+/* Receipt Print Styles - Optimized for Brother QL-820NWB (62mm width) */
+.receipt-print {
+  display: none;
+}
+
+@media print {
+  /* Hide everything except receipt */
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-print,
+  .receipt-print * {
+    visibility: visible;
+  }
+
+  .receipt-print {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 62mm;
+    font-family: 'Courier New', monospace;
+    font-size: 10pt;
+    line-height: 1.3;
+    color: #000;
+    background: white;
+    padding: 5mm;
+    margin: 0;
+  }
+
+  .receipt-header {
+    text-align: center;
+    margin-bottom: 3mm;
+  }
+
+  .receipt-logo {
+    font-weight: bold;
+    font-size: 14pt;
+    letter-spacing: 1px;
+  }
+
+  .receipt-tagline {
+    font-size: 8pt;
+    margin-top: 2mm;
+  }
+
+  .receipt-divider {
+    font-size: 8pt;
+    margin: 2mm 0;
+    overflow: hidden;
+  }
+
+  .receipt-date {
+    font-size: 9pt;
+    text-align: center;
+    margin: 2mm 0;
+  }
+
+  .receipt-items {
+    margin: 3mm 0;
+  }
+
+  .receipt-item {
+    margin: 2mm 0;
+    font-size: 9pt;
+  }
+
+  .receipt-item-line1 {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+
+  .receipt-item-line2 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+    margin-top: 1mm;
+  }
+
+  .receipt-total {
+    margin: 3mm 0;
+  }
+
+  .receipt-total-line {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 12pt;
+  }
+
+  .receipt-footer {
+    text-align: center;
+    font-size: 8pt;
+    margin-top: 3mm;
+    line-height: 1.5;
+  }
+
+  .receipt-thanks {
+    margin-top: 3mm;
+    font-weight: bold;
+    font-size: 9pt;
+  }
+
+  /* Page setup for thermal printer */
+  @page {
+    size: 62mm auto;
+    margin: 0;
+  }
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+  margin: 0 0 8px 0;
+  color: #6a8e6a;
+  font-size: 1.5em;
+}
+
+.modal-content p {
+  margin: 0 0 24px 0;
+  color: #6b7c6b;
+  font-size: 1em;
+}
+
+.input-group {
+  margin-bottom: 24px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4a5c4a;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid rgba(106, 142, 106, 0.3);
+  border-radius: 8px;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #6a8e6a;
+  text-align: center;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  user-select: text;
+}
+
+/* Prevent zoom on input focus on iOS */
+@supports (-webkit-touch-callout: none) {
+  .input-group input {
+    font-size: max(16px, 1.8em);
+  }
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #6a8e6a;
+  box-shadow: 0 0 0 3px rgba(106, 142, 106, 0.1);
+}
+
+.modal-subtotal {
+  text-align: center;
+  font-size: 1.3em;
+  color: #4a5c4a;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(106, 142, 106, 0.05);
+  border-radius: 8px;
+}
+
+.modal-subtotal span {
+  font-weight: 700;
+  color: #6a8e6a;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-cancel,
+.btn-add {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.btn-cancel {
+  background: #e8e8e8;
+  color: #4a5c4a;
+}
+
+.btn-cancel:hover {
+  background: #d8d8d8;
+}
+
+.btn-add {
+  background: #6a8e6a;
+  color: white;
+}
+
+.btn-add:hover {
+  background: #5a7e5a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(106, 142, 106, 0.3);
+}
+
+.btn-add:active {
+  transform: translateY(0);
+}
+
+/* Responsive POS */
+@media (max-width: 1024px) {
+  .pos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sale-panel {
+    position: static;
+    margin-bottom: 30px;
+    order: -1;
+  }
+
+  .products-section {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .pos-body {
+    background: #fefffe;
+  }
+
+  .pos-container {
+    padding: 12px;
+    min-height: 100vh;
+  }
+
+  .pos-grid {
+    gap: 16px;
+  }
+
+  /* Products optimized for mobile */
+  .products-section h2 {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .product-card {
+    padding: 16px 12px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .product-name {
+    font-size: 0.95em;
+    margin-bottom: 6px;
+  }
+
+  .product-price {
+    font-size: 1.4em;
+  }
+
+  .product-weight {
+    font-size: 0.8em;
+  }
+
+  /* Sale panel mobile optimization */
+  .sale-panel {
+    padding: 16px;
+  }
+
+  .sale-header h2 {
+    font-size: 1.2em;
+  }
+
+  .btn-new-sale {
+    padding: 8px 16px;
+    font-size: 0.9em;
+  }
+
+  .sale-items {
+    min-height: 200px;
+    max-height: 300px;
+  }
+
+  .sale-item {
+    padding: 14px;
+  }
+
+  .sale-item-name {
+    font-size: 1.05em;
+  }
+
+  .btn-remove {
+    font-size: 2em;
+    width: 32px;
+    height: 32px;
+  }
+
+  .sale-item-details {
+    font-size: 0.95em;
+  }
+
+  .sale-total {
+    padding-top: 16px;
+  }
+
+  .total-label {
+    font-size: 1.1em;
+  }
+
+  .total-amount {
+    font-size: 1.8em;
+  }
+
+  /* Modal mobile optimization */
+  .modal-content {
+    padding: 24px;
+    width: 95%;
+    max-width: none;
+  }
+
+  .modal-content h3 {
+    font-size: 1.3em;
+  }
+
+  .modal-content p {
+    font-size: 0.95em;
+    margin-bottom: 20px;
+  }
+
+  .input-group label {
+    font-size: 1em;
+  }
+
+  .input-group input {
+    font-size: 2.5em;
+    padding: 18px 16px;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+  }
+
+  /* Remove spinner on number input for mobile */
+  .input-group input::-webkit-outer-spin-button,
+  .input-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .modal-subtotal {
+    font-size: 1.5em;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .modal-buttons {
+    gap: 10px;
+  }
+
+  .btn-cancel,
+  .btn-add {
+    padding: 18px 24px;
+    font-size: 1.15em;
+    min-height: 54px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .pos-container {
+    padding: 10px;
+  }
+
+  .pos-grid {
+    gap: 12px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .product-card {
+    padding: 14px 10px;
+    min-height: 95px;
+  }
+
+  .product-name {
+    font-size: 0.88em;
+  }
+
+  .product-price {
+    font-size: 1.25em;
+  }
+
+  .product-weight {
+    font-size: 0.75em;
+  }
+
+  .sale-panel {
+    padding: 14px;
+  }
+
+  .sale-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .sale-header h2 {
+    text-align: center;
+  }
+
+  .btn-new-sale {
+    width: 100%;
+  }
+
+  .total-amount {
+    font-size: 1.6em;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+
+  .input-group input {
+    font-size: 2.2em;
+  }
+
+  .modal-subtotal {
+    font-size: 1.3em;
+  }
+}
+

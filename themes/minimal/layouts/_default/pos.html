@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="nl-BE">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ .Title }}</title>
+
+    {{- /* Use Hugo Pipes for CSS with minification and fingerprinting */ -}}
+    {{- $css := resources.Get "css/style.css" -}}
+    {{- if $css -}}
+        {{- $css = $css | minify | fingerprint -}}
+        <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+    {{- else -}}
+        <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+    {{- end -}}
+</head>
+<body class="pos-body">
+<div class="pos-container">
+  <div class="pos-grid">
+    <!-- Product Grid -->
+    <div class="products-section">
+      <h2>Producten</h2>
+      <div class="product-grid">
+        {{- $products := site.Data.products.products -}}
+        {{- range $products -}}
+        <div class="product-card"
+             data-product-id="{{ .id }}"
+             data-product-name="{{ .name }}"
+             data-product-price="{{ .price }}"
+             data-product-weight="{{ .weight }}"
+             data-packaging-grams="{{ .packaging_grams }}">
+          <div class="product-name">{{ .name }}</div>
+          <div class="product-price">€{{ .price }}</div>
+          <div class="product-weight">{{ .weight }}</div>
+        </div>
+        {{- end -}}
+      </div>
+    </div>
+
+    <!-- Sale Panel -->
+    <div class="sale-panel">
+      <div class="sale-header">
+        <h2>Huidige Verkoop</h2>
+        <button id="new-sale" class="btn-new-sale">Nieuwe Verkoop</button>
+      </div>
+
+      <!-- Sale Items List -->
+      <div class="sale-items" id="sale-items">
+        <div class="empty-sale">Selecteer een product om te beginnen</div>
+      </div>
+
+      <!-- Total -->
+      <div class="sale-total">
+        <div class="total-label">Totaal:</div>
+        <div class="total-amount" id="total-amount">€0.00</div>
+      </div>
+
+      <!-- Print Button -->
+      <button id="print-receipt" class="btn-print" style="display: none;">
+        <span class="print-icon">🖨️</span> Printen
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden receipt template for printing -->
+<div id="receipt-template" class="receipt-print">
+  <div class="receipt-header">
+    <div class="receipt-logo">AKKERVARKEN.BE</div>
+    <div class="receipt-tagline">Varkensvlees van regeneratieve landbouw</div>
+  </div>
+
+  <div class="receipt-divider">========================================</div>
+
+  <div class="receipt-date" id="receipt-date"></div>
+
+  <div class="receipt-divider">========================================</div>
+
+  <div class="receipt-items" id="receipt-items"></div>
+
+  <div class="receipt-divider">========================================</div>
+
+  <div class="receipt-total">
+    <div class="receipt-total-line">
+      <span>TOTAAL:</span>
+      <span id="receipt-total-amount"></span>
+    </div>
+  </div>
+
+  <div class="receipt-divider">========================================</div>
+
+  <div class="receipt-footer">
+    <div>Wolfstede 7, 1745 Opwijk</div>
+    <div>BTW: BE0661841094</div>
+    <div class="receipt-thanks">Bedankt voor uw aankoop!</div>
+  </div>
+</div>
+
+<!-- Weight/Quantity Input Modal -->
+<div id="input-modal" class="modal">
+  <div class="modal-content">
+    <h3 id="modal-product-name">Product</h3>
+    <p id="modal-product-info"></p>
+
+    <div class="input-group">
+      <label id="input-label">Gewicht (kg):</label>
+      <input type="number" id="quantity-input" step="0.01" min="0" autofocus>
+    </div>
+
+    <div class="modal-subtotal">
+      Subtotaal: <span id="modal-subtotal">€0.00</span>
+    </div>
+
+    <div class="modal-buttons">
+      <button id="cancel-btn" class="btn-cancel">Annuleren</button>
+      <button id="add-btn" class="btn-add">Toevoegen</button>
+    </div>
+  </div>
+</div>
+
+{{- $pos := resources.Get "js/pos.js" -}}
+{{- $pos = $pos | minify | fingerprint -}}
+<script src="{{ $pos.RelPermalink }}" integrity="{{ $pos.Data.Integrity }}"></script>
+</body>
+</html>
