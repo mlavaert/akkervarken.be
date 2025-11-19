@@ -74,8 +74,7 @@
 
     if (isPerKg) {
       inputLabel.textContent = 'Gewicht (kg):';
-      quantityInput.step = '0.01';
-      quantityInput.placeholder = 'bijv. 0.5';
+      quantityInput.placeholder = 'bijv. 0,5';
       quantityInput.inputMode = 'decimal';
       // Pre-fill with packaging weight if available
       if (currentProduct.packagingGrams) {
@@ -85,7 +84,6 @@
       }
     } else {
       inputLabel.textContent = 'Aantal:';
-      quantityInput.step = '1';
       quantityInput.placeholder = 'bijv. 2';
       quantityInput.inputMode = 'numeric';
       quantityInput.value = '1';
@@ -113,24 +111,42 @@
     modalSubtotal.textContent = '€0.00';
   }
 
-  function handleQuantityInput() {
-    // Replace comma with dot for Belgian/European keyboards
+  // Helper function to normalize and parse quantity input
+  function parseQuantityInput() {
+    // Get the raw input value and normalize it (replace comma with dot, remove spaces)
+    const rawValue = quantityInput.value.trim().replace(',', '.');
+    const parsed = parseFloat(rawValue);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+
+  function handleQuantityInput(e) {
     let value = quantityInput.value;
-    if (value.includes(',')) {
-      // Get cursor position before replacement
-      const cursorPos = quantityInput.selectionStart;
-      // Replace comma with dot
-      quantityInput.value = value.replace(',', '.');
-      // Restore cursor position
+    const cursorPos = quantityInput.selectionStart;
+
+    // Remove any non-numeric characters except comma, dot, and first character can be negative
+    value = value.replace(/[^0-9.,]/g, '');
+
+    // Replace ALL commas with dots (Belgian keyboard uses comma)
+    value = value.replace(/,/g, '.');
+
+    // Ensure only one decimal separator
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    // Update the input value if it changed
+    if (value !== quantityInput.value) {
+      quantityInput.value = value;
+      // Try to maintain cursor position
       quantityInput.setSelectionRange(cursorPos, cursorPos);
     }
+
     updateModalSubtotal();
   }
 
   function updateModalSubtotal() {
-    // Normalize the input value (replace comma with dot)
-    const normalizedValue = quantityInput.value.replace(',', '.');
-    const quantity = parseFloat(normalizedValue) || 0;
+    const quantity = parseQuantityInput();
     const subtotal = quantity * currentProduct.price;
     modalSubtotal.textContent = `€${subtotal.toFixed(2)}`;
   }
@@ -143,11 +159,9 @@
   }
 
   function addToSale() {
-    // Normalize the input value (replace comma with dot)
-    const normalizedValue = quantityInput.value.replace(',', '.');
-    const quantity = parseFloat(normalizedValue);
+    const quantity = parseQuantityInput();
 
-    if (!quantity || quantity <= 0 || isNaN(quantity)) {
+    if (!quantity || quantity <= 0) {
       alert('Voer een geldige hoeveelheid in');
       return;
     }
