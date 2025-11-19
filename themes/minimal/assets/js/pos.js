@@ -124,7 +124,9 @@
   }
 
   function updateModalSubtotal() {
-    const quantity = parseFloat(quantityInput.value) || 0;
+    // Normalize the input value (replace comma with dot)
+    const normalizedValue = quantityInput.value.replace(',', '.');
+    const quantity = parseFloat(normalizedValue) || 0;
     const subtotal = quantity * currentProduct.price;
     modalSubtotal.textContent = `€${subtotal.toFixed(2)}`;
   }
@@ -137,9 +139,11 @@
   }
 
   function addToSale() {
-    const quantity = parseFloat(quantityInput.value);
+    // Normalize the input value (replace comma with dot)
+    const normalizedValue = quantityInput.value.replace(',', '.');
+    const quantity = parseFloat(normalizedValue);
 
-    if (!quantity || quantity <= 0) {
+    if (!quantity || quantity <= 0 || isNaN(quantity)) {
       alert('Voer een geldige hoeveelheid in');
       return;
     }
