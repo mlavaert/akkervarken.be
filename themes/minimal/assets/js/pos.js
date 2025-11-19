@@ -93,11 +93,15 @@
 
     modal.classList.add('active');
 
-    // Select all text on focus for easy replacement
+    // Focus and select input for immediate typing
+    // Use longer timeout on mobile for better keyboard handling
     setTimeout(() => {
       quantityInput.focus();
-      quantityInput.select();
-    }, 100);
+      // Delay select slightly to ensure focus is complete
+      setTimeout(() => {
+        quantityInput.select();
+      }, 50);
+    }, 150);
 
     updateModalSubtotal();
   }
