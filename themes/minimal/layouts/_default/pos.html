@@ -56,10 +56,15 @@
         <div class="total-amount" id="total-amount">€0.00</div>
       </div>
 
-      <!-- Print Button -->
-      <button id="print-receipt" class="btn-print" style="display: none;">
-        <span class="print-icon">🖨️</span> Printen
-      </button>
+      <!-- Action Buttons -->
+      <div class="sale-actions" id="sale-actions" style="display: none;">
+        <button id="payment-btn" class="btn-payment">
+          <span class="payment-icon">💳</span> Betalen
+        </button>
+        <button id="print-receipt" class="btn-print">
+          <span class="print-icon">🖨️</span> Printen
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -118,6 +123,45 @@
     </div>
   </div>
 </div>
+
+<!-- Payment QR Code Modal -->
+<div id="payment-modal" class="modal payment-modal">
+  <div class="modal-content payment-modal-content">
+    <button id="close-payment" class="btn-close-payment">×</button>
+    <h3>Betalen met QR Code</h3>
+    <p class="payment-instructions">Scan de QR code met uw bankapp om te betalen</p>
+
+    <div class="qr-container" id="qr-container">
+      <!-- QR code will be inserted here by JavaScript -->
+    </div>
+
+    <div class="payment-total">
+      Te betalen: <span id="payment-amount">€0.00</span>
+    </div>
+
+    <div class="payment-details">
+      <div><strong>Begunstigde:</strong> {{ site.Params.payment.beneficiary | default "Akkervarken.be" }}</div>
+      <div><strong>IBAN:</strong> <span id="payment-iban">{{ site.Params.payment.iban }}</span></div>
+      <div><strong>Mededeling:</strong> <span id="payment-reference"></span></div>
+    </div>
+
+    <script>
+      // Pass Hugo config to JavaScript
+      window.PAYMENT_CONFIG = {
+        iban: '{{ site.Params.payment.iban }}',
+        bic: '{{ site.Params.payment.bic }}',
+        beneficiary: '{{ site.Params.payment.beneficiary | default "Akkervarken.be" }}'
+      };
+    </script>
+
+    <div class="payment-buttons">
+      <button id="payment-done" class="btn-payment-done">Betaling Voltooid</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR Code library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
 
 {{- $pos := resources.Get "js/pos.js" -}}
 {{- $pos = $pos | minify | fingerprint -}}

@@ -4,6 +4,7 @@
 
   let currentSale = [];
   let currentProduct = null;
+  let qrCode = null;
 
   // DOM Elements
   const modal = document.getElementById('input-modal');
@@ -18,6 +19,11 @@
   const saleItemsContainer = document.getElementById('sale-items');
   const totalAmount = document.getElementById('total-amount');
   const printBtn = document.getElementById('print-receipt');
+  const paymentBtn = document.getElementById('payment-btn');
+  const saleActions = document.getElementById('sale-actions');
+  const paymentModal = document.getElementById('payment-modal');
+  const closePaymentBtn = document.getElementById('close-payment');
+  const paymentDoneBtn = document.getElementById('payment-done');
 
   // Event Listeners
   document.querySelectorAll('.product-card').forEach(card => {
@@ -28,13 +34,21 @@
   addBtn.addEventListener('click', addToSale);
   newSaleBtn.addEventListener('click', newSale);
   printBtn.addEventListener('click', printReceipt);
-  quantityInput.addEventListener('input', updateModalSubtotal);
+  paymentBtn.addEventListener('click', showPaymentQR);
+  closePaymentBtn.addEventListener('click', closePaymentModal);
+  paymentDoneBtn.addEventListener('click', handlePaymentDone);
+  quantityInput.addEventListener('input', handleQuantityInput);
   quantityInput.addEventListener('keypress', handleEnterKey);
 
-  // Close modal on Escape key
+  // Close modals on Escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeModal();
+    if (e.key === 'Escape') {
+      if (modal.classList.contains('active')) {
+        closeModal();
+      }
+      if (paymentModal.classList.contains('active')) {
+        closePaymentModal();
+      }
     }
   });
 
@@ -93,6 +107,20 @@
     currentProduct = null;
     quantityInput.value = '';
     modalSubtotal.textContent = '€0.00';
+  }
+
+  function handleQuantityInput() {
+    // Replace comma with dot for Belgian/European keyboards
+    let value = quantityInput.value;
+    if (value.includes(',')) {
+      // Get cursor position before replacement
+      const cursorPos = quantityInput.selectionStart;
+      // Replace comma with dot
+      quantityInput.value = value.replace(',', '.');
+      // Restore cursor position
+      quantityInput.setSelectionRange(cursorPos, cursorPos);
+    }
+    updateModalSubtotal();
   }
 
   function updateModalSubtotal() {
@@ -182,11 +210,11 @@
     const total = currentSale.reduce((sum, item) => sum + item.subtotal, 0);
     totalAmount.textContent = `€${total.toFixed(2)}`;
 
-    // Show/hide print button based on whether there are items
+    // Show/hide action buttons based on whether there are items
     if (currentSale.length > 0) {
-      printBtn.style.display = 'flex';
+      saleActions.style.display = 'flex';
     } else {
-      printBtn.style.display = 'none';
+      saleActions.style.display = 'none';
     }
   }
 
@@ -244,6 +272,118 @@
 
     // Trigger print
     window.print();
+  }
+
+  // Payment QR Code Functions
+  function showPaymentQR() {
+    if (currentSale.length === 0) {
+      return;
+    }
+
+    const total = currentSale.reduce((sum, item) => sum + item.subtotal, 0);
+    const reference = generatePaymentReference();
+
+    // Update payment modal display
+    document.getElementById('payment-amount').textContent = `€${total.toFixed(2)}`;
+    document.getElementById('payment-reference').textContent = reference;
+
+    // Clear any existing QR code first
+    const container = document.getElementById('qr-container');
+    if (qrCode) {
+      qrCode.clear();
+      qrCode = null;
+    }
+    container.innerHTML = '';
+
+    // Generate EPC QR Code
+    const epcData = generateEPCQRData(total, reference);
+    generateQRCode(epcData);
+
+    // Show modal
+    paymentModal.classList.add('active');
+  }
+
+  function closePaymentModal() {
+    paymentModal.classList.remove('active');
+    // Clear QR code completely
+    const container = document.getElementById('qr-container');
+    if (qrCode) {
+      qrCode.clear();
+      qrCode = null;
+    }
+    // Also clear the container HTML to remove any remnants
+    container.innerHTML = '';
+  }
+
+  function handlePaymentDone() {
+    // Print receipt automatically after payment
+    printReceipt();
+    closePaymentModal();
+
+    // Start new sale
+    setTimeout(() => {
+      currentSale = [];
+      renderSale();
+    }, 100);
+  }
+
+  function generatePaymentReference() {
+    // Generate a unique reference based on timestamp
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('nl-BE').replace(/\//g, '');
+    const timeStr = now.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' }).replace(/:/g, '');
+    return `POS${dateStr}${timeStr}`;
+  }
+
+  function generateEPCQRData(amount, reference) {
+    // EPC QR Code format (European Payments Council standard)
+    // This format is compatible with most Belgian banking apps
+    const config = window.PAYMENT_CONFIG || {};
+    const iban = config.iban || 'BE00000000000000';
+    const bic = config.bic || 'GEBABEBB';
+    const beneficiary = config.beneficiary || 'Akkervarken.be';
+
+    // Format amount with exactly 2 decimals
+    const formattedAmount = `EUR${amount.toFixed(2)}`;
+
+    // EPC QR Code structure (each line is a field)
+    const epcLines = [
+      'BCD',                    // Service Tag
+      '002',                    // Version
+      '1',                      // Character set (1 = UTF-8)
+      'SCT',                    // Identification (SEPA Credit Transfer)
+      bic,                      // BIC of beneficiary bank
+      beneficiary,              // Name of beneficiary (max 70 chars)
+      iban,                     // Account number (IBAN)
+      formattedAmount,          // Amount (EUR followed by amount)
+      '',                       // Purpose (optional, empty)
+      reference,                // Structured reference (max 35 chars)
+      `Akkervarken POS ${reference}`, // Unstructured remittance (max 140 chars)
+      ''                        // Beneficiary to originator info (optional)
+    ];
+
+    return epcLines.join('\n');
+  }
+
+  function generateQRCode(data) {
+    const container = document.getElementById('qr-container');
+
+    // Clear previous QR code
+    if (qrCode) {
+      qrCode.clear();
+      container.innerHTML = '';
+    }
+
+    // Generate new QR code using QRCode.js library
+    // QRCode.js automatically creates and appends an element to the container
+    qrCode = new QRCode(container, {
+      text: data,
+      width: 300,
+      height: 300,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
   }
 
   // Initialize

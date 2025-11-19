@@ -18,6 +18,11 @@ enableRobotsTXT = true
   email = 'info@akkervarken.be'
   phone = '+32494185076'
 
+[params.payment]
+  iban = 'BE32736028191702'  # Replace with actual IBAN
+  bic = 'KREDBEBB'  # Replace with actual BIC
+  beneficiary = 'Pilcrow BV'
+
 [params.location]
   name = 'Akkervarken.be'
   address = 'Wolfstede 7'

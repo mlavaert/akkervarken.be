@@ -2464,6 +2464,186 @@ footer {
   transform: translateY(0);
 }
 
+/* Sale Actions (Payment and Print buttons) */
+.sale-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-payment,
+.btn-print {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.btn-payment {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.btn-payment:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
+}
+
+.btn-print {
+  background: linear-gradient(135deg, #6a8e6a 0%, #5a7e5a 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(106, 142, 106, 0.3);
+}
+
+.btn-print:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(106, 142, 106, 0.4);
+}
+
+.btn-payment:active,
+.btn-print:active {
+  transform: translateY(0);
+}
+
+.payment-icon,
+.print-icon {
+  font-size: 1.3em;
+}
+
+/* Payment Modal */
+.payment-modal .modal-content {
+  max-width: 500px;
+  padding: 30px;
+}
+
+.payment-modal-content {
+  position: relative;
+}
+
+.btn-close-payment {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 2em;
+  color: #999;
+  cursor: pointer;
+  padding: 5px 10px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.btn-close-payment:hover {
+  color: #333;
+}
+
+.payment-modal h3 {
+  margin: 0 0 10px 0;
+  color: #4a5c4a;
+  text-align: center;
+}
+
+.payment-instructions {
+  text-align: center;
+  color: #666;
+  margin-bottom: 25px;
+  font-size: 0.95em;
+}
+
+.qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border: 3px solid #e8e8e8;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  min-height: 320px;
+}
+
+.qr-container img,
+.qr-container canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.payment-total {
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #4a5c4a;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8faf8;
+  border-radius: 8px;
+}
+
+.payment-total span {
+  color: #6a8e6a;
+}
+
+.payment-details {
+  background: #f8faf8;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+}
+
+.payment-details div {
+  margin-bottom: 8px;
+}
+
+.payment-details div:last-child {
+  margin-bottom: 0;
+}
+
+.payment-details strong {
+  color: #4a5c4a;
+  display: inline-block;
+  min-width: 110px;
+}
+
+.payment-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-payment-done {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #6a8e6a 0%, #5a7e5a 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(106, 142, 106, 0.3);
+}
+
+.btn-payment-done:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(106, 142, 106, 0.4);
+}
+
+.btn-payment-done:active {
+  transform: translateY(0);
+}
+
 /* Responsive POS */
 @media (max-width: 1024px) {
   .pos-grid {
@@ -2626,6 +2806,33 @@ footer {
     font-size: 1.15em;
     min-height: 54px;
   }
+
+  /* Payment modal mobile */
+  .payment-modal .modal-content {
+    padding: 24px;
+  }
+
+  .qr-container {
+    padding: 15px;
+    min-height: 280px;
+  }
+
+  .payment-total {
+    font-size: 1.5em;
+  }
+
+  .payment-details {
+    font-size: 0.85em;
+  }
+
+  .sale-actions {
+    flex-direction: column;
+  }
+
+  .btn-payment,
+  .btn-print {
+    width: 100%;
+  }
 }
 
 /* Small phones */
@@ -2692,6 +2899,35 @@ footer {
 
   .modal-subtotal {
     font-size: 1.3em;
+  }
+
+  /* Payment modal small phones */
+  .payment-modal .modal-content {
+    padding: 20px;
+  }
+
+  .qr-container {
+    padding: 12px;
+    min-height: 240px;
+  }
+
+  .payment-total {
+    font-size: 1.3em;
+    padding: 12px;
+  }
+
+  .payment-details {
+    font-size: 0.8em;
+    padding: 12px;
+  }
+
+  .payment-details strong {
+    min-width: 90px;
+  }
+
+  .btn-payment-done {
+    padding: 12px 24px;
+    font-size: 1em;
   }
 }
 
