@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ .Title }} - {{ .Site.Title }}</title>
+
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            color: black;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .header h1 {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #4a7c59;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #333;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #333;
+        }
+
+        .price {
+            text-align: right;
+        }
+
+        .print-button {
+            background-color: #4a7c59;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Afdrukken</button>
+
+    <div class="header">
+        <img src="/img/logo.svg" alt="{{ .Site.Title }} Logo">
+        <h1>Prijslijst</h1>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th style="text-align: right;">Prijs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{- range .Site.Data.products.products -}}
+            <tr>
+                <td>{{ .name }}</td>
+                <td class="price">
+                    {{- if eq .weight "per 2 stuks" -}}
+                    € {{ printf "%.2f" .price }}
+                    {{- else -}}
+                    € {{ printf "%.2f" .price }}/kg
+                    {{- end -}}
+                </td>
+            </tr>
+            {{- end -}}
+        </tbody>
+    </table>
+</body>
+</html>
