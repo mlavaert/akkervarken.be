@@ -75,7 +75,7 @@ products:
   - id: "chipolata"
     name: "Chipolata"
     description: "Verse chipolatas, fijne worstjes vol smaak. Vacuüm verpakt."
-    price: 17.50
+    price: 18.00
     weight: "per kg"
     packaging_pieces: 4
     packaging_grams: 500
