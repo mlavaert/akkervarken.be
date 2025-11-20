@@ -257,14 +257,12 @@
 
     // Populate receipt date
     const now = new Date();
-    const dateStr = now.toLocaleDateString('nl-BE', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day} ${hours}:${minutes}`;
     document.getElementById('receipt-date').textContent = dateStr;
 
     // Populate receipt items
@@ -294,8 +292,10 @@
     document.getElementById('receipt-total-amount').textContent = `€${total.toFixed(2)}`;
     document.getElementById('receipt-vat-amount').textContent = `€${vatAmount.toFixed(2)}`;
 
-    // Trigger print
-    window.print();
+    // Trigger print with a small delay to ensure DOM updates
+    setTimeout(() => {
+      window.print();
+    }, 100);
   }
 
   // Payment QR Code Functions
