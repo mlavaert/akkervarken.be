@@ -288,9 +288,11 @@
 
     receiptItemsContainer.innerHTML = itemsHtml;
 
-    // Populate total
+    // Populate total and VAT
     const total = currentSale.reduce((sum, item) => sum + item.subtotal, 0);
+    const vatAmount = total * 0.06 / 1.06; // Calculate VAT amount from total (prices include 6% VAT)
     document.getElementById('receipt-total-amount').textContent = `€${total.toFixed(2)}`;
+    document.getElementById('receipt-vat-amount').textContent = `€${vatAmount.toFixed(2)}`;
 
     // Trigger print
     window.print();

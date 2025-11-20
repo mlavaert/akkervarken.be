@@ -17,6 +17,7 @@
             background: white;
             color: black;
             line-height: 1.6;
+            font-size: 20px;
         }
 
         .header {
@@ -32,6 +33,7 @@
         .header h1 {
             margin: 10px 0;
             color: #333;
+            font-size: 28px;
         }
 
         table {
@@ -42,18 +44,31 @@
         th {
             background-color: #4a7c59;
             color: white;
-            padding: 10px;
+            padding: 12px;
             text-align: left;
-            border: 1px solid #333;
+            border: none;
+            font-size: 20px;
         }
 
         td {
-            padding: 8px;
-            border: 1px solid #333;
+            padding: 10px;
+            border: none;
+            font-size: 20px;
+        }
+
+        .product-name {
+            font-weight: bold;
+        }
+
+        .packaging {
+            color: #666;
+            font-size: 14px;
+            margin-left: 8px;
         }
 
         .price {
             text-align: right;
+            font-weight: bold;
         }
 
         .print-button {
@@ -83,16 +98,17 @@
     </div>
 
     <table>
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th style="text-align: right;">Prijs</th>
-            </tr>
-        </thead>
         <tbody>
             {{- range .Site.Data.products.products -}}
             <tr>
-                <td>{{ .name }}</td>
+                <td>
+                    <span class="product-name">{{ .name }}</span>
+                    {{- if .packaging_pieces -}}
+                    <span class="packaging">
+                        ({{ .packaging_pieces }} {{ if eq .packaging_pieces 1 }}stuk{{ else }}stuks{{ end }})
+                    </span>
+                    {{- end -}}
+                </td>
                 <td class="price">
                     {{- if eq .weight "per 2 stuks" -}}
                     € {{ printf "%.2f" .price }}
