@@ -26,7 +26,7 @@ products:
 
   - id: "filetkotelet"
     name: "Filetkotelet"
-    description: "Malse filetkotelet van varken. Vacuüm verpakt."
+    description: "Malse filetkotelet, perfect voor op de BBQ of in de pan. Heerlijk mals en sappig. Vacuüm verpakt."
     price: 19.50
     weight: "per kg"
     packaging_pieces: 2
@@ -34,7 +34,7 @@ products:
 
   - id: "spieringkotelet"
     name: "Spieringkotelet"
-    description: "Sappige spieringkotelet van varken. Vacuüm verpakt."
+    description: "Sappige spieringkotelet met veel smaak. Ideaal voor een snelle weekavond maaltijd. Vacuüm verpakt."
     price: 19.50
     weight: "per kg"
     packaging_pieces: 1
@@ -42,7 +42,7 @@ products:
 
   - id: "stoofvlees"
     name: "Stoofvlees"
-    description: "Mals stoofvlees van varken. Vacuüm verpakt."
+    description: "Mals stoofvlees, wordt heerlijk zacht bij langzaam stoven. Perfect voor een klassieke Vlaamse stoofpot."
     price: 19.50
     weight: "per kg"
     packaging_pieces: 1
@@ -50,7 +50,7 @@ products:
 
   - id: "spek"
     name: "Spek"
-    description: "Vers spek van varken. Vacuüm verpakt."
+    description: "Vers spek met mooie vetlaag. Lekker gebakken of om gerechten mee te verrijken. Vacuüm verpakt."
     price: 17.50
     weight: "per kg"
     packaging_pieces: 4
@@ -58,7 +58,7 @@ products:
 
   - id: "hamburger"
     name: "Hamburger"
-    description: "Hamburgers van varkensvlees. Vacuüm verpakt."
+    description: "Sappige hamburgers van 100% varkensvlees. Ideaal voor BBQ of in de pan. Vacuüm verpakt."
     price: 17.50
     weight: "per kg"
     packaging_pieces: 2
@@ -66,7 +66,7 @@ products:
 
   - id: "boerenworst"
     name: "Boerenworst"
-    description: "Verse boerenworst van varken. Vacuüm verpakt."
+    description: "Verse boerenworst met authentieke kruiding. Heerlijk bij appelmoes of stamppot. Vacuüm verpakt."
     price: 17.50
     weight: "per kg"
     packaging_pieces: 4
@@ -74,7 +74,7 @@ products:
 
   - id: "chipolata"
     name: "Chipolata"
-    description: "Verse chiploatas van varken"
+    description: "Verse chipolatas, fijne worstjes vol smaak. Vacuüm verpakt."
     price: 17.50
     weight: "per kg"
     packaging_pieces: 4
@@ -82,7 +82,7 @@ products:
 
   - id: "blinde-vink"
     name: "Blinde Vink"
-    description: "Blinde vinken van varkensvlees"
+    description: "Klassieke blinde vinken, gevuld en klaar om te bereiden. Traditioneel Vlaams gerecht. Vacuüm verpakt."
     price: 18.50
     weight: "per kg"
     packaging_pieces: 2
@@ -90,7 +90,7 @@ products:
 
   - id: "gehakt"
     name: "Gehakt"
-    description: "100% varkensgehakt. Vacuüm verpakt."
+    description: "100% varkensgehakt, veelzijdig te gebruiken. Voor gehaktballen, saus of als basis voor vele gerechten."
     price: 15.00
     weight: "per kg"
     packaging_pieces: 1
@@ -98,7 +98,7 @@ products:
 
   - id: "zwarte-pens"
     name: "Zwarte Pens"
-    description: "Zwarte pens van varken. Vacuüm verpakt."
+    description: "Traditionele zwarte pens, een streekproduct met veel smaak. Lekker gebakken met appelmoes. Vacuüm verpakt."
     price: 4.50
     weight: "per 2 stuks"
     packaging_pieces: 2
@@ -106,7 +106,7 @@ products:
 
   - id: "varkenshaas"
     name: "Varkenshaas"
-    description: "Malse varkenshaas. Vacuüm verpakt."
+    description: "Malse varkenshaas, het meest mals stuk vlees. Perfect voor een feestelijk diner. Vacuüm verpakt."
     price: 26.00
     weight: "per kg"
     packaging_pieces: 1
@@ -114,7 +114,7 @@ products:
 
   - id: "hespengebraad"
     name: "Hespengebraad"
-    description: "Sappig hespengebraad van varken. Vacuüm verpakt."
+    description: "Sappig hespengebraad met mooie vetverdeling. Ideaal voor in de oven of slowcooker. Vacuüm verpakt."
     price: 21.00
     weight: "per kg"
     packaging_pieces: 1
@@ -122,15 +122,15 @@ products:
 
   - id: "carre-gebraad"
     name: "Carré Gebraad"
-    description: "Mals carré gebraad van varken. Vacuüm verpakt."
+    description: "Mals carré gebraad. Een indrukwekkend gebraad voor zondag of feestdagen. Vacuüm verpakt."
     price: 21.00
     weight: "per kg"
     packaging_pieces: 1
     packaging_grams: 1000
 
   - id: "varkenspoot"
-    name: "Varkenspoot"
-    description: "Varkenspoot. Vacuüm verpakt."
+    name: "Varkenspoten"
+    description: "Varkenspoten, ideaal voor in de bouillon of om te confijten. Een delicatesse voor echte fijnproevers."
     price: 3.00
     weight: "per 2 stuks"
     packaging_pieces: 2

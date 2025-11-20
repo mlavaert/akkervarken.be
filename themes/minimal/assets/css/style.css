@@ -2061,6 +2061,34 @@ footer {
   font-size: 1.4em;
 }
 
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-prijslijst {
+  background: #e8e8e8;
+  border: 2px solid rgba(106, 142, 106, 0.2);
+  color: #4a5c4a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-size: 1.2em;
+  touch-action: manipulation;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-prijslijst:hover {
+  background: #d8d8d8;
+  border-color: #6a8e6a;
+}
+
 .btn-new-sale {
   background: #e8e8e8;
   border: 2px solid rgba(106, 142, 106, 0.2);
