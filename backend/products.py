@@ -10,21 +10,16 @@ router = APIRouter(prefix="/api/products", tags=["products"])
 
 
 @router.get("/", response_model=list[ProductResponse])
-def list_products(
-    include_inactive: bool = False, db: Session = Depends(get_db)
-) -> list[Product]:
-    """Return the product catalog. Hides inactive items by default."""
-    query = db.query(Product)
-    if not include_inactive:
-        query = query.filter(Product.is_active.is_(True))
-    return query.order_by(Product.name.asc()).all()
+def list_products(db: Session = Depends(get_db)) -> list[Product]:
+    """Return the full product catalog."""
+    return db.query(Product).order_by(Product.name.asc()).all()
 
 
 @router.get("/{slug}", response_model=ProductResponse)
 def get_product(slug: str, db: Session = Depends(get_db)) -> Product:
     """Fetch a single product by slug."""
     product = db.query(Product).filter(Product.slug == slug).first()
-    if not product or not product.is_active:
+    if not product:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Product niet gevonden"
         )

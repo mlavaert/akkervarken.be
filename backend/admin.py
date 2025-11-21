@@ -147,7 +147,7 @@ def list_products(
     db: Session = Depends(get_db),
     _: str = Depends(require_admin),
 ):
-    """Render the product management page."""
+    """Render the product list page."""
     products = db.query(Product).order_by(Product.name.asc()).all()
     return templates.TemplateResponse(
         "admin/products.html",
@@ -158,6 +158,37 @@ def list_products(
             "saved": request.query_params.get("saved"),
             "deleted": request.query_params.get("deleted"),
         },
+    )
+
+
+@router.get("/products/new", response_class=HTMLResponse)
+def new_product(
+    request: Request,
+    _: str = Depends(require_admin),
+):
+    """Render the new product form."""
+    return templates.TemplateResponse(
+        "admin/product_form.html",
+        {"request": request, "product": None, "mode": "create"},
+    )
+
+
+@router.get("/products/{product_id}/edit", response_class=HTMLResponse)
+def edit_product_form(
+    product_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
+):
+    """Render the edit product form."""
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Product niet gevonden"
+        )
+    return templates.TemplateResponse(
+        "admin/product_form.html",
+        {"request": request, "product": product, "mode": "edit"},
     )
 
 
@@ -172,7 +203,6 @@ def create_product(
     packaging_pieces: Optional[str] = Form(None),
     packaging_grams: Optional[str] = Form(None),
     image: Optional[str] = Form(None),
-    is_active: bool = Form(False),
     db: Session = Depends(get_db),
     _: str = Depends(require_admin),
 ):
@@ -195,7 +225,6 @@ def create_product(
         packaging_pieces=_parse_optional_int(packaging_pieces),
         packaging_grams=_parse_optional_int(packaging_grams),
         image=(image or "").strip() or None,
-        is_active=is_active,
     )
 
     db.add(product)
@@ -218,7 +247,6 @@ def update_product(
     packaging_pieces: Optional[str] = Form(None),
     packaging_grams: Optional[str] = Form(None),
     image: Optional[str] = Form(None),
-    is_active: bool = Form(False),
     db: Session = Depends(get_db),
     _: str = Depends(require_admin),
 ):
@@ -246,7 +274,6 @@ def update_product(
     product.packaging_pieces = _parse_optional_int(packaging_pieces)
     product.packaging_grams = _parse_optional_int(packaging_grams)
     product.image = (image or "").strip() or None
-    product.is_active = is_active
 
     db.add(product)
     db.commit()

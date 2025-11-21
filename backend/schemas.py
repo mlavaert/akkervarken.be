@@ -120,7 +120,6 @@ class ProductBase(BaseModel):
     packaging_pieces: Optional[int] = Field(None, ge=0)
     packaging_grams: Optional[int] = Field(None, ge=0)
     image: Optional[str] = Field(None, max_length=255)
-    is_active: bool = True
 
 
 class ProductCreate(ProductBase):
@@ -140,7 +139,6 @@ class ProductUpdate(BaseModel):
     packaging_pieces: Optional[int] = Field(None, ge=0)
     packaging_grams: Optional[int] = Field(None, ge=0)
     image: Optional[str] = Field(None, max_length=255)
-    is_active: Optional[bool] = None
 
 
 class ProductResponse(ProductBase):

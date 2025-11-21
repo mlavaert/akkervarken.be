@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akkervarken · {% if mode == 'edit' %}Product bewerken{% else %}Nieuw product{% endif %}</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <img src="https://akkervarken.be/img/logo.svg" alt="Akkervarken logo" loading="lazy">
+        <div>
+          <h1>{% if mode == 'edit' %}Product bewerken{% else %}Nieuw product{% endif %}</h1>
+          <div class="meta-line">
+            {% if mode == 'edit' %}Pas productdetails aan{% else %}Voeg een nieuw product toe{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <a class="nav-link" href="/admin">Overzicht</a>
+        <a class="nav-link" href="/admin/orders">Bestellingen</a>
+        <a class="nav-link" href="/admin/products">Producten</a>
+      </div>
+    </header>
+
+    <section class="card">
+      <form method="post" action="{% if mode == 'edit' %}/admin/products/{{ product.id }}/update{% else %}/admin/products{% endif %}">
+        <div class="row">
+          <div>
+            <label for="slug">Slug</label>
+            <input id="slug" name="slug" placeholder="bijv. chipolata" required value="{{ product.slug if product else '' }}">
+          </div>
+          <div>
+            <label for="name">Naam</label>
+            <input id="name" name="name" placeholder="Productnaam" required value="{{ product.name if product else '' }}">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="price">Prijs (€/kg)</label>
+            <input id="price" name="price" type="number" step="0.01" placeholder="19.50" required value="{{ '%.2f'|format(product.price) if product else '' }}">
+          </div>
+          <div>
+            <label for="weight_display">Weergave gewicht</label>
+            <input id="weight_display" name="weight_display" placeholder="per kg" required value="{{ product.weight_display if product else '' }}">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="packaging_pieces">Verpakking stuks</label>
+            <input id="packaging_pieces" name="packaging_pieces" type="number" min="0" placeholder="2" value="{{ product.packaging_pieces or '' }}">
+          </div>
+          <div>
+            <label for="packaging_grams">Verpakking gram</label>
+            <input id="packaging_grams" name="packaging_grams" type="number" min="0" placeholder="500" value="{{ product.packaging_grams or '' }}">
+          </div>
+        </div>
+
+        <label for="description">Beschrijving</label>
+        <textarea id="description" name="description" placeholder="Korte omschrijving" required>{{ product.description if product else '' }}</textarea>
+
+        <label for="ingredients">Ingrediënten (optioneel)</label>
+        <textarea id="ingredients" name="ingredients" placeholder="Markdown toegestaan">{{ product.ingredients or '' }}</textarea>
+
+        <label for="image">Afbeelding (optioneel)</label>
+        <input id="image" name="image" placeholder="/img/voorbeeld.jpg" value="{{ product.image or '' }}">
+
+        <div class="actions">
+          <button type="submit" class="primary">{% if mode == 'edit' %}Opslaan{% else %}Product aanmaken{% endif %}</button>
+          <a class="nav-link" href="/admin/products">Annuleren</a>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>
