@@ -8,10 +8,10 @@
 </head>
 <body>
   <nav class="top-nav">
-    <a class="{% if active_page == 'home' %}active{% endif %}" href="/admin">Overzicht</a>
-    <a class="{% if active_page == 'orders' %}active{% endif %}" href="/admin/orders">Bestellingen</a>
-    <a class="{% if active_page == 'products' %}active{% endif %}" href="/admin/products">Producten</a>
-    <a class="{% if active_page == 'products_new' %}active{% endif %}" href="/admin/products/new">Nieuw product</a>
+    <a href="/admin">Overzicht</a>
+    <a href="/admin/orders">Bestellingen</a>
+    <a href="/admin/products">Producten</a>
+    <a href="/admin/products/new">Nieuw product</a>
   </nav>
   <div class="page">
     <header>
@@ -21,6 +21,9 @@
           <h1>Producten</h1>
           <div class="meta-line">Overzicht van alle producten</div>
         </div>
+      </div>
+      <div class="actions">
+        <a class="link-btn primary" href="/admin/products/new">+ Nieuw product</a>
       </div>
     </header>
 
@@ -55,7 +58,7 @@
           <div class="meta-line">€{{ '%.2f'|format(product.price) }} · {{ product.weight_display }}</div>
           <div class="meta-line">
             Verpakking: {% if product.packaging_pieces %}{{ product.packaging_pieces }} stuks{% else %}n.v.t.{% endif %}
-            {% if product.packaging_grams %} · ±{{ product.packaging_grams }}g{% endif %}
+            {% if product.unit_grams %} · ±{{ product.unit_grams }}g/stuk{% endif %}
           </div>
           <p>{{ product.description }}</p>
           {% if product.ingredients %}

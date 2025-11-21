@@ -8,10 +8,10 @@
 </head>
 <body>
   <nav class="top-nav">
-    <a class="{% if active_page == 'home' %}active{% endif %}" href="/admin">Overzicht</a>
-    <a class="{% if active_page == 'orders' %}active{% endif %}" href="/admin/orders">Bestellingen</a>
-    <a class="{% if active_page == 'products' or active_page == 'products_new' %}active{% endif %}" href="/admin/products">Producten</a>
-    <a class="{% if active_page == 'products_new' %}active{% endif %}" href="/admin/products/new">Nieuw product</a>
+    <a href="/admin">Overzicht</a>
+    <a href="/admin/orders">Bestellingen</a>
+    <a href="/admin/products">Producten</a>
+    <a href="/admin/products/new">Nieuw product</a>
   </nav>
   <div class="page">
     <header>
@@ -56,8 +56,8 @@
             <input id="packaging_pieces" name="packaging_pieces" type="number" min="0" placeholder="2" value="{{ product.packaging_pieces or '' }}">
           </div>
           <div>
-            <label for="packaging_grams">Verpakking gram</label>
-            <input id="packaging_grams" name="packaging_grams" type="number" min="0" placeholder="500" value="{{ product.packaging_grams or '' }}">
+            <label for="unit_grams">Geschat gewicht per stuk (gram)</label>
+            <input id="unit_grams" name="unit_grams" type="number" min="0" placeholder="250" value="{{ product.unit_grams or '' }}">
           </div>
         </div>
 

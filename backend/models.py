@@ -83,7 +83,7 @@ class Product(Base):
     price = Column(Float, nullable=False)
     weight_display = Column(String(100), nullable=False)
     packaging_pieces = Column(Integer, nullable=True)
-    packaging_grams = Column(Integer, nullable=True)
+    unit_grams = Column(Integer, nullable=True)
     image = Column(String(255), nullable=True)
     created_at = Column(
         DateTime(timezone=True), server_default=func.now(), nullable=False

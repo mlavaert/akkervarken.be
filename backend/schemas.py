@@ -118,7 +118,7 @@ class ProductBase(BaseModel):
     price: float = Field(..., gt=0)
     weight_display: str = Field(..., min_length=1, max_length=100)
     packaging_pieces: Optional[int] = Field(None, ge=0)
-    packaging_grams: Optional[int] = Field(None, ge=0)
+    unit_grams: Optional[int] = Field(None, ge=0, description="Estimated weight per piece in grams")
     image: Optional[str] = Field(None, max_length=255)
 
 
@@ -137,7 +137,7 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = Field(None, gt=0)
     weight_display: Optional[str] = Field(None, min_length=1, max_length=100)
     packaging_pieces: Optional[int] = Field(None, ge=0)
-    packaging_grams: Optional[int] = Field(None, ge=0)
+    unit_grams: Optional[int] = Field(None, ge=0, description="Estimated weight per piece in grams")
     image: Optional[str] = Field(None, max_length=255)
 
 

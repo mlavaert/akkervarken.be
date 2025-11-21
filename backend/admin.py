@@ -56,7 +56,7 @@ def admin_home(
     """Simple portal landing page for admin actions."""
     return templates.TemplateResponse(
         "admin/index.html",
-        {"request": request, "active_page": "home"},
+        {"request": request},
     )
 
 
@@ -112,7 +112,6 @@ def list_orders(
             "orders": orders,
             "status_filter": status_filter_value,
             "statuses": list(OrderStatus),
-            "active_page": "orders",
         },
     )
 
@@ -158,7 +157,6 @@ def list_products(
             "created": request.query_params.get("created"),
             "saved": request.query_params.get("saved"),
             "deleted": request.query_params.get("deleted"),
-            "active_page": "products",
         },
     )
 
@@ -171,7 +169,7 @@ def new_product(
     """Render the new product form."""
     return templates.TemplateResponse(
         "admin/product_form.html",
-        {"request": request, "product": None, "mode": "create", "active_page": "products_new"},
+        {"request": request, "product": None, "mode": "create"},
     )
 
 
@@ -190,7 +188,7 @@ def edit_product_form(
         )
     return templates.TemplateResponse(
         "admin/product_form.html",
-        {"request": request, "product": product, "mode": "edit", "active_page": "products"},
+        {"request": request, "product": product, "mode": "edit"},
     )
 
 
@@ -203,7 +201,7 @@ def create_product(
     price: str = Form(...),
     weight_display: str = Form(...),
     packaging_pieces: Optional[str] = Form(None),
-    packaging_grams: Optional[str] = Form(None),
+    unit_grams: Optional[str] = Form(None),
     image: Optional[str] = Form(None),
     db: Session = Depends(get_db),
     _: str = Depends(require_admin),
@@ -225,7 +223,7 @@ def create_product(
         price=_parse_price(price),
         weight_display=weight_display.strip(),
         packaging_pieces=_parse_optional_int(packaging_pieces),
-        packaging_grams=_parse_optional_int(packaging_grams),
+        unit_grams=_parse_optional_int(unit_grams),
         image=(image or "").strip() or None,
     )
 
@@ -247,7 +245,7 @@ def update_product(
     price: str = Form(...),
     weight_display: str = Form(...),
     packaging_pieces: Optional[str] = Form(None),
-    packaging_grams: Optional[str] = Form(None),
+    unit_grams: Optional[str] = Form(None),
     image: Optional[str] = Form(None),
     db: Session = Depends(get_db),
     _: str = Depends(require_admin),
@@ -274,7 +272,7 @@ def update_product(
     product.price = _parse_price(price)
     product.weight_display = weight_display.strip()
     product.packaging_pieces = _parse_optional_int(packaging_pieces)
-    product.packaging_grams = _parse_optional_int(packaging_grams)
+    product.unit_grams = _parse_optional_int(unit_grams)
     product.image = (image or "").strip() or None
 
     db.add(product)
