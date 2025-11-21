@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if mode == 'edit' %}Batch bewerken{% else %}Nieuwe batch{% endif %} · Akkervarken Admin</title>
+  <link rel="stylesheet" href="/static/admin.css">
+  <style>
+    .product-checkboxes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      background: #fafafa;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .product-checkboxes label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: normal;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .product-checkboxes input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+    .pickup-slots {
+      border: 1px solid #ddd;
+      padding: 12px;
+      background: #fafafa;
+    }
+    .slot-row {
+      display: grid;
+      grid-template-columns: 140px 140px auto;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+    .slot-row input {
+      margin: 0;
+    }
+    .slot-row button {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="/admin">Overzicht</a>
+    <a href="/admin/orders">Bestellingen</a>
+    <a href="/admin/products">Producten</a>
+    <a href="/admin/batches" class="active">Batches</a>
+  </nav>
+  <div class="page">
+    <header>
+      <div>
+        <h1>{% if mode == 'edit' %}Batch bewerken{% else %}Nieuwe batch{% endif %}</h1>
+        <div class="meta">{% if mode == 'edit' %}{{ batch.name }}{% else %}Voeg een nieuwe batch toe{% endif %}</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <form method="post" action="{% if mode == 'edit' %}/admin/batches/{{ batch.id }}/update{% else %}/admin/batches{% endif %}">
+        <div class="row">
+          <div>
+            <label for="slug">Slug</label>
+            <input id="slug" name="slug" placeholder="17-november-2025" required value="{{ batch.slug if batch else '' }}">
+          </div>
+          <div>
+            <label for="name">Naam</label>
+            <input id="name" name="name" placeholder="November" required value="{{ batch.name if batch else '' }}">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label for="pickup_location">Ophaallocatie</label>
+          <input id="pickup_location" name="pickup_location" placeholder="Wolfstede 7, 1745 Opwijk" required value="{{ batch.pickup_location if batch else '' }}">
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="pickup_text">Ophaaltekst (optioneel, voor vriezer)</label>
+            <input id="pickup_text" name="pickup_text" placeholder="Op afspraak" value="{{ batch.pickup_text if batch else '' }}">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>
+              <input type="checkbox" name="is_freezer" value="true" {% if batch and batch.is_freezer %}checked{% endif %} style="width: auto; margin-right: 6px;">
+              Dit is een vriezerbatch
+            </label>
+          </div>
+          <div>
+            <label>
+              <input type="checkbox" name="is_active" value="true" {% if not batch or batch.is_active %}checked{% endif %} style="width: auto; margin-right: 6px;">
+              Batch is actief
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label>Ophaalslots (datum en tijd)</label>
+          <div class="pickup-slots" id="pickupSlots">
+            {% if batch and batch.pickup_slots %}
+              {% for slot in batch.pickup_slots|sort(attribute='sort_order') %}
+                <div class="slot-row">
+                  <input type="date" name="slot_dates" value="{{ slot.date }}" required>
+                  <input type="text" name="slot_times" placeholder="17:00 - 19:00" value="{{ slot.time }}" required>
+                  <button type="button" class="btn" onclick="removeSlot(this)">Verwijder</button>
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <button type="button" class="btn" onclick="addSlot()" style="margin-top: 8px;">+ Slot toevoegen</button>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label>Beschikbare producten ({{ products|length }})</label>
+          <div class="product-checkboxes">
+            {% for product in products %}
+              <label>
+                <input
+                  type="checkbox"
+                  name="product_ids"
+                  value="{{ product.id }}"
+                  {% if batch and product in batch.products %}checked{% endif %}
+                >
+                {{ product.name }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn primary">{% if mode == 'edit' %}Opslaan{% else %}Batch aanmaken{% endif %}</button>
+          <a class="btn" href="/admin/batches">Annuleren</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function addSlot() {
+      const container = document.getElementById('pickupSlots');
+      const row = document.createElement('div');
+      row.className = 'slot-row';
+      row.innerHTML = `
+        <input type="date" name="slot_dates" required>
+        <input type="text" name="slot_times" placeholder="17:00 - 19:00" required>
+        <button type="button" class="btn" onclick="removeSlot(this)">Verwijder</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function removeSlot(btn) {
+      btn.parentElement.remove();
+    }
+  </script>
+</body>
+</html>

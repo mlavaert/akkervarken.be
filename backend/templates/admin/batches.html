@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batches · Akkervarken Admin</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="/admin">Overzicht</a>
+    <a href="/admin/orders">Bestellingen</a>
+    <a href="/admin/products">Producten</a>
+    <a href="/admin/batches" class="active">Batches</a>
+  </nav>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Batches</h1>
+        <div class="meta">{{ batches|length }} batch{% if batches|length != 1 %}es{% endif %}</div>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="/admin/batches/new">+ Nieuwe batch</a>
+      </div>
+    </header>
+
+    {% if created or saved or deleted %}
+      <div class="notice success">
+        {% if created %}Nieuwe batch opgeslagen.{% endif %}
+        {% if saved %}Wijzigingen bewaard.{% endif %}
+        {% if deleted %}Batch verwijderd.{% endif %}
+      </div>
+    {% endif %}
+
+    {% if batches %}
+      <table>
+        <thead>
+          <tr>
+            <th>Slug</th>
+            <th>Naam</th>
+            <th>Locatie</th>
+            <th>Ophaaldata</th>
+            <th>Producten</th>
+            <th>Status</th>
+            <th>Acties</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for batch in batches %}
+            <tr>
+              <td><span class="tag">{{ batch.slug }}</span></td>
+              <td>
+                <strong>{{ batch.name }}</strong>
+                {% if batch.is_freezer %}
+                  <span class="tag" style="margin-left: 6px; background: #e0f2fe; border-color: #99d5f5;">VRIEZER</span>
+                {% endif %}
+              </td>
+              <td style="font-size: 12px; max-width: 200px;">{{ batch.pickup_location }}</td>
+              <td style="font-size: 12px;">
+                {% if batch.pickup_text %}
+                  {{ batch.pickup_text }}
+                {% elif batch.pickup_slots %}
+                  {% for slot in batch.pickup_slots|sort(attribute='sort_order') %}
+                    {{ slot.date }} · {{ slot.time }}<br>
+                  {% endfor %}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>
+                <span style="color: #777; font-size: 12px;">{{ batch.products|length }} product{% if batch.products|length != 1 %}en{% endif %}</span>
+              </td>
+              <td>
+                {% if batch.is_active %}
+                  <span class="tag" style="background: #f0fff0; border-color: #99e699; color: #0a0;">ACTIEF</span>
+                {% else %}
+                  <span class="tag">INACTIEF</span>
+                {% endif %}
+              </td>
+              <td class="actions">
+                <a class="icon-btn" href="/admin/batches/{{ batch.id }}/edit" title="Bewerk">
+                  <span aria-hidden="true">✏︎</span>
+                  <span class="sr-only">Bewerken</span>
+                </a>
+                <form id="delete-{{ batch.id }}" method="post" action="/admin/batches/{{ batch.id }}/delete" onsubmit="return confirm('Zeker weten dat je deze batch wil verwijderen?');"></form>
+                <button type="submit" class="icon-btn danger" form="delete-{{ batch.id }}" title="Verwijder">
+                  <span aria-hidden="true">🗑</span>
+                  <span class="sr-only">Verwijderen</span>
+                </button>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="notice info">Nog geen batches in de database.</div>
+    {% endif %}
+  </div>
+</body>
+</html>

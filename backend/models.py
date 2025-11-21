@@ -1,4 +1,5 @@
 from sqlalchemy import (
+    Boolean,
     Column,
     DateTime,
     Enum,
@@ -6,6 +7,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Table,
     Text,
 )
 from sqlalchemy.orm import relationship
@@ -19,9 +21,8 @@ class OrderStatus(str, enum.Enum):
 
     PENDING = "pending"
     CONFIRMED = "confirmed"
-    READY = "ready"
-    FULFILLED = "fulfilled"
-    CANCELLED = "cancelled"
+    READY_FOR_PICKUP = "ready for pickup"
+    PICKED_UP = "picked up"
 
 
 class Order(Base):
@@ -133,3 +134,57 @@ class Product(Base):
 
     def __repr__(self):
         return f"<Product {self.slug}: {self.name} - €{self.price}>"
+
+
+# Association table for many-to-many relationship between Batch and Product
+batch_products = Table(
+    "batch_products",
+    Base.metadata,
+    Column("batch_id", Integer, ForeignKey("batches.id"), primary_key=True),
+    Column("product_id", Integer, ForeignKey("products.id"), primary_key=True),
+)
+
+
+class Batch(Base):
+    """Slaughter batch with pickup schedule"""
+
+    __tablename__ = "batches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    slug = Column(String(100), unique=True, nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    pickup_location = Column(String(500), nullable=False)
+    pickup_text = Column(String(255), nullable=True)  # For freezer: "Op afspraak"
+    is_freezer = Column(Boolean, default=False, nullable=False, index=True)
+    is_active = Column(Boolean, default=True, nullable=False, index=True)
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    pickup_slots = relationship(
+        "PickupSlot", back_populates="batch", cascade="all, delete-orphan"
+    )
+    products = relationship("Product", secondary=batch_products, backref="batches")
+
+    def __repr__(self):
+        return f"<Batch {self.slug}: {self.name}>"
+
+
+class PickupSlot(Base):
+    """Pickup time slot for a batch"""
+
+    __tablename__ = "pickup_slots"
+
+    id = Column(Integer, primary_key=True, index=True)
+    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=False, index=True)
+    date = Column(String(10), nullable=False)  # YYYY-MM-DD format
+    time = Column(String(50), nullable=False)  # e.g., "17:00 - 19:00"
+    sort_order = Column(Integer, default=0, nullable=False)
+
+    # Relationship
+    batch = relationship("Batch", back_populates="pickup_slots")
+
+    def __repr__(self):
+        return f"<PickupSlot {self.date} {self.time}>"
