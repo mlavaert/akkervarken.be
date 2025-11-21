@@ -94,3 +94,61 @@ def health_check():
             health_status["status"] = "unhealthy"
 
     return health_status
+
+
+@app.get("/debug/email-test")
+async def test_email():
+    """
+    TEMPORARY: Test email configuration and send a test email.
+    Returns detailed error information if email fails.
+    TODO: Remove this endpoint in production after testing.
+    """
+    from email_service import email_service
+
+    # Check if email is enabled
+    if not email_service.enabled:
+        return {
+            "success": False,
+            "error": "Email service not enabled",
+            "config": {
+                "smtp_host": email_service.smtp_host or "NOT SET",
+                "smtp_port": email_service.smtp_port,
+                "smtp_user": email_service.smtp_user or "NOT SET",
+                "from_email": email_service.from_email,
+                "admin_email": email_service.admin_email,
+            }
+        }
+
+    # Try to send a test email to admin
+    try:
+        result = await email_service.send_email(
+            to_email=email_service.admin_email,
+            subject="Test email from Akkervarken API",
+            html_body="<h1>Test Email</h1><p>This is a test email from the Akkervarken backend API.</p>",
+            text_body="Test Email\n\nThis is a test email from the Akkervarken backend API."
+        )
+
+        return {
+            "success": result,
+            "message": "Email sent successfully" if result else "Email sending failed (check logs)",
+            "config": {
+                "smtp_host": email_service.smtp_host,
+                "smtp_port": email_service.smtp_port,
+                "smtp_user": email_service.smtp_user,
+                "from_email": email_service.from_email,
+                "to_email": email_service.admin_email,
+            }
+        }
+    except Exception as e:
+        logger.exception("Email test failed")
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "config": {
+                "smtp_host": email_service.smtp_host,
+                "smtp_port": email_service.smtp_port,
+                "smtp_user": email_service.smtp_user,
+                "from_email": email_service.from_email,
+            }
+        }
