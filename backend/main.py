@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 import os
 import logging
+import subprocess
 from database import engine
 from orders import router as orders_router
 
@@ -18,6 +19,32 @@ app = FastAPI(
     version="1.0.0",
     description="Backend API for Akkervarken.be webshop and POS system"
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Run database migrations on startup"""
+    logger.info("Running startup tasks...")
+
+    # Run database migrations
+    try:
+        logger.info("Running database migrations...")
+        result = subprocess.run(
+            ["alembic", "upgrade", "head"],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+        logger.info(f"✅ Migrations completed successfully")
+        if result.stdout:
+            logger.info(f"Migration output: {result.stdout}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"❌ Migration failed: {e.stderr}")
+        # Don't crash the app, just log the error
+        # This allows the API to still start if migrations fail
+    except Exception as e:
+        logger.error(f"❌ Unexpected error during migration: {str(e)}")
 
 # CORS setup - allow requests from your website
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://akkervarken.be").split(",")
