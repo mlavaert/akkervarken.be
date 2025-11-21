@@ -11,7 +11,6 @@
     <a href="/admin">Overzicht</a>
     <a href="/admin/orders">Bestellingen</a>
     <a href="/admin/products">Producten</a>
-    <a href="/admin/products/new">Nieuw product</a>
   </nav>
   <div class="page">
     <header>
@@ -39,10 +38,7 @@
       {% for product in products %}
         <article class="product-card">
           <div class="product-header">
-            <div>
-              <div class="pill">{{ product.slug }}</div>
-              <h2>{{ product.name }}</h2>
-            </div>
+            <h2>{{ product.name }}</h2>
             <div class="actions">
               <a class="icon-btn" href="/admin/products/{{ product.id }}/edit" title="Bewerk">
                 <span aria-hidden="true">✏︎</span>
@@ -60,6 +56,7 @@
             Verpakking: {% if product.packaging_pieces %}{{ product.packaging_pieces }} stuks{% else %}n.v.t.{% endif %}
             {% if product.unit_grams %} · ±{{ product.unit_grams }}g/stuk{% endif %}
           </div>
+          <div class="pill slug-pill">{{ product.slug }}</div>
           <p>{{ product.description }}</p>
           {% if product.ingredients %}
             <div class="meta-line">Ingrediënten: {{ product.ingredients }}</div>

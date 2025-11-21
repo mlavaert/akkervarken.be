@@ -303,7 +303,7 @@ textarea {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .pill {
@@ -316,6 +316,11 @@ textarea {
   color: #0f172a;
   font-size: 12px;
   border: 1px solid #a5f3fc;
+}
+
+.slug-pill {
+  display: inline-flex;
+  margin-top: 8px;
 }
 
 @media (max-width: 720px) {
