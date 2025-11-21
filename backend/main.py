@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 import os
 import logging
-import subprocess
 from database import engine
 from orders import router as orders_router
 
@@ -26,25 +25,25 @@ async def startup_event():
     """Run database migrations on startup"""
     logger.info("Running startup tasks...")
 
-    # Run database migrations
+    # Run database migrations using Alembic API
     try:
         logger.info("Running database migrations...")
-        result = subprocess.run(
-            ["alembic", "upgrade", "head"],
-            check=True,
-            capture_output=True,
-            text=True,
-            timeout=60
-        )
-        logger.info(f"✅ Migrations completed successfully")
-        if result.stdout:
-            logger.info(f"Migration output: {result.stdout}")
-    except subprocess.CalledProcessError as e:
-        logger.error(f"❌ Migration failed: {e.stderr}")
+
+        from alembic.config import Config
+        from alembic import command
+
+        # Create Alembic config
+        alembic_cfg = Config("alembic.ini")
+
+        # Run upgrade to head
+        command.upgrade(alembic_cfg, "head")
+
+        logger.info("✅ Migrations completed successfully")
+    except Exception as e:
+        logger.error(f"❌ Migration failed: {str(e)}")
+        logger.exception("Full migration error traceback:")
         # Don't crash the app, just log the error
         # This allows the API to still start if migrations fail
-    except Exception as e:
-        logger.error(f"❌ Unexpected error during migration: {str(e)}")
 
 # CORS setup - allow requests from your website
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://akkervarken.be").split(",")
