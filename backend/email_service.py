@@ -43,14 +43,16 @@ class EmailService:
                 message.attach(MIMEText(text_body, "plain", "utf-8"))
             message.attach(MIMEText(html_body, "html", "utf-8"))
 
-            # Send email
+            # Send email - use TLS for port 465, STARTTLS for 587
+            use_tls = (self.smtp_port == 465)
             await aiosmtplib.send(
                 message,
                 hostname=self.smtp_host,
                 port=self.smtp_port,
                 username=self.smtp_user,
                 password=self.smtp_password,
-                start_tls=True,
+                use_tls=use_tls,  # SSL/TLS for port 465
+                start_tls=(not use_tls),  # STARTTLS for port 587
                 timeout=10,  # 10 second timeout
             )
 
@@ -79,13 +81,16 @@ class EmailService:
         message.attach(MIMEText(html_body, "html", "utf-8"))
 
         # Send email - let exceptions bubble up for diagnostics
+        # Use TLS for port 465, STARTTLS for 587
+        use_tls = (self.smtp_port == 465)
         await aiosmtplib.send(
             message,
             hostname=self.smtp_host,
             port=self.smtp_port,
             username=self.smtp_user,
             password=self.smtp_password,
-            start_tls=True,
+            use_tls=use_tls,  # SSL/TLS for port 465
+            start_tls=(not use_tls),  # STARTTLS for port 587
             timeout=10,
         )
 
