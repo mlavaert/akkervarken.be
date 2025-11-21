@@ -4,191 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Akkervarken · Admin</title>
-  <style>
-    :root {
-      color: #0f172a;
-      background: #f6f7fb;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.5;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 32px;
-      background: radial-gradient(circle at 20% 20%, #ffffff 0, #f6f7fb 40%), #f6f7fb;
-      min-height: 100vh;
-    }
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .brand img {
-      height: 40px;
-    }
-    h1 {
-      font-size: 20px;
-      margin: 0;
-      font-weight: 650;
-      letter-spacing: -0.01em;
-    }
-    .filters {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .header-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      justify-content: flex-end;
-    }
-    .nav-link {
-      text-decoration: none;
-      border: 1px solid #dce2ee;
-      border-radius: 10px;
-      padding: 8px 12px;
-      background: #fff;
-      font-weight: 600;
-      color: #0f172a;
-      font-size: 14px;
-    }
-    select, button {
-      border: 1px solid #dce2ee;
-      border-radius: 10px;
-      padding: 8px 12px;
-      background: #fff;
-      font-size: 14px;
-      color: #0f172a;
-    }
-    button {
-      border: none;
-      background: linear-gradient(135deg, #111827, #1e293b);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 120ms ease, box-shadow 120ms ease;
-    }
-    button:hover { transform: translateY(-1px); box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14); }
-    button:active { transform: translateY(0); box-shadow: none; }
-    .notice {
-      background: #fff8ed;
-      border: 1px solid #ffe1b8;
-      color: #92400e;
-      padding: 12px 14px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-    .orders {
-      display: grid;
-      gap: 14px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5eaf3;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 8px 30px rgba(17, 24, 39, 0.05);
-    }
-    .card-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .order-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .order-id {
-      font-weight: 700;
-      font-size: 16px;
-    }
-    .meta-line {
-      color: #475569;
-      font-size: 13px;
-    }
-    .status-form {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: #f1f5f9;
-      color: #0f172a;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .pill {
-      padding: 10px 12px;
-      border: 1px solid #e5eaf3;
-      border-radius: 12px;
-      background: #f8fafc;
-      font-size: 13px;
-      color: #0f172a;
-    }
-    .items {
-      border: 1px solid #e5eaf3;
-      border-radius: 12px;
-      padding: 10px 12px;
-      background: #fcfdff;
-      margin-bottom: 10px;
-    }
-    .item-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 6px 0;
-      border-bottom: 1px solid #eef2f7;
-      font-size: 14px;
-    }
-    .item-row:last-child { border-bottom: none; }
-    .item-name { font-weight: 600; }
-    .notes {
-      font-size: 13px;
-      color: #0f172a;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #f6f7fb;
-      border: 1px dashed #cbd5e1;
-      margin-top: 6px;
-    }
-    @media (max-width: 700px) {
-      body { padding: 18px; }
-      header { align-items: flex-start; }
-      .card-header { align-items: flex-start; }
-      .status-form { width: 100%; justify-content: flex-start; }
-    }
-  </style>
+  <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
   <div class="page">
@@ -201,6 +17,7 @@
         </div>
       </div>
       <div class="header-actions">
+        <a class="nav-link" href="/admin">Overzicht</a>
         <a class="nav-link" href="/admin/products">Producten</a>
         <form class="filters" method="get" action="/admin/orders">
           <label for="status_filter">Status:</label>
@@ -237,13 +54,13 @@
               </form>
             </div>
 
-            <div class="grid">
-              <div class="pill">
+            <div class="meta-grid">
+              <div class="meta-pill">
                 <strong>{{ order.customer_name }}</strong><br>
                 {{ order.customer_email or "Geen e-mail" }}<br>
                 {{ order.customer_phone or "Geen telefoon" }}
               </div>
-              <div class="pill">
+              <div class="meta-pill">
                 Afhaling: {{ order.pickup_info or "Nog te bepalen" }}<br>
                 Totaal: €{{ "%.2f"|format(order.total_amount) }}<br>
                 Items: {{ order.total_items }}
@@ -265,7 +82,7 @@
           </article>
         {% endfor %}
       {% else %}
-        <div class="notice">Geen bestellingen gevonden.</div>
+        <div class="notice notice--warning">Geen bestellingen gevonden.</div>
       {% endif %}
     </div>
   </div>

@@ -48,6 +48,18 @@ def require_admin(
     return credentials.username
 
 
+@router.get("/", response_class=HTMLResponse)
+def admin_home(
+    request: Request,
+    _: str = Depends(require_admin),
+):
+    """Simple portal landing page for admin actions."""
+    return templates.TemplateResponse(
+        "admin/index.html",
+        {"request": request},
+    )
+
+
 def _parse_price(value: str) -> float:
     """Parse a price value from a form field."""
     try:
