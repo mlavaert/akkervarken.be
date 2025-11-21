@@ -227,15 +227,38 @@
 
                 const data = await response.json();
 
-                // Success!
-                statusCard.className = 'status-card healthy';
+                // Determine overall status
+                const isHealthy = data.status === 'healthy';
+                const isDegraded = data.status === 'degraded';
+                const cardClass = isHealthy ? 'healthy' : (isDegraded ? 'loading' : 'error');
+                const statusIcon = isHealthy ? '✅' : (isDegraded ? '⚠️' : '❌');
+                const statusTitle = isHealthy ? 'API is Healthy' : (isDegraded ? 'API is Degraded' : 'API is Unhealthy');
+
+                // Database status icon
+                let dbIcon = '❓';
+                let dbStatus = 'Unknown';
+                if (data.database === 'connected') {
+                    dbIcon = '✅';
+                    dbStatus = 'Connected';
+                } else if (data.database === 'not_configured') {
+                    dbIcon = '⚠️';
+                    dbStatus = 'Not Configured';
+                } else if (data.database === 'error') {
+                    dbIcon = '❌';
+                    dbStatus = 'Error';
+                }
+
+                statusCard.className = `status-card ${cardClass}`;
                 statusCard.innerHTML = `
                     <div class="status-header">
-                        <span class="status-icon">✅</span>
-                        <span class="status-title">API is Healthy</span>
+                        <span class="status-icon">${statusIcon}</span>
+                        <span class="status-title">${statusTitle}</span>
                     </div>
                     <div class="status-details">
-                        <div><strong>Status:</strong> ${data.status || 'ok'}</div>
+                        <div><strong>Overall Status:</strong> ${data.status || 'ok'}</div>
+                        <div><strong>API:</strong> ${data.api || 'ok'}</div>
+                        <div><strong>Database:</strong> ${dbIcon} ${dbStatus}</div>
+                        ${data.database_error ? `<div style="color: #f44336; font-size: 0.9em; margin-top: 5px;"><strong>DB Error:</strong> ${data.database_error}</div>` : ''}
                         <div><strong>Response Time:</strong> ${responseTime}ms</div>
                         <div class="api-url">${API_URL}/health</div>
                     </div>

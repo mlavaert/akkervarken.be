@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 import os
+from database import engine
 
 app = FastAPI(title="Akkervarken API", version="1.0.0")
 
@@ -28,5 +30,25 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    """Health check endpoint for Railway"""
-    return {"status": "ok"}
+    """Health check endpoint with database connection status"""
+    health_status = {
+        "status": "healthy",
+        "api": "ok",
+        "database": "unknown"
+    }
+
+    # Check database connection
+    if engine is None:
+        health_status["database"] = "not_configured"
+        health_status["status"] = "degraded"
+    else:
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("SELECT 1"))
+                health_status["database"] = "connected"
+        except Exception as e:
+            health_status["database"] = "error"
+            health_status["database_error"] = str(e)
+            health_status["status"] = "unhealthy"
+
+    return health_status
