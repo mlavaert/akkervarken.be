@@ -27,27 +27,20 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
     5. Returns the order ID and confirmation
     """
     try:
-        total_amount = 0.0
-        total_items = 0
-
-        # Create order record (totals filled after items)
+        # Create order record
         order = Order(
             customer_name=order_data.customer_name,
             customer_phone=order_data.customer_phone,
             customer_email=order_data.customer_email,
             batch_id=order_data.batch_id,
-            batch_name=order_data.batch_name,
-            pickup_info=order_data.pickup_info,
             notes=order_data.notes,
-            total_amount=0,
-            total_items=0,
             status=OrderStatus.PENDING,
         )
 
         db.add(order)
         db.flush()  # get order ID
 
-        # Create order items and compute totals
+        # Create order items (totals calculated automatically via properties)
         for item_data in order_data.items:
             product = (
                 db.query(Product).filter(Product.slug == item_data.product_slug).first()
@@ -58,10 +51,6 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
                     detail=f"Product '{item_data.product_slug}' niet gevonden",
                 )
 
-            subtotal = float(product.price) * item_data.quantity
-            total_amount += subtotal
-            total_items += item_data.quantity
-
             order_item = OrderItem(
                 order_id=order.id,
                 product_id=product.id,
@@ -69,11 +58,6 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
             )
             db.add(order_item)
 
-        # Persist totals
-        order.total_amount = total_amount
-        order.total_items = total_items
-
-        db.add(order)
         db.commit()
         db.refresh(order)
 

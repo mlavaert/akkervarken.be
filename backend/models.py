@@ -35,11 +35,7 @@ class Order(Base):
     customer_phone = Column(String(50), nullable=True)
     customer_email = Column(String(255), nullable=True)
     batch_id = Column(String(100), nullable=False, index=True)
-    batch_name = Column(String(255), nullable=False)
-    pickup_info = Column(String(500), nullable=True)
     notes = Column(String(1000), nullable=True)
-    total_amount = Column(Float, nullable=False)
-    total_items = Column(Integer, nullable=False)
     status = Column(
         Enum(OrderStatus), default=OrderStatus.PENDING, nullable=False, index=True
     )
@@ -52,6 +48,45 @@ class Order(Base):
     items = relationship(
         "OrderItem", back_populates="order", cascade="all, delete-orphan"
     )
+
+    @property
+    def batch_name(self) -> str:
+        """Get batch name from batch_id lookup."""
+        # Try to find batch in database
+        from sqlalchemy.orm import object_session
+        session = object_session(self)
+        if session:
+            batch = session.query(Batch).filter(Batch.slug == self.batch_id).first()
+            if batch:
+                return batch.name
+        # Fallback to batch_id if not found
+        return self.batch_id
+
+    @property
+    def pickup_info(self) -> str:
+        """Get pickup information from batch."""
+        from sqlalchemy.orm import object_session
+        session = object_session(self)
+        if session:
+            batch = session.query(Batch).filter(Batch.slug == self.batch_id).first()
+            if batch:
+                if batch.pickup_text:
+                    return batch.pickup_text
+                if batch.pickup_slots:
+                    slots = sorted(batch.pickup_slots, key=lambda s: s.sort_order)
+                    return ", ".join([f"{s.date} {s.time}" for s in slots])
+                return batch.pickup_location
+        return ""
+
+    @property
+    def total_amount(self) -> float:
+        """Calculate total amount from order items."""
+        return sum(item.computed_subtotal for item in self.items)
+
+    @property
+    def total_items(self) -> int:
+        """Calculate total number of items."""
+        return sum(item.quantity for item in self.items)
 
     def __repr__(self):
         return f"<Order {self.id}: {self.customer_name} - {self.batch_name} - €{self.total_amount}>"
