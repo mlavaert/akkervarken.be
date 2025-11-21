@@ -146,7 +146,7 @@ class EmailService:
         total: float,
     ) -> str:
         """Render customer confirmation email HTML"""
-        template = jinja_env.get_template("customer_confirmation.html")
+        template = jinja_env.get_template("customer-confirmation.html")
         return template.render(
             name=name,
             order_id=order_id,
@@ -167,7 +167,7 @@ class EmailService:
         total: float,
     ) -> str:
         """Render customer confirmation email plain text"""
-        template = jinja_env.get_template("customer_confirmation.txt")
+        template = jinja_env.get_template("customer-confirmation.txt")
         return template.render(
             name=name,
             order_id=order_id,
@@ -190,7 +190,7 @@ class EmailService:
         notes: str = None,
     ) -> str:
         """Render admin notification email HTML"""
-        template = jinja_env.get_template("admin_notification.html")
+        template = jinja_env.get_template("admin-notification.html")
         return template.render(
             order_id=order_id,
             name=name,
@@ -217,7 +217,7 @@ class EmailService:
         notes: str = None,
     ) -> str:
         """Render admin notification email plain text"""
-        template = jinja_env.get_template("admin_notification.txt")
+        template = jinja_env.get_template("admin-notification.txt")
         return template.render(
             order_id=order_id,
             name=name,
