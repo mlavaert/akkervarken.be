@@ -7,19 +7,8 @@ from models import OrderStatus
 class OrderItemCreate(BaseModel):
     """Schema for creating an order item"""
 
-    product_id: str = Field(
-        ..., description="Product identifier (e.g., 'batch-id-product-id')"
-    )
-    product_name: str = Field(..., min_length=1, max_length=255)
+    product_slug: str = Field(..., min_length=1, max_length=100)
     quantity: int = Field(..., gt=0, description="Quantity of items")
-    unit_price: float = Field(..., gt=0, description="Price per unit")
-    expected_price: Optional[float] = Field(
-        None, ge=0, description="Expected price for per-kg items"
-    )
-    subtotal: float = Field(..., gt=0, description="Item subtotal")
-    packaging_info: Optional[str] = Field(
-        None, max_length=255, description="Packaging details"
-    )
 
 
 class OrderCreate(BaseModel):
@@ -32,8 +21,6 @@ class OrderCreate(BaseModel):
     batch_name: str = Field(..., min_length=1, max_length=255)
     pickup_info: Optional[str] = Field(None, max_length=500)
     notes: Optional[str] = Field(None, max_length=1000)
-    total_amount: float = Field(..., gt=0)
-    total_items: int = Field(..., gt=0)
     items: List[OrderItemCreate] = Field(..., min_length=1)
 
     class Config:
@@ -46,26 +33,14 @@ class OrderCreate(BaseModel):
                 "batch_name": "15 december 2024",
                 "pickup_info": "2024-12-15 om 10:00, 2024-12-15 om 14:00",
                 "notes": "Graag via achteringang leveren",
-                "total_amount": 45.50,
-                "total_items": 3,
                 "items": [
                     {
-                        "product_id": "15-december-2024-gehakt",
-                        "product_name": "Gehakt",
+                        "product_slug": "gehakt",
                         "quantity": 2,
-                        "unit_price": 8.50,
-                        "expected_price": 0,
-                        "subtotal": 17.00,
-                        "packaging_info": "2 stuks × ±500g",
                     },
                     {
-                        "product_id": "15-december-2024-spek",
-                        "product_name": "Ontbijtspek",
-                        "quantity": 1,
-                        "unit_price": 12.00,
-                        "expected_price": 13.50,
-                        "subtotal": 13.50,
-                        "packaging_info": "±450g",
+                        "product_slug": "spek",
+                        "quantity": 1
                     },
                 ],
             }
@@ -76,11 +51,11 @@ class OrderItemResponse(BaseModel):
     """Schema for order item in responses"""
 
     id: int
-    product_id: str
+    product_id: int
+    product_slug: str
     product_name: str
     quantity: int
     unit_price: float
-    expected_price: Optional[float]
     subtotal: float
     packaging_info: Optional[str]
 

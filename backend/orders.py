@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_db
-from models import Order, OrderItem, OrderStatus
+from models import Order, OrderItem, OrderStatus, Product
 from schemas import OrderCreate, OrderResponse, OrderCreateResponse
 from email_service import email_service
 import logging
+from models import Product
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,10 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
     5. Returns the order ID and confirmation
     """
     try:
-        # Create order record
+        total_amount = 0.0
+        total_items = 0
+
+        # Create order record (totals filled after items)
         order = Order(
             customer_name=order_data.customer_name,
             customer_phone=order_data.customer_phone,
@@ -35,30 +39,41 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
             batch_name=order_data.batch_name,
             pickup_info=order_data.pickup_info,
             notes=order_data.notes,
-            total_amount=order_data.total_amount,
-            total_items=order_data.total_items,
+            total_amount=0,
+            total_items=0,
             status=OrderStatus.PENDING,
         )
 
-        # Add order to session
         db.add(order)
-        db.flush()  # Flush to get the order ID
+        db.flush()  # get order ID
 
-        # Create order items
+        # Create order items and compute totals
         for item_data in order_data.items:
+            product = (
+                db.query(Product).filter(Product.slug == item_data.product_slug).first()
+            )
+            if not product:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Product '{item_data.product_slug}' niet gevonden",
+                )
+
+            subtotal = float(product.price) * item_data.quantity
+            total_amount += subtotal
+            total_items += item_data.quantity
+
             order_item = OrderItem(
                 order_id=order.id,
-                product_id=item_data.product_id,
-                product_name=item_data.product_name,
+                product_id=product.id,
                 quantity=item_data.quantity,
-                unit_price=item_data.unit_price,
-                expected_price=item_data.expected_price,
-                subtotal=item_data.subtotal,
-                packaging_info=item_data.packaging_info,
             )
             db.add(order_item)
 
-        # Commit the transaction
+        # Persist totals
+        order.total_amount = total_amount
+        order.total_items = total_items
+
+        db.add(order)
         db.commit()
         db.refresh(order)
 
@@ -69,7 +84,7 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
             {
                 "name": item.product_name,
                 "quantity": item.quantity,
-                "subtotal": item.subtotal,
+                "subtotal": item.computed_subtotal,
             }
             for item in order.items
         ]

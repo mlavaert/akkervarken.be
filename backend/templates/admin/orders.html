@@ -72,7 +72,7 @@
               {% for item in order.items %}
                 <div class="item-row">
                   <div class="item-name">{{ item.quantity }} × {{ item.product_name }}</div>
-                  <div>€{{ "%.2f"|format(item.subtotal) }}</div>
+                  <div>€{{ "%.2f"|format(item.computed_subtotal) }}</div>
                 </div>
               {% endfor %}
             </div>

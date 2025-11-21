@@ -63,19 +63,48 @@ class OrderItem(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False, index=True)
-    product_id = Column(String(100), nullable=False)
-    product_name = Column(String(255), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False, index=True)
     quantity = Column(Integer, nullable=False)
-    unit_price = Column(Float, nullable=False)
-    expected_price = Column(Float, nullable=True)  # For per-kg items
-    subtotal = Column(Float, nullable=False)
-    packaging_info = Column(String(255), nullable=True)  # e.g., "2 stuks × ±250g"
 
-    # Relationship to order
+    # Relationships
     order = relationship("Order", back_populates="items")
+    product = relationship("Product")
 
     def __repr__(self):
-        return f"<OrderItem {self.id}: {self.quantity}x {self.product_name} - €{self.subtotal}>"
+        return (
+            f"<OrderItem {self.id}: {self.quantity}x "
+            f"{self.product.name if self.product else 'product'}>"
+        )
+
+    @property
+    def product_name(self) -> str:
+        return self.product.name if self.product else ""
+
+    @property
+    def product_slug(self) -> str:
+        return self.product.slug if self.product else ""
+
+    @property
+    def unit_price(self) -> float:
+        return float(self.product.price) if self.product else 0.0
+
+    @property
+    def computed_subtotal(self) -> float:
+        return self.unit_price * (self.quantity or 0)
+
+    @property
+    def packaging_info(self) -> str:
+        if not self.product:
+            return ""
+        pieces = self.product.packaging_pieces
+        grams = self.product.unit_grams
+        if pieces and grams:
+            return f"{pieces} stuks × ±{grams}g"
+        if grams:
+            return f"±{grams}g"
+        if pieces:
+            return f"{pieces} stuks"
+        return ""
 
 
 class Product(Base):
