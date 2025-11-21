@@ -3,56 +3,39 @@
 <head>
     <meta charset="utf-8">
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #856404; color: white; padding: 20px; }
-        .content { padding: 20px; background-color: #fff3cd; }
-        .order-details { background-color: white; padding: 15px; margin: 15px 0; border-radius: 5px; border: 1px solid #ffc107; }
-        .customer-info { background-color: #e7f3ff; padding: 15px; margin: 15px 0; border-radius: 5px; }
-        .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .item:last-child { border-bottom: none; }
-        .total { font-size: 1.2em; font-weight: bold; margin-top: 15px; padding-top: 15px; border-top: 2px solid #856404; }
-        .notes { background-color: #fffbf0; padding: 10px; margin: 10px 0; border-left: 4px solid #ffc107; font-style: italic; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: #1d1d1f; margin: 0; padding: 0; }
+        .main { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+        pre { background: #f7f7f7; padding: 16px; border: 1px solid #ebebeb; border-radius: 6px; font-family: "SFMono-Regular", Menlo, Consolas, monospace; white-space: pre-wrap; word-wrap: break-word; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🔔 Nieuwe Bestelling #{{ order_id }}</h1>
-        </div>
-        <div class="content">
-            <div class="customer-info">
-                <h2>Klantgegevens</h2>
-                <p><strong>Naam:</strong> {{ name }}</p>
-                <p><strong>Telefoon:</strong> {{ phone }}</p>
-                <p><strong>Email:</strong> {{ email }}</p>
-            </div>
+    <div class="main">
+        <pre>
+NIEUWE BESTELLING #{{ order_id }}
 
-            <div class="order-details">
-                <h2>Bestelgegevens</h2>
-                <p><strong>Batch:</strong> {{ batch }}</p>
-                <p><strong>Ophalen:</strong> {{ pickup }}</p>
+KLANTGEGEVENS:
+Naam: {{ name }}
+{% if phone -%}
+Telefoon: {{ phone }}
+{% endif -%}
+{% if email -%}
+Email: {{ email }}
+{% endif %}
 
-                <h3>Producten:</h3>
-                {% for item in items %}
-                <div class="item">
-                    <span>{{ item.name }} ({{ item.quantity }}x)</span>
-                    <span>€{{ "%.2f"|format(item.subtotal) }}</span>
-                </div>
-                {% endfor %}
+Batch: {{ batch }}
+Ophalen: {{ pickup }}
 
-                <div class="total">
-                    Totaal: €{{ "%.2f"|format(total) }}
-                </div>
+PRODUCTEN:
+{% for item in items -%}
+{{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.subtotal) }}
+{% endfor %}
+TOTAAL: €{{ "%.2f"|format(total) }}
+{% if notes %}
 
-                {% if notes %}
-                <div class="notes">
-                    <strong>Opmerkingen:</strong><br>
-                    {{ notes }}
-                </div>
-                {% endif %}
-            </div>
-        </div>
+OPMERKINGEN:
+{{ notes }}
+{% endif -%}
+        </pre>
     </div>
 </body>
 </html>
