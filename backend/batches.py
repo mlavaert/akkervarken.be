@@ -1,192 +1,204 @@
 """Batch management routes for admin panel."""
 
-from fastapi import APIRouter, Form, Request
+from typing import Optional
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+
 from database import get_db
 from models import Batch, PickupSlot, Product
+from admin import require_admin
 
+templates = Jinja2Templates(directory="templates")
 router = APIRouter(prefix="/admin/batches", tags=["admin", "batches"])
 
 
 @router.get("", response_class=HTMLResponse)
-def list_batches(request: Request, created: bool = False, saved: bool = False, deleted: bool = False):
+def list_batches(
+    request: Request,
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
+):
     """List all batches."""
-    db: Session = next(get_db())
-    try:
-        batches = db.query(Batch).order_by(Batch.is_active.desc(), Batch.created_at.desc()).all()
-        return request.app.state.templates.TemplateResponse(
-            "admin/batches.html",
-            {
-                "request": request,
-                "batches": batches,
-                "created": created,
-                "saved": saved,
-                "deleted": deleted,
-            },
-        )
-    finally:
-        db.close()
+    batches = db.query(Batch).order_by(Batch.is_active.desc(), Batch.created_at.desc()).all()
+    return templates.TemplateResponse(
+        "admin/batches.html",
+        {
+            "request": request,
+            "batches": batches,
+            "created": request.query_params.get("created"),
+            "saved": request.query_params.get("saved"),
+            "deleted": request.query_params.get("deleted"),
+        },
+    )
 
 
 @router.get("/new", response_class=HTMLResponse)
-def new_batch_form(request: Request):
+def new_batch_form(
+    request: Request,
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
+):
     """Show form to create a new batch."""
-    db: Session = next(get_db())
-    try:
-        products = db.query(Product).order_by(Product.name).all()
-        return request.app.state.templates.TemplateResponse(
-            "admin/batch_form.html",
-            {"request": request, "mode": "new", "batch": None, "products": products},
-        )
-    finally:
-        db.close()
+    products = db.query(Product).order_by(Product.name).all()
+    return templates.TemplateResponse(
+        "admin/batch_form.html",
+        {"request": request, "mode": "new", "batch": None, "products": products},
+    )
 
 
 @router.post("", response_class=RedirectResponse)
-def create_batch(
+async def create_batch(
     request: Request,
     slug: str = Form(...),
     name: str = Form(...),
     pickup_location: str = Form(...),
-    pickup_text: str = Form(None),
-    is_freezer: bool = Form(False),
-    is_active: bool = Form(True),
-    product_ids: list[int] = Form([]),
-    slot_dates: list[str] = Form([]),
-    slot_times: list[str] = Form([]),
+    pickup_text: Optional[str] = Form(None),
+    is_freezer: Optional[str] = Form(None),
+    is_active: Optional[str] = Form(None),
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
 ):
     """Create a new batch."""
-    db: Session = next(get_db())
-    try:
-        # Create batch
-        batch = Batch(
-            slug=slug,
-            name=name,
-            pickup_location=pickup_location,
-            pickup_text=pickup_text if pickup_text else None,
-            is_freezer=is_freezer,
-            is_active=is_active,
-        )
-        db.add(batch)
-        db.flush()  # Get batch.id
+    # Get form data manually for lists
+    form_data = await request.form()
+    product_ids = form_data.getlist("product_ids")
+    slot_dates = form_data.getlist("slot_dates")
+    slot_times = form_data.getlist("slot_times")
 
-        # Add products
-        if product_ids:
-            products = db.query(Product).filter(Product.id.in_(product_ids)).all()
-            batch.products = products
+    # Create batch
+    batch = Batch(
+        slug=slug.strip(),
+        name=name.strip(),
+        pickup_location=pickup_location.strip(),
+        pickup_text=pickup_text.strip() if pickup_text else None,
+        is_freezer=(is_freezer == "true"),
+        is_active=(is_active == "true"),
+    )
+    db.add(batch)
+    db.flush()  # Get batch.id
 
-        # Add pickup slots
-        for i, (date, time) in enumerate(zip(slot_dates, slot_times)):
-            if date and time:  # Only add if both date and time are provided
-                slot = PickupSlot(
-                    batch_id=batch.id, date=date, time=time, sort_order=i
-                )
-                db.add(slot)
+    # Add products
+    if product_ids:
+        product_id_ints = [int(pid) for pid in product_ids]
+        products = db.query(Product).filter(Product.id.in_(product_id_ints)).all()
+        batch.products = products
 
-        db.commit()
-        return RedirectResponse(
-            url="/admin/batches?created=true", status_code=303
-        )
-    except Exception as e:
-        db.rollback()
-        raise e
-    finally:
-        db.close()
+    # Add pickup slots
+    for i, (date, time) in enumerate(zip(slot_dates, slot_times)):
+        if date and time:  # Only add if both date and time are provided
+            slot = PickupSlot(
+                batch_id=batch.id, date=date, time=time, sort_order=i
+            )
+            db.add(slot)
+
+    db.commit()
+    return RedirectResponse(
+        url="/admin/batches?created=1", status_code=status.HTTP_303_SEE_OTHER
+    )
 
 
 @router.get("/{batch_id}/edit", response_class=HTMLResponse)
-def edit_batch_form(request: Request, batch_id: int):
+def edit_batch_form(
+    batch_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
+):
     """Show form to edit a batch."""
-    db: Session = next(get_db())
-    try:
-        batch = db.query(Batch).filter(Batch.id == batch_id).first()
-        if not batch:
-            return RedirectResponse(url="/admin/batches", status_code=303)
-
-        products = db.query(Product).order_by(Product.name).all()
-        return request.app.state.templates.TemplateResponse(
-            "admin/batch_form.html",
-            {
-                "request": request,
-                "mode": "edit",
-                "batch": batch,
-                "products": products,
-            },
+    batch = db.query(Batch).filter(Batch.id == batch_id).first()
+    if not batch:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Batch niet gevonden"
         )
-    finally:
-        db.close()
+
+    products = db.query(Product).order_by(Product.name).all()
+    return templates.TemplateResponse(
+        "admin/batch_form.html",
+        {
+            "request": request,
+            "mode": "edit",
+            "batch": batch,
+            "products": products,
+        },
+    )
 
 
 @router.post("/{batch_id}/update", response_class=RedirectResponse)
-def update_batch(
-    request: Request,
+async def update_batch(
     batch_id: int,
+    request: Request,
     slug: str = Form(...),
     name: str = Form(...),
     pickup_location: str = Form(...),
-    pickup_text: str = Form(None),
-    is_freezer: bool = Form(False),
-    is_active: bool = Form(True),
-    product_ids: list[int] = Form([]),
-    slot_dates: list[str] = Form([]),
-    slot_times: list[str] = Form([]),
+    pickup_text: Optional[str] = Form(None),
+    is_freezer: Optional[str] = Form(None),
+    is_active: Optional[str] = Form(None),
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
 ):
     """Update an existing batch."""
-    db: Session = next(get_db())
-    try:
-        batch = db.query(Batch).filter(Batch.id == batch_id).first()
-        if not batch:
-            return RedirectResponse(url="/admin/batches", status_code=303)
-
-        # Update batch fields
-        batch.slug = slug
-        batch.name = name
-        batch.pickup_location = pickup_location
-        batch.pickup_text = pickup_text if pickup_text else None
-        batch.is_freezer = is_freezer
-        batch.is_active = is_active
-
-        # Update products
-        products = db.query(Product).filter(Product.id.in_(product_ids)).all() if product_ids else []
-        batch.products = products
-
-        # Delete existing pickup slots and recreate
-        db.query(PickupSlot).filter(PickupSlot.batch_id == batch_id).delete()
-
-        # Add new pickup slots
-        for i, (date, time) in enumerate(zip(slot_dates, slot_times)):
-            if date and time:
-                slot = PickupSlot(
-                    batch_id=batch.id, date=date, time=time, sort_order=i
-                )
-                db.add(slot)
-
-        db.commit()
-        return RedirectResponse(
-            url="/admin/batches?saved=true", status_code=303
+    batch = db.query(Batch).filter(Batch.id == batch_id).first()
+    if not batch:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Batch niet gevonden"
         )
-    except Exception as e:
-        db.rollback()
-        raise e
-    finally:
-        db.close()
+
+    # Get form data manually for lists
+    form_data = await request.form()
+    product_ids = form_data.getlist("product_ids")
+    slot_dates = form_data.getlist("slot_dates")
+    slot_times = form_data.getlist("slot_times")
+
+    # Update batch fields
+    batch.slug = slug.strip()
+    batch.name = name.strip()
+    batch.pickup_location = pickup_location.strip()
+    batch.pickup_text = pickup_text.strip() if pickup_text else None
+    batch.is_freezer = (is_freezer == "true")
+    batch.is_active = (is_active == "true")
+
+    # Update products
+    if product_ids:
+        product_id_ints = [int(pid) for pid in product_ids]
+        products = db.query(Product).filter(Product.id.in_(product_id_ints)).all()
+        batch.products = products
+    else:
+        batch.products = []
+
+    # Delete existing pickup slots and recreate
+    db.query(PickupSlot).filter(PickupSlot.batch_id == batch_id).delete()
+
+    # Add new pickup slots
+    for i, (date, time) in enumerate(zip(slot_dates, slot_times)):
+        if date and time:
+            slot = PickupSlot(
+                batch_id=batch.id, date=date, time=time, sort_order=i
+            )
+            db.add(slot)
+
+    db.commit()
+    return RedirectResponse(
+        url="/admin/batches?saved=1", status_code=status.HTTP_303_SEE_OTHER
+    )
 
 
 @router.post("/{batch_id}/delete", response_class=RedirectResponse)
-def delete_batch(request: Request, batch_id: int):
+def delete_batch(
+    batch_id: int,
+    db: Session = Depends(get_db),
+    _: str = Depends(require_admin),
+):
     """Delete a batch."""
-    db: Session = next(get_db())
-    try:
-        batch = db.query(Batch).filter(Batch.id == batch_id).first()
-        if batch:
-            db.delete(batch)
-            db.commit()
-        return RedirectResponse(
-            url="/admin/batches?deleted=true", status_code=303
+    batch = db.query(Batch).filter(Batch.id == batch_id).first()
+    if not batch:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Batch niet gevonden"
         )
-    except Exception as e:
-        db.rollback()
-        raise e
-    finally:
-        db.close()
+
+    db.delete(batch)
+    db.commit()
+    return RedirectResponse(
+        url="/admin/batches?deleted=1", status_code=status.HTTP_303_SEE_OTHER
+    )
