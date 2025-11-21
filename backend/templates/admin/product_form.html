@@ -3,34 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Akkervarken · {% if mode == 'edit' %}Product bewerken{% else %}Nieuw product{% endif %}</title>
+  <title>{% if mode == 'edit' %}Product bewerken{% else %}Nieuw product{% endif %} · Akkervarken Admin</title>
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
   <nav class="top-nav">
     <a href="/admin">Overzicht</a>
     <a href="/admin/orders">Bestellingen</a>
-    <a href="/admin/products">Producten</a>
+    <a href="/admin/products" class="active">Producten</a>
   </nav>
   <div class="page">
     <header>
-      <div class="brand">
-        <img src="https://akkervarken.be/img/logo.svg" alt="Akkervarken logo" loading="lazy">
-        <div>
-          <h1>{% if mode == 'edit' %}Product bewerken{% else %}Nieuw product{% endif %}</h1>
-          <div class="meta">
-            {% if mode == 'edit' %}Pas productdetails aan{% else %}Voeg een nieuw product toe{% endif %}
-          </div>
-        </div>
+      <div>
+        <h1>{% if mode == 'edit' %}Product bewerken{% else %}Nieuw product{% endif %}</h1>
+        <div class="meta">{% if mode == 'edit' %}{{ product.name }}{% else %}Voeg een nieuw product toe{% endif %}</div>
       </div>
     </header>
 
-    <section class="card">
+    <div class="card">
       <form method="post" action="{% if mode == 'edit' %}/admin/products/{{ product.id }}/update{% else %}/admin/products{% endif %}">
         <div class="row">
           <div>
             <label for="slug">Slug</label>
-            <input id="slug" name="slug" placeholder="bijv. chipolata" required value="{{ product.slug if product else '' }}">
+            <input id="slug" name="slug" placeholder="chipolata" required value="{{ product.slug if product else '' }}">
           </div>
           <div>
             <label for="name">Naam</label>
@@ -60,21 +55,27 @@
           </div>
         </div>
 
-        <label for="description">Beschrijving</label>
-        <textarea id="description" name="description" placeholder="Korte omschrijving" required>{{ product.description if product else '' }}</textarea>
+        <div style="margin-bottom: 12px;">
+          <label for="description">Beschrijving</label>
+          <textarea id="description" name="description" placeholder="Korte omschrijving" required>{{ product.description if product else '' }}</textarea>
+        </div>
 
-        <label for="ingredients">Ingrediënten (optioneel)</label>
-        <textarea id="ingredients" name="ingredients" placeholder="Markdown toegestaan">{{ product.ingredients or '' }}</textarea>
+        <div style="margin-bottom: 12px;">
+          <label for="ingredients">Ingrediënten (optioneel)</label>
+          <textarea id="ingredients" name="ingredients" placeholder="Markdown toegestaan">{{ product.ingredients or '' }}</textarea>
+        </div>
 
-        <label for="image">Afbeelding (optioneel)</label>
-        <input id="image" name="image" placeholder="/img/voorbeeld.jpg" value="{{ product.image or '' }}">
+        <div style="margin-bottom: 12px;">
+          <label for="image">Afbeelding (optioneel)</label>
+          <input id="image" name="image" placeholder="/img/voorbeeld.jpg" value="{{ product.image or '' }}">
+        </div>
 
         <div class="actions">
           <button type="submit" class="btn primary">{% if mode == 'edit' %}Opslaan{% else %}Product aanmaken{% endif %}</button>
           <a class="btn" href="/admin/products">Annuleren</a>
         </div>
       </form>
-    </section>
+    </div>
   </div>
 </body>
 </html>

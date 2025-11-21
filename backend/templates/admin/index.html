@@ -3,42 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Akkervarken · Admin</title>
+  <title>Admin · Akkervarken</title>
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
   <nav class="top-nav">
-    <a href="/admin">Overzicht</a>
+    <a href="/admin" class="active">Overzicht</a>
     <a href="/admin/orders">Bestellingen</a>
     <a href="/admin/products">Producten</a>
   </nav>
   <div class="page">
     <header>
-      <div class="brand">
-        <img src="https://akkervarken.be/img/logo.svg" alt="Akkervarken logo" loading="lazy">
-        <div>
-          <h1>Admin Portal</h1>
-          <div class="meta-line">Beheer bestellingen en producten vanuit één plaats</div>
-        </div>
+      <div>
+        <h1>Admin</h1>
+        <div class="meta">Beheer bestellingen en producten</div>
       </div>
     </header>
 
-    <section class="portal-grid">
-      <article class="card portal-card">
+    <div class="portal-grid">
+      <div class="card portal-card">
         <h2>Bestellingen</h2>
         <div class="meta-line">Bekijk recente orders en werk statussen bij.</div>
         <div class="actions">
-          <a class="nav-link active" href="/admin/orders">Naar bestellingen</a>
+          <a href="/admin/orders">Naar bestellingen →</a>
         </div>
-      </article>
-      <article class="card portal-card">
+      </div>
+      <div class="card portal-card">
         <h2>Producten</h2>
         <div class="meta-line">Pas het assortiment aan en beheer prijzen.</div>
         <div class="actions">
-          <a class="nav-link active" href="/admin/products">Naar producten</a>
+          <a href="/admin/products">Naar producten →</a>
         </div>
-      </article>
-    </section>
+      </div>
+    </div>
   </div>
 </body>
 </html>

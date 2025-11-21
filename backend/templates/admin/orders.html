@@ -3,23 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Akkervarken · Admin</title>
+  <title>Bestellingen · Akkervarken Admin</title>
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
   <nav class="top-nav">
     <a href="/admin">Overzicht</a>
-    <a href="/admin/orders">Bestellingen</a>
+    <a href="/admin/orders" class="active">Bestellingen</a>
     <a href="/admin/products">Producten</a>
   </nav>
   <div class="page">
     <header>
-      <div class="brand">
-        <img src="https://akkervarken.be/img/logo.svg" alt="Akkervarken logo" loading="lazy">
-        <div>
-          <h1>Bestellingen</h1>
-          <div class="meta">Snelle opvolging van recente orders</div>
-        </div>
+      <div>
+        <h1>Bestellingen</h1>
+        <div class="meta">{{ orders|length }} order{% if orders|length != 1 %}s{% endif %}</div>
       </div>
       <form class="filters" method="get" action="/admin/orders">
         <label for="status_filter">Status:</label>
@@ -32,60 +29,63 @@
       </form>
     </header>
 
-    <div class="orders">
-      {% if orders %}
-        {% for order in orders %}
-          <article class="card">
-            <div class="card-header">
-              <div class="order-meta">
-                <div class="order-id">Bestelling #{{ order.id }}</div>
-                <div class="meta-line">
-                  {{ order.created_at.strftime('%d/%m/%Y %H:%M') if order.created_at else '' }} · {{ order.batch_name }}
-                </div>
-                <div class="tag">{{ order.status.value }}</div>
-              </div>
-              <form class="status-form" method="post" action="/admin/orders/{{ order.id }}/status">
-                <label for="status-{{ order.id }}">Status</label>
-                <select id="status-{{ order.id }}" name="new_status">
-                  {% for s in statuses %}
-                    <option value="{{ s.value }}" {% if s == order.status %}selected{% endif %}>{{ s.value.title() }}</option>
-                  {% endfor %}
-                </select>
-                <button type="submit">Opslaan</button>
-              </form>
-            </div>
-
-            <div class="info-row">
-              <div class="info-box">
+    {% if orders %}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Klant</th>
+            <th>Datum</th>
+            <th>Batch</th>
+            <th>Items</th>
+            <th>Totaal</th>
+            <th>Status</th>
+            <th>Afhaling</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td><strong>#{{ order.id }}</strong></td>
+              <td>
                 <strong>{{ order.customer_name }}</strong><br>
-                {{ order.customer_email or "Geen e-mail" }}<br>
-                {{ order.customer_phone or "Geen telefoon" }}
-              </div>
-              <div class="info-box">
-                Afhaling: {{ order.pickup_info or "Nog te bepalen" }}<br>
-                Totaal: €{{ "%.2f"|format(order.total_amount) }}<br>
-                Items: {{ order.total_items }}
-              </div>
-            </div>
-
-            <div class="items">
-              {% for item in order.items %}
-                <div class="item-row">
-                  <div class="item-name">{{ item.quantity }} × {{ item.product_name }}</div>
-                  <div>€{{ "%.2f"|format(item.computed_subtotal) }}</div>
-                </div>
-              {% endfor %}
-            </div>
-
-            {% if order.notes %}
-              <div class="notes">Notities: {{ order.notes }}</div>
-            {% endif %}
-          </article>
-        {% endfor %}
-      {% else %}
-        <div class="notice notice--warning">Geen bestellingen gevonden.</div>
-      {% endif %}
-    </div>
+                <span style="color: #777; font-size: 12px;">
+                  {{ order.customer_email or "—" }}<br>
+                  {{ order.customer_phone or "—" }}
+                </span>
+              </td>
+              <td style="white-space: nowrap;">{{ order.created_at.strftime('%d/%m/%Y %H:%M') if order.created_at else '—' }}</td>
+              <td>{{ order.batch_name }}</td>
+              <td>
+                <ul class="items-list">
+                  {% for item in order.items %}
+                    <li>{{ item.quantity }}× {{ item.product_name }} <span style="color: #999;">(€{{ "%.2f"|format(item.computed_subtotal) }})</span></li>
+                  {% endfor %}
+                </ul>
+                {% if order.notes %}
+                  <div style="margin-top: 6px; padding: 4px 6px; background: #ffc; border: 1px solid #ee9; font-size: 12px;">{{ order.notes }}</div>
+                {% endif %}
+              </td>
+              <td style="white-space: nowrap;"><strong>€{{ "%.2f"|format(order.total_amount) }}</strong></td>
+              <td>
+                <form class="status-form" method="post" action="/admin/orders/{{ order.id }}/status">
+                  <label for="status-{{ order.id }}">Status</label>
+                  <select id="status-{{ order.id }}" name="new_status">
+                    {% for s in statuses %}
+                      <option value="{{ s.value }}" {% if s == order.status %}selected{% endif %}>{{ s.value.title() }}</option>
+                    {% endfor %}
+                  </select>
+                  <button type="submit" class="btn">OK</button>
+                </form>
+              </td>
+              <td style="font-size: 12px;">{{ order.pickup_info or "—" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="notice notice--warning">Geen bestellingen gevonden.</div>
+    {% endif %}
   </div>
 </body>
 </html>
