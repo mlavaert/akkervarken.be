@@ -1,0 +1,22 @@
+NIEUWE BESTELLING #{{ order_id }}
+
+KLANTGEGEVENS:
+Naam: {{ name }}
+{% if phone -%}
+Telefoon: {{ phone }}
+{% endif -%}
+{% if email -%}
+Email: {{ email }}
+{% endif %}
+Batch: {{ batch }}
+Ophalen: {{ pickup }}
+
+PRODUCTEN:
+{% for item in items -%}
+{{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.subtotal) }}
+{% endfor %}
+TOTAAL: €{{ "%.2f"|format(total) }}
+{% if notes %}
+OPMERKINGEN:
+{{ notes }}
+{% endif -%}

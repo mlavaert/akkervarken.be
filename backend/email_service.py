@@ -167,32 +167,15 @@ class EmailService:
         total: float,
     ) -> str:
         """Render customer confirmation email plain text"""
-        text = f"""Beste {name},
-
-We hebben je bestelling goed ontvangen. Hieronder vind je een overzicht:
-
-BESTELLING #{order_id}
-Batch: {batch}
-Ophalen: {pickup}
-
-PRODUCTEN:
-"""
-        for item in items:
-            text += f"{item['quantity']}x {item['name']} - €{item['subtotal']:.2f}\n"
-
-        text += f"\nTOTAAL: €{total:.2f}\n\n"
-        text += """Betaling: Contant of via QR code bij afhaling.
-
-We nemen binnenkort contact met je op om de bestelling te bevestigen en de afhaaldetails door te geven.
-
-Heb je vragen? Neem gerust contact met ons op!
-
----
-Akkervarken.be
-Wolfstede 7, 1745 Opwijk
-info@akkervarken.be | +32 494 18 50 76
-"""
-        return text
+        template = jinja_env.get_template("customer_confirmation.txt")
+        return template.render(
+            name=name,
+            order_id=order_id,
+            batch=batch,
+            pickup=pickup,
+            items=items,
+            total=total,
+        )
 
     def _render_admin_notification_html(
         self,
@@ -234,27 +217,18 @@ info@akkervarken.be | +32 494 18 50 76
         notes: str = None,
     ) -> str:
         """Render admin notification email plain text"""
-        text = f"""NIEUWE BESTELLING #{order_id}
-
-KLANTGEGEVENS:
-Naam: {name}
-"""
-        if phone:
-            text += f"Telefoon: {phone}\n"
-        if email:
-            text += f"Email: {email}\n"
-
-        text += f"\nBatch: {batch}\nOphalen: {pickup}\n\nPRODUCTEN:\n"
-
-        for item in items:
-            text += f"{item['quantity']}x {item['name']} - €{item['subtotal']:.2f}\n"
-
-        text += f"\nTOTAAL: €{total:.2f}\n"
-
-        if notes:
-            text += f"\nOPMERKINGEN:\n{notes}\n"
-
-        return text
+        template = jinja_env.get_template("admin_notification.txt")
+        return template.render(
+            order_id=order_id,
+            name=name,
+            phone=phone,
+            email=email,
+            batch=batch,
+            pickup=pickup,
+            items=items,
+            total=total,
+            notes=notes,
+        )
 
 
 # Global email service instance

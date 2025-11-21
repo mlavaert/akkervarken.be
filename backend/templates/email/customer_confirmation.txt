@@ -1,0 +1,24 @@
+Beste {{ name }},
+
+We hebben je bestelling goed ontvangen. Hieronder vind je een overzicht:
+
+BESTELLING #{{ order_id }}
+Batch: {{ batch }}
+Ophalen: {{ pickup }}
+
+PRODUCTEN:
+{% for item in items -%}
+{{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.subtotal) }}
+{% endfor %}
+TOTAAL: €{{ "%.2f"|format(total) }}
+
+Betaling: Contant of via QR code bij afhaling.
+
+We nemen binnenkort contact met je op om de bestelling te bevestigen en de afhaaldetails door te geven.
+
+Heb je vragen? Neem gerust contact met ons op!
+
+---
+Akkervarken.be
+Wolfstede 7, 1745 Opwijk
+info@akkervarken.be | +32 494 18 50 76
