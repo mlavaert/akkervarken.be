@@ -2,9 +2,22 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 import os
+import logging
 from database import engine
+from orders import router as orders_router
 
-app = FastAPI(title="Akkervarken API", version="1.0.0")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+app = FastAPI(
+    title="Akkervarken API",
+    version="1.0.0",
+    description="Backend API for Akkervarken.be webshop and POS system"
+)
 
 # CORS setup - allow requests from your website
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://akkervarken.be").split(",")
@@ -16,6 +29,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(orders_router)
 
 
 @app.get("/")
