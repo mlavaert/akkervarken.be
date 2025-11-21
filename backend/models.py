@@ -1,4 +1,14 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Enum
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -58,3 +68,28 @@ class OrderItem(Base):
 
     def __repr__(self):
         return f"<OrderItem {self.id}: {self.quantity}x {self.product_name} - €{self.subtotal}>"
+
+
+class Product(Base):
+    """Sellable product definition."""
+
+    __tablename__ = "products"
+
+    id = Column(Integer, primary_key=True, index=True)
+    slug = Column(String(100), unique=True, nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=False)
+    ingredients = Column(Text, nullable=True)
+    price = Column(Float, nullable=False)
+    weight_display = Column(String(100), nullable=False)
+    packaging_pieces = Column(Integer, nullable=True)
+    packaging_grams = Column(Integer, nullable=True)
+    image = Column(String(255), nullable=True)
+    is_active = Column(Boolean, nullable=False, server_default="true")
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    def __repr__(self):
+        return f"<Product {self.slug}: {self.name} - €{self.price}>"

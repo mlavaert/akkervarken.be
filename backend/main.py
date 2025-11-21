@@ -6,6 +6,7 @@ import logging
 from database import engine
 from orders import router as orders_router
 from admin import router as admin_router
+from products import router as products_router
 
 # Configure logging
 logging.basicConfig(
@@ -60,6 +61,7 @@ app.add_middleware(
 # Include routers
 app.include_router(orders_router)
 app.include_router(admin_router)
+app.include_router(products_router)
 
 
 @app.get("/")

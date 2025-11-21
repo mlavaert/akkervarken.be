@@ -106,3 +106,49 @@ class OrderCreateResponse(BaseModel):
     order_id: int
     message: str
     email_sent: bool = False
+
+
+class ProductBase(BaseModel):
+    """Shared fields for products"""
+
+    slug: str = Field(..., min_length=1, max_length=100)
+    name: str = Field(..., min_length=1, max_length=255)
+    description: str = Field(..., min_length=1)
+    ingredients: Optional[str] = None
+    price: float = Field(..., gt=0)
+    weight_display: str = Field(..., min_length=1, max_length=100)
+    packaging_pieces: Optional[int] = Field(None, ge=0)
+    packaging_grams: Optional[int] = Field(None, ge=0)
+    image: Optional[str] = Field(None, max_length=255)
+    is_active: bool = True
+
+
+class ProductCreate(ProductBase):
+    """Payload for creating a product"""
+    pass
+
+
+class ProductUpdate(BaseModel):
+    """Payload for updating a product"""
+
+    slug: Optional[str] = Field(None, min_length=1, max_length=100)
+    name: Optional[str] = Field(None, min_length=1, max_length=255)
+    description: Optional[str] = Field(None, min_length=1)
+    ingredients: Optional[str] = None
+    price: Optional[float] = Field(None, gt=0)
+    weight_display: Optional[str] = Field(None, min_length=1, max_length=100)
+    packaging_pieces: Optional[int] = Field(None, ge=0)
+    packaging_grams: Optional[int] = Field(None, ge=0)
+    image: Optional[str] = Field(None, max_length=255)
+    is_active: Optional[bool] = None
+
+
+class ProductResponse(ProductBase):
+    """Response schema for a product"""
+
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True

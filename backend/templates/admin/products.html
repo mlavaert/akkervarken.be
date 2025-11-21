@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akkervarken · Producten</title>
+  <style>
+    :root {
+      color: #0f172a;
+      background: #f6f7fb;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px;
+      background: radial-gradient(circle at 20% 20%, #ffffff 0, #f6f7fb 40%), #f6f7fb;
+      min-height: 100vh;
+    }
+    .page { max-width: 1200px; margin: 0 auto; }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand img { height: 40px; }
+    h1 { font-size: 20px; margin: 0; font-weight: 650; letter-spacing: -0.01em; }
+    .meta-line { color: #475569; font-size: 13px; }
+    .nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #dce2ee;
+      background: #fff;
+      font-size: 14px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .nav a.active {
+      background: linear-gradient(135deg, #111827, #1e293b);
+      color: #fff;
+      border-color: #0f172a;
+      box-shadow: 0 8px 25px rgba(17, 24, 39, 0.18);
+    }
+    .notice {
+      background: #ecfdf3;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 14px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e5eaf3;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(17, 24, 39, 0.05);
+    }
+    .card h2 { margin: 0 0 10px 0; font-size: 16px; }
+    form { display: grid; gap: 10px; }
+    label { font-size: 13px; color: #0f172a; font-weight: 600; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid #dce2ee;
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 14px;
+      color: #0f172a;
+      background: #f8fafc;
+    }
+    textarea { min-height: 80px; resize: vertical; }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+    .primary {
+      background: linear-gradient(135deg, #111827, #1e293b);
+      color: #fff;
+      box-shadow: 0 8px 25px rgba(17, 24, 39, 0.2);
+    }
+    .ghost {
+      background: #fff;
+      color: #e11d48;
+      border: 1px solid #fda4af;
+    }
+    button:hover { transform: translateY(-1px); }
+    .product-card {
+      border: 1px solid #e5eaf3;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fdfefe;
+    }
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #ecfeff;
+      color: #0f172a;
+      font-size: 12px;
+      border: 1px solid #a5f3fc;
+    }
+    .switch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #0f172a;
+    }
+    .inline-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+    }
+    @media (max-width: 960px) {
+      body { padding: 18px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <img src="https://akkervarken.be/img/logo.svg" alt="Akkervarken logo" loading="lazy">
+        <div>
+          <h1>Producten</h1>
+          <div class="meta-line">Beheer het assortiment vanuit de backend</div>
+        </div>
+      </div>
+      <div class="nav">
+        <a href="/admin/orders">Bestellingen</a>
+        <a href="/admin/products" class="active">Producten</a>
+      </div>
+    </header>
+
+    {% if created or saved or deleted %}
+      <div class="notice">
+        {% if created %}Nieuw product opgeslagen.{% endif %}
+        {% if saved %}Wijzigingen bewaard.{% endif %}
+        {% if deleted %}Product verwijderd.{% endif %}
+      </div>
+    {% endif %}
+
+    <div class="grid">
+      <section class="card">
+        <h2>Nieuw product</h2>
+        <form method="post" action="/admin/products">
+          <input type="hidden" name="is_active" value="true">
+          <label for="slug">Slug</label>
+          <input id="slug" name="slug" placeholder="bijv. chipolata" required>
+
+          <label for="name">Naam</label>
+          <input id="name" name="name" placeholder="Productnaam" required>
+
+          <div class="row">
+            <div>
+              <label for="price">Prijs (€/kg)</label>
+              <input id="price" name="price" type="number" step="0.01" placeholder="19.50" required>
+            </div>
+            <div>
+              <label for="weight_display">Weergave gewicht</label>
+              <input id="weight_display" name="weight_display" placeholder="per kg" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="packaging_pieces">Verpakking stuks</label>
+              <input id="packaging_pieces" name="packaging_pieces" type="number" min="0" placeholder="2">
+            </div>
+            <div>
+              <label for="packaging_grams">Verpakking gram</label>
+              <input id="packaging_grams" name="packaging_grams" type="number" min="0" placeholder="500">
+            </div>
+          </div>
+
+          <label for="description">Beschrijving</label>
+          <textarea id="description" name="description" placeholder="Korte omschrijving" required></textarea>
+
+          <label for="ingredients">Ingrediënten (optioneel)</label>
+          <textarea id="ingredients" name="ingredients" placeholder="Markdown toegestaan"></textarea>
+
+          <label for="image">Afbeelding (optioneel)</label>
+          <input id="image" name="image" placeholder="/img/voorbeeld.jpg">
+
+          <div class="actions">
+            <button type="submit" class="primary">Product aanmaken</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Bestaande producten</h2>
+        {% for product in products %}
+          <article class="product-card">
+            <div class="product-header">
+              <div class="pill">{{ product.slug }}</div>
+              <div class="switch">
+                <input type="checkbox" {% if product.is_active %}checked{% endif %} disabled>
+                <span>Actief</span>
+              </div>
+            </div>
+            <form id="update-{{ product.id }}" method="post" action="/admin/products/{{ product.id }}/update">
+              <label>Slug</label>
+              <input name="slug" value="{{ product.slug }}" required>
+
+              <label>Naam</label>
+              <input name="name" value="{{ product.name }}" required>
+
+              <div class="inline-row">
+                <div>
+                  <label>Prijs</label>
+                  <input name="price" type="number" step="0.01" value="{{ '%.2f'|format(product.price) }}" required>
+                </div>
+                <div>
+                  <label>Gewicht label</label>
+                  <input name="weight_display" value="{{ product.weight_display }}" required>
+                </div>
+              </div>
+
+              <div class="inline-row">
+                <div>
+                  <label>Stuks per verpakking</label>
+                  <input name="packaging_pieces" type="number" min="0" value="{{ product.packaging_pieces or '' }}">
+                </div>
+                <div>
+                  <label>Gram per verpakking</label>
+                  <input name="packaging_grams" type="number" min="0" value="{{ product.packaging_grams or '' }}">
+                </div>
+              </div>
+
+              <label>Beschrijving</label>
+              <textarea name="description">{{ product.description }}</textarea>
+
+              <label>Ingrediënten</label>
+              <textarea name="ingredients">{{ product.ingredients or '' }}</textarea>
+
+              <label>Afbeelding</label>
+              <input name="image" value="{{ product.image or '' }}">
+
+              <label class="switch">
+                <input type="checkbox" name="is_active" value="true" {% if product.is_active %}checked{% endif %}>
+                <span>Actief in catalogus</span>
+              </label>
+            </form>
+            <div class="actions">
+              <button type="submit" class="primary" form="update-{{ product.id }}">Opslaan</button>
+              <form id="delete-{{ product.id }}" method="post" action="/admin/products/{{ product.id }}/delete" onsubmit="return confirm('Zeker weten dat je dit product wil verwijderen?');"></form>
+              <button type="submit" class="ghost" form="delete-{{ product.id }}">Verwijderen</button>
+            </div>
+          </article>
+        {% else %}
+          <div class="notice">Nog geen producten in de database.</div>
+        {% endfor %}
+      </section>
+    </div>
+  </div>
+</body>
+</html>

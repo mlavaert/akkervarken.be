@@ -49,6 +49,23 @@
       align-items: center;
       gap: 10px;
     }
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .nav-link {
+      text-decoration: none;
+      border: 1px solid #dce2ee;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: #fff;
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 14px;
+    }
     select, button {
       border: 1px solid #dce2ee;
       border-radius: 10px;
@@ -183,15 +200,18 @@
           <div class="meta-line">Snelle opvolging van recente orders</div>
         </div>
       </div>
-      <form class="filters" method="get" action="/admin/orders">
-        <label for="status_filter">Status:</label>
-        <select name="status_filter" id="status_filter" onchange="this.form.submit()">
-          <option value="">Alle</option>
-          {% for s in statuses %}
-            <option value="{{ s.value }}" {% if status_filter and s == status_filter %}selected{% endif %}>{{ s.value.title() }}</option>
-          {% endfor %}
-        </select>
-      </form>
+      <div class="header-actions">
+        <a class="nav-link" href="/admin/products">Producten</a>
+        <form class="filters" method="get" action="/admin/orders">
+          <label for="status_filter">Status:</label>
+          <select name="status_filter" id="status_filter" onchange="this.form.submit()">
+            <option value="">Alle</option>
+            {% for s in statuses %}
+              <option value="{{ s.value }}" {% if status_filter and s == status_filter %}selected{% endif %}>{{ s.value.title() }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
     </header>
 
     <div class="orders">
