@@ -82,7 +82,7 @@ class EmailService:
     ) -> bool:
         """Send order confirmation email to customer"""
 
-        subject = f"Bevestiging bestelling #{order_id} - Akkervarken.be"
+        subject = "Bevestiging bestelling - Akkervarken.be"
 
         html_body = self._render_customer_confirmation_html(
             customer_name, order_id, batch_name, pickup_info, items, total

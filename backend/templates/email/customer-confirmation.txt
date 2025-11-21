@@ -1,22 +1,18 @@
 Beste {{ name }},
 
-We hebben je bestelling goed ontvangen. Hieronder vind je een overzicht:
+We hebben je bestelling goed ontvangen. Hieronder vind je een kort overzicht:
 
-BESTELLING #{{ order_id }}
 Batch: {{ batch }}
 Ophalen: {{ pickup }}
 
-PRODUCTEN:
+Producten:
 {% for item in items -%}
 {{ item.quantity }}x {{ item.name }} - €{{ "%.2f"|format(item.subtotal) }}
 {% endfor %}
-TOTAAL: €{{ "%.2f"|format(total) }}
+Totaal: €{{ "%.2f"|format(total) }}
 
-Betaling: Contant of via QR code bij afhaling.
-
-We nemen binnenkort contact met je op om de bestelling te bevestigen en de afhaaldetails door te geven.
-
-Heb je vragen? Neem gerust contact met ons op!
+Betaling: contant of via QR-code bij afhaling.
+We nemen contact met je op om de bestelling te bevestigen.
 
 ---
 Akkervarken.be

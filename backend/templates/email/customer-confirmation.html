@@ -3,58 +3,46 @@
 <head>
     <meta charset="utf-8">
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #6a8e6a; color: white; padding: 20px; text-align: center; }
-        .content { padding: 20px; background-color: #f9f9f9; }
-        .order-details { background-color: white; padding: 15px; margin: 15px 0; border-radius: 5px; }
-        .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .item:last-child { border-bottom: none; }
-        .button { display: inline-block; padding: 12px 24px; background-color: #6a8e6a; color: white; text-decoration: none; border-radius: 5px; margin: 15px 0; }
-        .total { font-size: 1.2em; font-weight: bold; margin-top: 15px; padding-top: 15px; border-top: 2px solid #6a8e6a; }
-        .footer { text-align: center; padding: 20px; font-size: 0.9em; color: #666; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: #1d1d1f; margin: 0; padding: 0; line-height: 1.5; }
+        .main { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+        h1 { font-size: 22px; font-weight: 600; margin: 0 0 16px; }
+        p { margin: 0 0 12px; }
+        .list { margin: 20px 0 8px; }
+        .row { display: flex; justify-content: space-between; margin: 0 0 8px; }
+        .row span:last-child { font-variant-numeric: tabular-nums; }
+        .total { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e5e5e5; font-weight: 600; }
+        .footer { margin-top: 32px; color: #6e6e73; font-size: 13px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Bedankt voor je bestelling!</h1>
-        </div>
-        <div class="content">
-            <p>Beste {{ name }},</p>
-            <p>We hebben je bestelling goed ontvangen. Hieronder vind je een overzicht:</p>
+    <div class="main">
+        <h1>Bedankt voor je bestelling</h1>
 
-            <div class="order-details">
-                <h3>Bestelling #{{ order_id }}</h3>
-                <p><strong>Batch:</strong> {{ batch }}</p>
-                <p><strong>Ophalen:</strong> {{ pickup }}</p>
+        <p>Beste {{ name }},</p>
+        <p>We hebben je bestelling ontvangen en houden je op de hoogte.</p>
 
-                <h4>Producten:</h4>
-                {% for item in items %}
-                <div class="item">
-                    <span>{{ item.quantity }}x {{ item.name }}</span>
-                    <span>€{{ "%.2f"|format(item.subtotal) }}</span>
-                </div>
-                {% endfor %}
+        <p><strong>Batch</strong>: {{ batch }}<br>
+        <strong>Ophalen</strong>: {{ pickup }}</p>
 
-                <div class="total">
-                    <div class="item">
-                        <span>Totaal:</span>
-                        <span>€{{ "%.2f"|format(total) }}</span>
-                    </div>
-                </div>
+        <div class="list">
+            {% for item in items %}
+            <div class="row">
+                <span>{{ item.quantity }}× {{ item.name }}</span>
+                <span>€{{ "%.2f"|format(item.subtotal) }}</span>
             </div>
+            {% endfor %}
 
-            <p><strong>Betaling:</strong> Contant of via QR code bij afhaling.</p>
-            <p>We nemen binnenkort contact met je op om de bestelling te bevestigen en de afhaaldetails door te geven.</p>
-            <p>Heb je vragen? Neem gerust contact met ons op!</p>
+            <div class="total">
+                <span>Totaal</span>
+                <span>€{{ "%.2f"|format(total) }}</span>
+            </div>
         </div>
+
+        <p>Betaling: contant of via QR-code bij afhaling.</p>
+        <p>We nemen contact met je op om de bestelling te bevestigen.</p>
+
         <div class="footer">
-            <p>
-                <strong>Akkervarken.be</strong><br>
-                Wolfstede 7, 1745 Opwijk<br>
-                info@akkervarken.be | +32 494 18 50 76
-            </p>
+            Akkervarken.be · Wolfstede 7, 1745 Opwijk · info@akkervarken.be · +32 494 18 50 76
         </div>
     </div>
 </body>
