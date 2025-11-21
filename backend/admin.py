@@ -19,7 +19,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 def _get_admin_credentials() -> tuple[str, str]:
     """Load expected admin credentials from environment."""
-    username = os.getenv("ADMIN_USERNAME")
+    username = os.getenv("ADMIN_EMAIL")
     password = os.getenv("ADMIN_PASSWORD")
     if not username or not password:
         raise HTTPException(
@@ -95,4 +95,6 @@ def update_order_status(
     db.add(order)
     db.commit()
 
-    return RedirectResponse(url="/admin/orders?updated=1", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(
+        url="/admin/orders?updated=1", status_code=status.HTTP_303_SEE_OTHER
+    )
