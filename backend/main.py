@@ -8,15 +8,14 @@ from orders import router as orders_router
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Akkervarken API",
     version="1.0.0",
-    description="Backend API for Akkervarken.be webshop and POS system"
+    description="Backend API for Akkervarken.be webshop and POS system",
 )
 
 
@@ -45,6 +44,7 @@ async def startup_event():
         # Don't crash the app, just log the error
         # This allows the API to still start if migrations fail
 
+
 # CORS setup - allow requests from your website
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://akkervarken.be").split(",")
 
@@ -66,18 +66,14 @@ def read_root():
     return {
         "message": "Akkervarken API is running!",
         "version": "1.0.0",
-        "status": "healthy"
+        "status": "healthy",
     }
 
 
 @app.get("/health")
 def health_check():
     """Health check endpoint with database connection status"""
-    health_status = {
-        "status": "healthy",
-        "api": "ok",
-        "database": "unknown"
-    }
+    health_status = {"status": "healthy", "api": "ok", "database": "unknown"}
 
     # Check database connection
     if engine is None:
