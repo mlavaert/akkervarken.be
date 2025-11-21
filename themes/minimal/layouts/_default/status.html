@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ .Title }} - {{ .Site.Title }}</title>
+
+    {{- $css := resources.Get "css/style.css" -}}
+    {{- $css = $css | minify | fingerprint -}}
+    <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .status-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin: 0 0 30px 0;
+            color: #333;
+            font-size: 2em;
+        }
+
+        .status-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .status-card.loading {
+            border-color: #ffa500;
+            background: #fff8e6;
+        }
+
+        .status-card.healthy {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .status-card.error {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .status-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .status-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-details {
+            font-size: 0.95em;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .status-time {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .api-url {
+            font-family: 'Courier New', monospace;
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+
+        .refresh-button {
+            background: #4a7c59;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .refresh-button:hover {
+            background: #3d6649;
+        }
+
+        .refresh-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .config-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f4f2;
+            border-radius: 8px;
+        }
+
+        .config-section h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .config-section p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            color: #666;
+        }
+
+        .config-section code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-container">
+        <h1>🔧 API Status</h1>
+
+        <div id="api-status" class="status-card loading">
+            <div class="status-header">
+                <span class="status-icon">⏳</span>
+                <span class="status-title">Checking API...</span>
+            </div>
+            <div class="status-details">Loading status information...</div>
+            <div class="status-time" id="last-check"></div>
+        </div>
+
+        <button id="refresh-button" class="refresh-button" onclick="checkAPIStatus()">
+            <span id="refresh-text">Refresh Status</span>
+        </button>
+
+        <div class="config-section">
+            <h2>Configuration</h2>
+            <p><strong>API Endpoint:</strong> <code id="api-endpoint">Not configured</code></p>
+            <p><strong>Environment:</strong> <code>{{ getenv "HUGO_ENV" }}</code></p>
+            <p>To test with your deployed API, set the <code>API_URL</code> in the JavaScript below.</p>
+        </div>
+    </div>
+
+    <script>
+        // Railway API URL
+        const API_URL = 'https://akkervarkenbe-production.up.railway.app';
+
+        // Display the API URL
+        document.getElementById('api-endpoint').textContent = API_URL;
+
+        async function checkAPIStatus() {
+            const statusCard = document.getElementById('api-status');
+            const refreshButton = document.getElementById('refresh-button');
+            const refreshText = document.getElementById('refresh-text');
+            const lastCheckElement = document.getElementById('last-check');
+
+            // Update UI to loading state
+            statusCard.className = 'status-card loading';
+            statusCard.innerHTML = `
+                <div class="status-header">
+                    <span class="status-icon">⏳</span>
+                    <span class="status-title">Checking API...</span>
+                </div>
+                <div class="status-details">Connecting to ${API_URL}</div>
+            `;
+            refreshButton.disabled = true;
+            refreshText.innerHTML = 'Checking... <span class="spinner"></span>';
+
+            try {
+                const startTime = performance.now();
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
+                const endTime = performance.now();
+                const responseTime = Math.round(endTime - startTime);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Success!
+                statusCard.className = 'status-card healthy';
+                statusCard.innerHTML = `
+                    <div class="status-header">
+                        <span class="status-icon">✅</span>
+                        <span class="status-title">API is Healthy</span>
+                    </div>
+                    <div class="status-details">
+                        <div><strong>Status:</strong> ${data.status || 'ok'}</div>
+                        <div><strong>Response Time:</strong> ${responseTime}ms</div>
+                        <div class="api-url">${API_URL}/health</div>
+                    </div>
+                    <div class="status-time">Last checked: ${new Date().toLocaleString()}</div>
+                `;
+
+            } catch (error) {
+                // Error
+                statusCard.className = 'status-card error';
+                statusCard.innerHTML = `
+                    <div class="status-header">
+                        <span class="status-icon">❌</span>
+                        <span class="status-title">API Unavailable</span>
+                    </div>
+                    <div class="status-details">
+                        <div><strong>Error:</strong> ${error.message}</div>
+                        <div class="api-url">${API_URL}/health</div>
+                        <div style="margin-top: 10px; font-size: 0.9em;">
+                            <strong>Possible reasons:</strong>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>API not deployed yet</li>
+                                <li>CORS not configured</li>
+                                <li>API is down</li>
+                                <li>Wrong URL configured</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="status-time">Last checked: ${new Date().toLocaleString()}</div>
+                `;
+            } finally {
+                // Re-enable button
+                refreshButton.disabled = false;
+                refreshText.textContent = 'Refresh Status';
+            }
+        }
+
+        // Check status on page load
+        checkAPIStatus();
+
+        // Auto-refresh every 30 seconds
+        setInterval(checkAPIStatus, 30000);
+    </script>
+</body>
+</html>
