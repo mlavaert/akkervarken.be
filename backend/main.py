@@ -119,9 +119,9 @@ async def test_email():
             }
         }
 
-    # Try to send a test email to admin
+    # Try to send a test email to admin using test method that raises exceptions
     try:
-        result = await email_service.send_email(
+        await email_service.test_send_email(
             to_email=email_service.admin_email,
             subject="Test email from Akkervarken API",
             html_body="<h1>Test Email</h1><p>This is a test email from the Akkervarken backend API.</p>",
@@ -129,8 +129,8 @@ async def test_email():
         )
 
         return {
-            "success": result,
-            "message": "Email sent successfully" if result else "Email sending failed (check logs)",
+            "success": True,
+            "message": "Email sent successfully! Check your inbox.",
             "config": {
                 "smtp_host": email_service.smtp_host,
                 "smtp_port": email_service.smtp_port,
@@ -141,14 +141,17 @@ async def test_email():
         }
     except Exception as e:
         logger.exception("Email test failed")
+        import traceback
         return {
             "success": False,
             "error": str(e),
             "error_type": type(e).__name__,
+            "traceback": traceback.format_exc().split("\n")[-10:],  # Last 10 lines
             "config": {
                 "smtp_host": email_service.smtp_host,
                 "smtp_port": email_service.smtp_port,
                 "smtp_user": email_service.smtp_user,
                 "from_email": email_service.from_email,
+                "to_email": email_service.admin_email,
             }
         }

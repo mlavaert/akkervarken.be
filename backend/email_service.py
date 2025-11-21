@@ -51,6 +51,7 @@ class EmailService:
                 username=self.smtp_user,
                 password=self.smtp_password,
                 start_tls=True,
+                timeout=10,  # 10 second timeout
             )
 
             logger.info(f"Email sent successfully to {to_email}: {subject}")
@@ -58,7 +59,35 @@ class EmailService:
 
         except Exception as e:
             logger.error(f"Failed to send email to {to_email}: {str(e)}")
+            logger.exception("Full email error traceback:")
             return False
+
+    async def test_send_email(
+        self, to_email: str, subject: str, html_body: str, text_body: str = None
+    ):
+        """Test email sending - raises exceptions instead of catching them"""
+        if not self.enabled:
+            raise Exception("Email service not enabled")
+
+        message = MIMEMultipart("alternative")
+        message["From"] = self.from_email
+        message["To"] = to_email
+        message["Subject"] = subject
+
+        if text_body:
+            message.attach(MIMEText(text_body, "plain", "utf-8"))
+        message.attach(MIMEText(html_body, "html", "utf-8"))
+
+        # Send email - let exceptions bubble up for diagnostics
+        await aiosmtplib.send(
+            message,
+            hostname=self.smtp_host,
+            port=self.smtp_port,
+            username=self.smtp_user,
+            password=self.smtp_password,
+            start_tls=True,
+            timeout=10,
+        )
 
     async def send_order_confirmation_to_customer(
         self,
