@@ -156,7 +156,6 @@ class EmailService:
             total=total,
         )
 
-
     def _render_customer_confirmation_text(
         self,
         name: str,
@@ -202,7 +201,6 @@ class EmailService:
             total=total,
             notes=notes,
         )
-
 
     def _render_admin_notification_text(
         self,

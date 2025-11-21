@@ -6,17 +6,25 @@ from models import OrderStatus
 
 class OrderItemCreate(BaseModel):
     """Schema for creating an order item"""
-    product_id: str = Field(..., description="Product identifier (e.g., 'batch-id-product-id')")
+
+    product_id: str = Field(
+        ..., description="Product identifier (e.g., 'batch-id-product-id')"
+    )
     product_name: str = Field(..., min_length=1, max_length=255)
     quantity: int = Field(..., gt=0, description="Quantity of items")
     unit_price: float = Field(..., gt=0, description="Price per unit")
-    expected_price: Optional[float] = Field(None, ge=0, description="Expected price for per-kg items")
+    expected_price: Optional[float] = Field(
+        None, ge=0, description="Expected price for per-kg items"
+    )
     subtotal: float = Field(..., gt=0, description="Item subtotal")
-    packaging_info: Optional[str] = Field(None, max_length=255, description="Packaging details")
+    packaging_info: Optional[str] = Field(
+        None, max_length=255, description="Packaging details"
+    )
 
 
 class OrderCreate(BaseModel):
     """Schema for creating a new order"""
+
     customer_name: str = Field(..., min_length=1, max_length=255)
     customer_phone: Optional[str] = Field(None, max_length=50)
     customer_email: Optional[EmailStr] = None
@@ -48,7 +56,7 @@ class OrderCreate(BaseModel):
                         "unit_price": 8.50,
                         "expected_price": 0,
                         "subtotal": 17.00,
-                        "packaging_info": "2 stuks × ±500g"
+                        "packaging_info": "2 stuks × ±500g",
                     },
                     {
                         "product_id": "15-december-2024-spek",
@@ -57,15 +65,16 @@ class OrderCreate(BaseModel):
                         "unit_price": 12.00,
                         "expected_price": 13.50,
                         "subtotal": 13.50,
-                        "packaging_info": "±450g"
-                    }
-                ]
+                        "packaging_info": "±450g",
+                    },
+                ],
             }
         }
 
 
 class OrderItemResponse(BaseModel):
     """Schema for order item in responses"""
+
     id: int
     product_id: str
     product_name: str
@@ -81,6 +90,7 @@ class OrderItemResponse(BaseModel):
 
 class OrderResponse(BaseModel):
     """Schema for order in responses"""
+
     id: int
     customer_name: str
     customer_phone: Optional[str]
@@ -102,6 +112,7 @@ class OrderResponse(BaseModel):
 
 class OrderCreateResponse(BaseModel):
     """Response after creating an order"""
+
     success: bool
     order_id: int
     message: str
@@ -118,12 +129,15 @@ class ProductBase(BaseModel):
     price: float = Field(..., gt=0)
     weight_display: str = Field(..., min_length=1, max_length=100)
     packaging_pieces: Optional[int] = Field(None, ge=0)
-    unit_grams: Optional[int] = Field(None, ge=0, description="Estimated weight per piece in grams")
+    unit_grams: Optional[int] = Field(
+        None, ge=0, description="Estimated weight per piece in grams"
+    )
     image: Optional[str] = Field(None, max_length=255)
 
 
 class ProductCreate(ProductBase):
     """Payload for creating a product"""
+
     pass
 
 
@@ -137,7 +151,9 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = Field(None, gt=0)
     weight_display: Optional[str] = Field(None, min_length=1, max_length=100)
     packaging_pieces: Optional[int] = Field(None, ge=0)
-    unit_grams: Optional[int] = Field(None, ge=0, description="Estimated weight per piece in grams")
+    unit_grams: Optional[int] = Field(
+        None, ge=0, description="Estimated weight per piece in grams"
+    )
     image: Optional[str] = Field(None, max_length=255)
 
 

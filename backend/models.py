@@ -17,6 +17,7 @@ import enum
 
 class OrderStatus(str, enum.Enum):
     """Order status enum"""
+
     PENDING = "pending"
     CONFIRMED = "confirmed"
     READY = "ready"
@@ -26,6 +27,7 @@ class OrderStatus(str, enum.Enum):
 
 class Order(Base):
     """Customer order from webshop"""
+
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -38,12 +40,18 @@ class Order(Base):
     notes = Column(String(1000), nullable=True)
     total_amount = Column(Float, nullable=False)
     total_items = Column(Integer, nullable=False)
-    status = Column(Enum(OrderStatus), default=OrderStatus.PENDING, nullable=False, index=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
+    status = Column(
+        Enum(OrderStatus), default=OrderStatus.PENDING, nullable=False, index=True
+    )
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False, index=True
+    )
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationship to order items
-    items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
+    items = relationship(
+        "OrderItem", back_populates="order", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Order {self.id}: {self.customer_name} - {self.batch_name} - €{self.total_amount}>"
@@ -51,6 +59,7 @@ class Order(Base):
 
 class OrderItem(Base):
     """Individual item in an order"""
+
     __tablename__ = "order_items"
 
     id = Column(Integer, primary_key=True, index=True)

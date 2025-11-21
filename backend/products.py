@@ -26,9 +26,7 @@ def get_product(slug: str, db: Session = Depends(get_db)) -> Product:
     return product
 
 
-@router.post(
-    "/", response_model=ProductResponse, status_code=status.HTTP_201_CREATED
-)
+@router.post("/", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
 def create_product(
     product_in: ProductCreate,
     db: Session = Depends(get_db),

@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
 
-@router.post("/", response_model=OrderCreateResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/", response_model=OrderCreateResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
     """
     Create a new order from the webshop.
@@ -78,19 +80,23 @@ async def create_order(order_data: OrderCreate, db: Session = Depends(get_db)):
         # Send confirmation to customer if email provided
         if order.customer_email:
             try:
-                customer_email_sent = await email_service.send_order_confirmation_to_customer(
-                    customer_email=order.customer_email,
-                    customer_name=order.customer_name,
-                    order_id=order.id,
-                    batch_name=order.batch_name,
-                    pickup_info=order.pickup_info or "Wordt later bevestigd",
-                    items=email_items,
-                    total=order.total_amount,
+                customer_email_sent = (
+                    await email_service.send_order_confirmation_to_customer(
+                        customer_email=order.customer_email,
+                        customer_name=order.customer_name,
+                        order_id=order.id,
+                        batch_name=order.batch_name,
+                        pickup_info=order.pickup_info or "Wordt later bevestigd",
+                        items=email_items,
+                        total=order.total_amount,
+                    )
                 )
                 email_sent = customer_email_sent
                 logger.info(f"Customer confirmation email sent for order #{order.id}")
             except Exception as e:
-                logger.error(f"Failed to send customer email for order #{order.id}: {str(e)}")
+                logger.error(
+                    f"Failed to send customer email for order #{order.id}: {str(e)}"
+                )
 
         # Send notification to admin
         try:
