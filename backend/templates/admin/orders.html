@@ -18,7 +18,7 @@
         <img src="https://akkervarken.be/img/logo.svg" alt="Akkervarken logo" loading="lazy">
         <div>
           <h1>Bestellingen</h1>
-          <div class="meta-line">Snelle opvolging van recente orders</div>
+          <div class="meta">Snelle opvolging van recente orders</div>
         </div>
       </div>
       <form class="filters" method="get" action="/admin/orders">
@@ -42,7 +42,7 @@
                 <div class="meta-line">
                   {{ order.created_at.strftime('%d/%m/%Y %H:%M') if order.created_at else '' }} · {{ order.batch_name }}
                 </div>
-                <div class="status-chip">{{ order.status.value }}</div>
+                <div class="tag">{{ order.status.value }}</div>
               </div>
               <form class="status-form" method="post" action="/admin/orders/{{ order.id }}/status">
                 <label for="status-{{ order.id }}">Status</label>
@@ -55,13 +55,13 @@
               </form>
             </div>
 
-            <div class="meta-grid">
-              <div class="meta-pill">
+            <div class="info-row">
+              <div class="info-box">
                 <strong>{{ order.customer_name }}</strong><br>
                 {{ order.customer_email or "Geen e-mail" }}<br>
                 {{ order.customer_phone or "Geen telefoon" }}
               </div>
-              <div class="meta-pill">
+              <div class="info-box">
                 Afhaling: {{ order.pickup_info or "Nog te bepalen" }}<br>
                 Totaal: €{{ "%.2f"|format(order.total_amount) }}<br>
                 Items: {{ order.total_items }}

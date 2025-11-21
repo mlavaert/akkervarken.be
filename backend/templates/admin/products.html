@@ -18,11 +18,11 @@
         <img src="https://akkervarken.be/img/logo.svg" alt="Akkervarken logo" loading="lazy">
         <div>
           <h1>Producten</h1>
-          <div class="meta-line">Overzicht van alle producten</div>
+          <div class="meta">Overzicht van alle producten</div>
         </div>
       </div>
       <div class="actions">
-        <a class="link-btn primary" href="/admin/products/new">+ Nieuw product</a>
+        <a class="btn primary" href="/admin/products/new">+ Nieuw product</a>
       </div>
     </header>
 
@@ -51,15 +51,15 @@
               </button>
             </div>
           </div>
-          <div class="meta-line">€{{ '%.2f'|format(product.price) }} · {{ product.weight_display }}</div>
-          <div class="meta-line">
+          <div class="meta">€{{ '%.2f'|format(product.price) }} · {{ product.weight_display }}</div>
+          <div class="meta">
             Verpakking: {% if product.packaging_pieces %}{{ product.packaging_pieces }} stuks{% else %}n.v.t.{% endif %}
             {% if product.unit_grams %} · ±{{ product.unit_grams }}g/stuk{% endif %}
           </div>
-          <div class="pill slug-pill">{{ product.slug }}</div>
+          <div class="tag">{{ product.slug }}</div>
           <p>{{ product.description }}</p>
           {% if product.ingredients %}
-            <div class="meta-line">Ingrediënten: {{ product.ingredients }}</div>
+            <div class="meta">Ingrediënten: {{ product.ingredients }}</div>
           {% endif %}
         </article>
       {% else %}
