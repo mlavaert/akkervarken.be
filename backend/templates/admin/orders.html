@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
+  <nav class="top-nav">
+    <a class="{% if active_page == 'home' %}active{% endif %}" href="/admin">Overzicht</a>
+    <a class="{% if active_page == 'orders' %}active{% endif %}" href="/admin/orders">Bestellingen</a>
+    <a class="{% if active_page == 'products' %}active{% endif %}" href="/admin/products">Producten</a>
+  </nav>
   <div class="page">
     <header>
       <div class="brand">
@@ -16,19 +21,15 @@
           <div class="meta-line">Snelle opvolging van recente orders</div>
         </div>
       </div>
-      <div class="header-actions">
-        <a class="nav-link" href="/admin">Overzicht</a>
-        <a class="nav-link" href="/admin/products">Producten</a>
-        <form class="filters" method="get" action="/admin/orders">
-          <label for="status_filter">Status:</label>
-          <select name="status_filter" id="status_filter" onchange="this.form.submit()">
-            <option value="">Alle</option>
-            {% for s in statuses %}
-              <option value="{{ s.value }}" {% if status_filter and s == status_filter %}selected{% endif %}>{{ s.value.title() }}</option>
-            {% endfor %}
-          </select>
-        </form>
-      </div>
+      <form class="filters" method="get" action="/admin/orders">
+        <label for="status_filter">Status:</label>
+        <select name="status_filter" id="status_filter" onchange="this.form.submit()">
+          <option value="">Alle</option>
+          {% for s in statuses %}
+            <option value="{{ s.value }}" {% if status_filter and s == status_filter %}selected{% endif %}>{{ s.value.title() }}</option>
+          {% endfor %}
+        </select>
+      </form>
     </header>
 
     <div class="orders">

@@ -11,13 +11,44 @@
 
 body {
   margin: 0;
-  padding: 32px;
+  padding: 0 32px 32px 32px;
   background: radial-gradient(circle at 20% 20%, #ffffff 0, #f6f7fb 40%), #f6f7fb;
   min-height: 100vh;
 }
 
 a {
   color: inherit;
+}
+
+.top-nav {
+  margin: 0 -32px 20px -32px;
+  padding: 12px 32px;
+  background: #0f172a;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.top-nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 10px;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.top-nav a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.top-nav a.active {
+  background: #f8fafc;
+  color: #0f172a;
 }
 
 .page {
@@ -60,27 +91,6 @@ h1 {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-}
-
-.nav-link {
-  text-decoration: none;
-  border: 1px solid #dce2ee;
-  border-radius: 10px;
-  padding: 8px 12px;
-  background: #fff;
-  font-weight: 600;
-  color: #0f172a;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.nav-link.active {
-  background: linear-gradient(135deg, #111827, #1e293b);
-  color: #fff;
-  border-color: #0f172a;
-  box-shadow: 0 8px 25px rgba(17, 24, 39, 0.18);
 }
 
 .filters {
@@ -185,6 +195,63 @@ button.ghost {
 .card h2 {
   margin: 0 0 10px 0;
   font-size: 16px;
+}
+
+.link-btn {
+  text-decoration: none;
+  border: 1px solid #dce2ee;
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.link-btn.primary {
+  background: linear-gradient(135deg, #111827, #1e293b);
+  color: #fff;
+  border-color: #0f172a;
+  box-shadow: 0 8px 25px rgba(17, 24, 39, 0.18);
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid #dce2ee;
+  background: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.11);
+}
+
+.icon-btn.danger {
+  background: #fef2f2;
+  border-color: #fecdd3;
+  color: #b91c1c;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 form {

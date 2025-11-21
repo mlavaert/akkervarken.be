@@ -56,7 +56,7 @@ def admin_home(
     """Simple portal landing page for admin actions."""
     return templates.TemplateResponse(
         "admin/index.html",
-        {"request": request},
+        {"request": request, "active_page": "home"},
     )
 
 
@@ -112,6 +112,7 @@ def list_orders(
             "orders": orders,
             "status_filter": status_filter_value,
             "statuses": list(OrderStatus),
+            "active_page": "orders",
         },
     )
 
@@ -157,6 +158,7 @@ def list_products(
             "created": request.query_params.get("created"),
             "saved": request.query_params.get("saved"),
             "deleted": request.query_params.get("deleted"),
+            "active_page": "products",
         },
     )
 
@@ -169,7 +171,7 @@ def new_product(
     """Render the new product form."""
     return templates.TemplateResponse(
         "admin/product_form.html",
-        {"request": request, "product": None, "mode": "create"},
+        {"request": request, "product": None, "mode": "create", "active_page": "products_new"},
     )
 
 
@@ -188,7 +190,7 @@ def edit_product_form(
         )
     return templates.TemplateResponse(
         "admin/product_form.html",
-        {"request": request, "product": product, "mode": "edit"},
+        {"request": request, "product": product, "mode": "edit", "active_page": "products"},
     )
 
 

@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
+  <nav class="top-nav">
+    <a class="{% if active_page == 'home' %}active{% endif %}" href="/admin">Overzicht</a>
+    <a class="{% if active_page == 'orders' %}active{% endif %}" href="/admin/orders">Bestellingen</a>
+    <a class="{% if active_page == 'products' or active_page == 'products_new' %}active{% endif %}" href="/admin/products">Producten</a>
+    <a class="{% if active_page == 'products_new' %}active{% endif %}" href="/admin/products/new">Nieuw product</a>
+  </nav>
   <div class="page">
     <header>
       <div class="brand">
@@ -17,11 +23,6 @@
             {% if mode == 'edit' %}Pas productdetails aan{% else %}Voeg een nieuw product toe{% endif %}
           </div>
         </div>
-      </div>
-      <div class="nav">
-        <a class="nav-link" href="/admin">Overzicht</a>
-        <a class="nav-link" href="/admin/orders">Bestellingen</a>
-        <a class="nav-link" href="/admin/products">Producten</a>
       </div>
     </header>
 

@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
+  <nav class="top-nav">
+    <a class="{% if active_page == 'home' %}active{% endif %}" href="/admin">Overzicht</a>
+    <a class="{% if active_page == 'orders' %}active{% endif %}" href="/admin/orders">Bestellingen</a>
+    <a class="{% if active_page == 'products' %}active{% endif %}" href="/admin/products">Producten</a>
+    <a class="{% if active_page == 'products_new' %}active{% endif %}" href="/admin/products/new">Nieuw product</a>
+  </nav>
   <div class="page">
     <header>
       <div class="brand">
@@ -15,12 +21,6 @@
           <h1>Producten</h1>
           <div class="meta-line">Overzicht van alle producten</div>
         </div>
-      </div>
-      <div class="nav">
-        <a class="nav-link" href="/admin">Overzicht</a>
-        <a class="nav-link" href="/admin/orders">Bestellingen</a>
-        <a class="nav-link active" href="/admin/products">Producten</a>
-        <a class="nav-link active" href="/admin/products/new">+ Nieuw product</a>
       </div>
     </header>
 
@@ -41,9 +41,15 @@
               <h2>{{ product.name }}</h2>
             </div>
             <div class="actions">
-              <a class="nav-link" href="/admin/products/{{ product.id }}/edit">Bewerk</a>
+              <a class="icon-btn" href="/admin/products/{{ product.id }}/edit" title="Bewerk">
+                <span aria-hidden="true">✏︎</span>
+                <span class="sr-only">Bewerken</span>
+              </a>
               <form id="delete-{{ product.id }}" method="post" action="/admin/products/{{ product.id }}/delete" onsubmit="return confirm('Zeker weten dat je dit product wil verwijderen?');"></form>
-              <button type="submit" class="ghost" form="delete-{{ product.id }}">Verwijderen</button>
+              <button type="submit" class="icon-btn danger" form="delete-{{ product.id }}" title="Verwijder">
+                <span aria-hidden="true">🗑</span>
+                <span class="sr-only">Verwijderen</span>
+              </button>
             </div>
           </div>
           <div class="meta-line">€{{ '%.2f'|format(product.price) }} · {{ product.weight_display }}</div>
