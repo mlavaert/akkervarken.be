@@ -50,14 +50,30 @@ async def startup_event():
 
 
 # CORS setup - allow requests from your website
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "https://akkervarken.be").split(",")
+# Default includes production and common development URLs
+DEFAULT_ORIGINS = "https://akkervarken.be,https://www.akkervarken.be,http://localhost:1313,http://127.0.0.1:1313"
+ALLOWED_ORIGINS_STR = os.getenv("ALLOWED_ORIGINS", DEFAULT_ORIGINS)
+
+# Parse origins - handle both comma and space-separated
+if ALLOWED_ORIGINS_STR:
+    # Split by comma first, then by space, and filter empty strings
+    origins_parts = ALLOWED_ORIGINS_STR.replace(",", " ").split()
+    ALLOWED_ORIGINS = [origin.strip() for origin in origins_parts if origin.strip()]
+else:
+    ALLOWED_ORIGINS = ["*"]  # Allow all if not configured
+
+logger.info(f"CORS Configuration:")
+logger.info(f"  Raw env value: {ALLOWED_ORIGINS_STR}")
+logger.info(f"  Parsed origins: {ALLOWED_ORIGINS}")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
 )
 
 # Static files (shared admin assets, etc.)
@@ -106,3 +122,13 @@ def health_check():
             health_status["status"] = "unhealthy"
 
     return health_status
+
+
+@app.get("/debug/cors")
+def cors_debug():
+    """Debug endpoint to check CORS configuration"""
+    return {
+        "allowed_origins": ALLOWED_ORIGINS,
+        "raw_env_value": ALLOWED_ORIGINS_STR,
+        "message": "If you can see this, CORS is working for your origin"
+    }
