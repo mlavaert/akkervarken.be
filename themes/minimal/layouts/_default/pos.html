@@ -21,20 +21,8 @@
     <!-- Product Grid -->
     <div class="products-section">
       <h2>Producten</h2>
-      <div class="product-grid">
-        {{- $products := site.Data.products.products -}}
-        {{- range $products -}}
-        <div class="product-card"
-             data-product-id="{{ .id }}"
-             data-product-name="{{ .name }}"
-             data-product-price="{{ .price }}"
-             data-product-weight="{{ .weight }}"
-             data-packaging-grams="{{ .packaging_grams }}">
-          <div class="product-name">{{ .name }}</div>
-          <div class="product-price">€{{ .price }}</div>
-          <div class="product-weight">{{ .weight }}</div>
-        </div>
-        {{- end -}}
+      <div class="product-grid" id="product-grid">
+        <div class="loading-message">Producten laden...</div>
       </div>
     </div>
 
@@ -155,6 +143,9 @@
         bic: '{{ site.Params.payment.bic }}',
         beneficiary: '{{ site.Params.payment.beneficiary | default "Akkervarken.be" }}'
       };
+
+      // API URL for fetching products
+      window.API_URL = '{{ site.Params.api_url | default "https://api.akkervarken.be" }}';
     </script>
 
     <div class="payment-buttons">

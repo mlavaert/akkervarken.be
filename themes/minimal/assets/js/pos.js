@@ -24,11 +24,51 @@
   const paymentModal = document.getElementById('payment-modal');
   const closePaymentBtn = document.getElementById('close-payment');
   const paymentDoneBtn = document.getElementById('payment-done');
+  const productGrid = document.getElementById('product-grid');
+
+  // Fetch and render products from API
+  async function loadProducts() {
+    try {
+      const apiUrl = window.API_URL || 'https://api.akkervarken.be';
+      const response = await fetch(`${apiUrl}/api/products`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+
+      const products = await response.json();
+
+      // Clear loading message
+      productGrid.innerHTML = '';
+
+      // Render products
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.dataset.productId = product.slug;
+        card.dataset.productName = product.name;
+        card.dataset.productPrice = product.price;
+        card.dataset.productWeight = product.weight_display;
+        card.dataset.packagingGrams = product.unit_grams || '';
+
+        card.innerHTML = `
+          <div class="product-name">${product.name}</div>
+          <div class="product-price">€${product.price.toFixed(2)}</div>
+          <div class="product-weight">${product.weight_display}</div>
+        `;
+
+        card.addEventListener('click', handleProductClick);
+        productGrid.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error('Error loading products:', error);
+      productGrid.innerHTML = '<div class="error-message">Fout bij laden van producten. Ververs de pagina.</div>';
+    }
+  }
 
   // Event Listeners
-  document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('click', handleProductClick);
-  });
+  // Product cards will be attached dynamically after loading
 
   cancelBtn.addEventListener('click', closeModal);
   addBtn.addEventListener('click', addToSale);
@@ -411,5 +451,6 @@
   }
 
   // Initialize
+  loadProducts();
   renderSale();
 })();
