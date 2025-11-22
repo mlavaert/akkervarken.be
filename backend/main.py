@@ -51,9 +51,10 @@ async def startup_event():
 
 # CORS setup - allow requests from your website
 # Parse allowed origins from environment variable
+# Include GitHub Pages domains by default
 ALLOWED_ORIGINS_STR = os.getenv(
     "ALLOWED_ORIGINS",
-    "https://akkervarken.be,https://www.akkervarken.be,http://localhost:1313"
+    "https://akkervarken.be,https://www.akkervarken.be,https://mlavaert.github.io,http://localhost:1313"
 )
 
 # Parse origins - handle both comma and space-separated
