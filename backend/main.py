@@ -8,7 +8,7 @@ from database import engine
 from orders import router as orders_router
 from admin import router as admin_router
 from products import router as products_router
-from batches import router as batches_router
+from batches import api_router as batches_api_router, admin_router as batches_admin_router
 
 # Configure logging
 logging.basicConfig(
@@ -66,10 +66,14 @@ if os.path.isdir(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Include routers
-app.include_router(orders_router)
-app.include_router(admin_router)
+# Public API endpoints (no auth required)
 app.include_router(products_router)
-app.include_router(batches_router)
+app.include_router(batches_api_router)
+app.include_router(orders_router)
+
+# Admin endpoints (auth required)
+app.include_router(admin_router)
+app.include_router(batches_admin_router)
 
 
 @app.get("/")

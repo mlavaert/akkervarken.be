@@ -141,3 +141,47 @@ class ProductResponse(ProductBase):
 
     class Config:
         from_attributes = True
+
+
+class PickupSlotResponse(BaseModel):
+    """Schema for pickup slot in responses"""
+
+    id: int
+    date: str
+    time: str
+    sort_order: int
+
+    class Config:
+        from_attributes = True
+
+
+class BatchResponse(BaseModel):
+    """Schema for batch in responses"""
+
+    id: int
+    slug: str
+    name: str
+    pickup_location: str
+    pickup_text: Optional[str]
+    is_freezer: bool
+    is_active: bool
+    pickup_slots: List[PickupSlotResponse]
+    products: List[ProductResponse]
+
+    class Config:
+        from_attributes = True
+
+
+class BatchListResponse(BaseModel):
+    """Simplified batch response for list views"""
+
+    id: int
+    slug: str
+    name: str
+    pickup_location: str
+    pickup_text: Optional[str]
+    is_freezer: bool
+    is_active: bool
+
+    class Config:
+        from_attributes = True

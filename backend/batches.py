@@ -1,6 +1,6 @@
-"""Batch management routes for admin panel."""
+"""Batch management routes - both API and admin panel."""
 
-from typing import Optional
+from typing import List, Optional
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -8,14 +8,66 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from models import Batch, PickupSlot, Product
+from schemas import BatchResponse, BatchListResponse
 from admin import require_admin
 
 templates = Jinja2Templates(directory="templates")
-router = APIRouter(prefix="/admin/batches", tags=["admin", "batches"])
+
+# Create two routers - one for API, one for admin UI
+api_router = APIRouter(prefix="/api/batches", tags=["batches"])
+admin_router = APIRouter(prefix="/admin/batches", tags=["admin", "batches"])
 
 
-@router.get("", response_class=HTMLResponse)
-def list_batches(
+# ============================================================================
+# PUBLIC API ENDPOINTS (JSON)
+# ============================================================================
+
+@api_router.get("", response_model=List[BatchListResponse])
+def list_batches_api(
+    include_inactive: bool = False,
+    db: Session = Depends(get_db),
+):
+    """
+    List all batches (public API).
+
+    By default, only returns active batches.
+    Set include_inactive=true to include inactive batches.
+    """
+    query = db.query(Batch)
+
+    if not include_inactive:
+        query = query.filter(Batch.is_active == True)
+
+    batches = query.order_by(Batch.is_freezer.asc(), Batch.created_at.desc()).all()
+    return batches
+
+
+@api_router.get("/{batch_slug}", response_model=BatchResponse)
+def get_batch_api(
+    batch_slug: str,
+    db: Session = Depends(get_db),
+):
+    """
+    Get a specific batch by slug, including its pickup slots and products (public API).
+    """
+    batch = db.query(Batch).filter(Batch.slug == batch_slug).first()
+
+    if not batch:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Batch '{batch_slug}' niet gevonden",
+        )
+
+    return batch
+
+
+# ============================================================================
+# ADMIN UI ENDPOINTS (HTML)
+# ============================================================================
+
+
+@admin_router.get("", response_class=HTMLResponse)
+def list_batches_admin(
     request: Request,
     db: Session = Depends(get_db),
     _: str = Depends(require_admin),
@@ -34,7 +86,7 @@ def list_batches(
     )
 
 
-@router.get("/new", response_class=HTMLResponse)
+@admin_router.get("/new", response_class=HTMLResponse)
 def new_batch_form(
     request: Request,
     db: Session = Depends(get_db),
@@ -48,7 +100,7 @@ def new_batch_form(
     )
 
 
-@router.post("", response_class=RedirectResponse)
+@admin_router.post("", response_class=RedirectResponse)
 async def create_batch(
     request: Request,
     slug: str = Form(...),
@@ -99,7 +151,7 @@ async def create_batch(
     )
 
 
-@router.get("/{batch_id}/edit", response_class=HTMLResponse)
+@admin_router.get("/{batch_id}/edit", response_class=HTMLResponse)
 def edit_batch_form(
     batch_id: int,
     request: Request,
@@ -125,7 +177,7 @@ def edit_batch_form(
     )
 
 
-@router.post("/{batch_id}/update", response_class=RedirectResponse)
+@admin_router.post("/{batch_id}/update", response_class=RedirectResponse)
 async def update_batch(
     batch_id: int,
     request: Request,
@@ -184,7 +236,7 @@ async def update_batch(
     )
 
 
-@router.post("/{batch_id}/delete", response_class=RedirectResponse)
+@admin_router.post("/{batch_id}/delete", response_class=RedirectResponse)
 def delete_batch(
     batch_id: int,
     db: Session = Depends(get_db),
