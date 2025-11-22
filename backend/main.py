@@ -50,23 +50,24 @@ async def startup_event():
 
 
 # CORS setup - allow requests from your website
-# For now, allow all origins to debug. Restrict later.
-ALLOWED_ORIGINS_STR = os.getenv("ALLOWED_ORIGINS", "*")
+# Parse allowed origins from environment variable
+ALLOWED_ORIGINS_STR = os.getenv(
+    "ALLOWED_ORIGINS",
+    "https://akkervarken.be,https://www.akkervarken.be,http://localhost:1313"
+)
 
-if ALLOWED_ORIGINS_STR == "*":
-    ALLOWED_ORIGINS = ["*"]
-    logger.info("CORS: Allowing ALL origins (wildcard mode)")
-else:
-    # Parse origins - handle both comma and space-separated
-    origins_parts = ALLOWED_ORIGINS_STR.replace(",", " ").split()
-    ALLOWED_ORIGINS = [origin.strip() for origin in origins_parts if origin.strip()]
-    logger.info(f"CORS: Allowing specific origins: {ALLOWED_ORIGINS}")
+# Parse origins - handle both comma and space-separated
+origins_parts = ALLOWED_ORIGINS_STR.replace(",", " ").split()
+ALLOWED_ORIGINS = [origin.strip() for origin in origins_parts if origin.strip() and origin.strip() != "*"]
+
+# Log CORS configuration on startup
+logger.info(f"CORS Configuration: Allowing origins: {ALLOWED_ORIGINS}")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=False,  # Changed to False when using wildcard
-    allow_methods=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
