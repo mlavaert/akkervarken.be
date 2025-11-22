@@ -145,8 +145,7 @@
       };
 
       // API URL for fetching products
-      // Fallback to Railway URL if custom domain isn't working
-      window.API_URL = '{{ site.Params.api_url | default "https://akkervarkenbe-production.up.railway.app" }}';
+      window.API_URL = '{{ site.Params.api_url | default "https://api.akkervarken.be" }}';
     </script>
 
     <div class="payment-buttons">
